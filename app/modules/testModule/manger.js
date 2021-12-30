@@ -1,5 +1,5 @@
 const db = require('../../../database/models/index');
-const user = db.User;
+// const user = db.User;
 export default class Manger {
     testMethod = async (requestData) => {
         // API business logic
