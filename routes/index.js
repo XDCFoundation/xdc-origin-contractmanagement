@@ -3,6 +3,7 @@
  */
 import * as ValidationManger from "../middleware/validation";
 import TestModule from "../app/modules/testModule";
+import CreateContractModule from "../app/modules/createContract";
 import {stringConstants} from "../app/common/constants";
 
 module.exports = (app) => {
@@ -12,4 +13,5 @@ module.exports = (app) => {
      * route definition
      */
     app.get("/test-route", new TestModule().testRoute);
+    app.get("/create-xrc20-token", new CreateContractModule().createXrc20Token);
 };
