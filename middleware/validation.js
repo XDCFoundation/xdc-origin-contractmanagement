@@ -8,6 +8,20 @@ module.exports = {
       password: yup.string().min(8).required()
     })
     await validate(schema, req.body, res, next)
+  },
+
+  validateCreateXrc20Token: async (req, res, next) => {
+    const schema = yup.object().shape({
+      xdcPayAddress: yup.string().min(8).required(),
+      gasPrice: yup.string().min(8).required(),
+      gas: yup.number().required(),
+      tokenName: yup.string().required(),
+      tokenSymbol: yup.string().required(),
+      tokenImage: yup.string().required(),
+      decimals: yup.number().required(),
+      description: yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
   }
 }
 

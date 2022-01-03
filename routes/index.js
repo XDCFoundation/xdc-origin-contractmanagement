@@ -13,5 +13,5 @@ module.exports = (app) => {
      * route definition
      */
     app.get("/test-route", new TestModule().testRoute);
-    app.get("/create-xrc20-token", new CreateContractModule().createXrc20Token);
+    app.get("/create-xrc20-token", ValidationManger.validateCreateXrc20Token, new CreateContractModule().createXrc20Token);
 };
