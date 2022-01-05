@@ -21,9 +21,10 @@ contract Ownable {
   /**
    * The Ownable constructor sets the original `owner` of the contract to the sender account.
    */
-  function Ownable() {
-    owner = msg.sender;
-  }
+
+  constructor() public {
+      owner = msg.sender;
+    }
 
   /**
    * Throws if called by any account other than the owner.
@@ -47,7 +48,7 @@ contract Ownable {
    */
   function acceptOwnership() {
     require(msg.sender == newOwner);
-    OwnershipTransferred(owner, newOwner);
+    emit OwnershipTransferred(owner, newOwner);
     owner = newOwner;
   }
   
