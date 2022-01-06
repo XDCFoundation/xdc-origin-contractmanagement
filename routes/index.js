@@ -13,5 +13,6 @@ module.exports = (app) => {
      * route definition
      */
     app.get("/test-route", new TestModule().testRoute);
-    app.post("/create-xrc20-token", new CreateContractModule().createXrc20Token);
+    app.post("/save-xrc20token-as-draft", ValidationManger.validateSaveXrc20TokenAsDraft, new CreateContractModule().saveXrc20TokenAsDraft);
+    app.put("/update-xrc20token", ValidationManger.validateUpdateXrc20Token, new CreateContractModule().updateXRC20Token);
 };
