@@ -3,10 +3,17 @@ import { apiSuccessMessage, httpConstants } from '../../common/constants'
 import BLManager from './manager'
 
 export default class Index {
-    async createXrc20Token (request, response) {
-        console.log('Inside createToken', request.body, 'createToken', 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().createXrc20Token(request.body))
+    async saveXrc20TokenAsDraft (request, response) {
+        console.log('Inside saveXrc20TokenAsDraft', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().saveXrc20TokenAsDraft(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
-        return Utils.response(response, getMetersRes, apiSuccessMessage.FETCH_SUCCESS, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+        return Utils.response(response, getMetersRes, apiSuccessMessage.SAVED_AS_DRAFT, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
+
+    async updateXRC20Token (request, response) {
+        console.log('Inside updateXRC20Token', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().updateXRC20Token(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.TOKEN_DETAILS_UPDATED, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 }
