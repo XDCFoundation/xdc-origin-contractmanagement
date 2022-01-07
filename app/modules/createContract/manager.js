@@ -219,4 +219,15 @@ export default class Manager {
 
 
     }
+
+    getXrc20TokenById = async (requestData) => {
+        const token = await XRC20Token.findAll({
+            where: {
+                "id": requestData.id,
+                "isDeleted": false
+            }
+        });
+
+        return token;
+    }
 }
