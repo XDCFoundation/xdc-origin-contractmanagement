@@ -103,6 +103,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING(2000),
       defaultValue: "[]"
     },
+    network: {
+      type: DataTypes.STRING,
+      defaultValue: ""
+    },
     createdAt: {
       allowNull: false,
       type: DataTypes.DATE,
