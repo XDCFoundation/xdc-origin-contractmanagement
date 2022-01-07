@@ -168,7 +168,7 @@ export default class Manager {
             const token = tokenDetails[0];
             await XRC20Token.update(
                 { smartContractAddress: requestData.smartContractAddress, status: requestData.status},
-                { where: { tokenOwner: requestData.tokenOwner,  id: requestData.tokenId} },
+                { where: { tokenOwner: requestData.tokenOwner,  id: requestData.tokenId, isDeleted: false} },
             )
             return XRC20Token.findAll({
                 where: {
@@ -187,10 +187,36 @@ export default class Manager {
                 "tokenOwner": requestData.tokenOwner, //need to add or operation here for 'FAILED' status
                 "status": {
                     [Op.or]: ["DRAFT", "FAILED"]
-                }
+                },
+                "isDeleted": false
             }
         });
 
         return tokens;
+    }
+
+    deleteXrc20Token = async (requestData) => {
+        const tokenDetails = await XRC20Token.findAll({
+            where: {
+                "id": requestData.id,
+                "status": {
+                    [Op.or]: ["DRAFT", "FAILED"]
+                },
+            }
+        });
+
+        if(tokenDetails.length !== 0){
+            await XRC20Token.update(
+                { isDeleted: true},
+                { where: { id: requestData.id} },
+            )
+
+            return "XRC20 Token deleted successfully";
+        }
+        else{
+            return "Couldn't delete the token";
+        }
+
+
     }
 }
