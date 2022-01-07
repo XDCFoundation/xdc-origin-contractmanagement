@@ -68,7 +68,9 @@ export const genericConstants = {
 export const apiSuccessMessage = {
   FETCH_SUCCESS: 'Information fetched successfully',
   SAVED_AS_DRAFT: 'Contract saved as draft successfully',
-  TOKEN_DETAILS_UPDATED: 'Token details updated successfully'
+  TOKEN_DETAILS_UPDATED: 'Token details updated successfully',
+  TOKEN_DETAILS_FETCHED: 'Token details fetched successfully',
+  TOKEN_DELETED: 'Token deleted successfully'
 }
 
 export const apiEndpoints = {

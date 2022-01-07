@@ -36,7 +36,14 @@ module.exports = {
       tokenId: yup.number().required(),
     })
     await validate(schema, req.body, res, next)
-  }
+  },
+
+  validateDeleteXrc20Token: async (req, res, next) => {
+    const schema = yup.object().shape({
+      id: yup.number().required(),
+    })
+    await validate(schema, req.params, res, next)
+  },
 }
 
 const validate = async (schema, reqData, res, next) => {

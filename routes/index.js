@@ -16,4 +16,5 @@ module.exports = (app) => {
     app.post("/save-xrc20token-as-draft", ValidationManger.validateSaveXrc20TokenAsDraft, new CreateContractModule().saveXrc20TokenAsDraft);
     app.put("/update-xrc20token", ValidationManger.validateUpdateXrc20Token, new CreateContractModule().updateXRC20Token);
     app.post("/get-draft-failed-xrc20token", ValidationManger.validateGetDraftXrc20Token, new CreateContractModule().getDraftXRC20Token);
+    app.delete("/delete-xrc20token/:id", ValidationManger.validateDeleteXrc20Token, new CreateContractModule().deleteXrc20Token);
 };
