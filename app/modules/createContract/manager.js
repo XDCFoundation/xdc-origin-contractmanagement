@@ -1,3 +1,5 @@
+import {Op} from "sequelize";
+
 const db = require('../../../database/models/index');
 // const solc = require('solc');
 const XRC20Token = db.XRC20Token;
@@ -139,7 +141,8 @@ export default class Manager {
                 mintable: requestData.mintable,
                 pausable: requestData.pausable,
                 contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
-                network: requestData.network
+                network: requestData.network,
+                status: "FAILED"
             }
 
             const response = await XRC20Token.create(newXRCToken); //here, the details of the drafted contracts of a user can be fetched using the "tokenOwner" value which is the xdcpay address here
@@ -181,8 +184,10 @@ export default class Manager {
     getDraftXRC20Token = async (requestData) => {
         const tokens = await XRC20Token.findAll({
             where: {
-                "tokenOwner": requestData.tokenOwner,
-                "status": "DRAFT"
+                "tokenOwner": requestData.tokenOwner, //need to add or operation here for 'FAILED' status
+                "status": {
+                    [Op.or]: ["DRAFT", "FAILED"]
+                }
             }
         });
 
