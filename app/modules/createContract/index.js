@@ -24,10 +24,10 @@ export default class Index {
         return Utils.response(response, getMetersRes, apiSuccessMessage.TOKEN_DETAILS_FETCHED, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
-    async deleteXrc20Token (request, response) {
-        console.log('Inside deleteXrc20Token', request.params, 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().deleteXrc20Token(request.params))
+    async getXrc20TokenById (request, response) {
+        console.log('Inside getXrc20TokenById', request.body, 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().getXrc20TokenById(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
-        return Utils.response(response, getMetersRes, apiSuccessMessage.TOKEN_DELETED, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+        return Utils.response(response, getMetersRes, apiSuccessMessage.FETCH_SUCCESS, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 }
