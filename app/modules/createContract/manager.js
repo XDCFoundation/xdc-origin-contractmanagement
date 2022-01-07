@@ -4,10 +4,9 @@ const XRC20Token = db.XRC20Token;
 import solc from 'solc';
 import fileReader from "../fileReader/index"
 import ejs from "ejs";
+import { contractConstants } from '../../common/constants'
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
-
-        //NEED TO ADD A FIELD FOR CONTRACT ABI TO THE XRC20Token TABLE (might be an object or an array), AS THAT NEEDS TO BE STORED FOR THE DRAFTED CONTRACTS GETTING DEPLOYED LATER.
 
         // API business logic
 
@@ -123,6 +122,8 @@ export default class Manager {
         //
         //     console.log("output -=-=-=-=-=-=-=-=-=-=", output);
 
+            const contractAbi = []; //the abi of the compiled contract
+
             const newXRCToken = { //need to store the abi of the contract too, also add a status key here very importantly.
                 tokenOwner: requestData.tokenOwner,
                 tokenName: requestData.tokenName,
@@ -136,7 +137,8 @@ export default class Manager {
                 tokenDescription: requestData.tokenDescription,
                 burnable: requestData.burnable,
                 mintable: requestData.mintable,
-                pausable: requestData.pausable
+                pausable: requestData.pausable,
+                contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI)
             }
 
             const response = await XRC20Token.create(newXRCToken); //here, the details of the drafted contracts of a user can be fetched using the "tokenOwner" value which is the xdcpay address here
