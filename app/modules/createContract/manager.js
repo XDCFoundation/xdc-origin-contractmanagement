@@ -138,7 +138,8 @@ export default class Manager {
                 burnable: requestData.burnable,
                 mintable: requestData.mintable,
                 pausable: requestData.pausable,
-                contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI)
+                contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
+                network: requestData.network
             }
 
             const response = await XRC20Token.create(newXRCToken); //here, the details of the drafted contracts of a user can be fetched using the "tokenOwner" value which is the xdcpay address here
