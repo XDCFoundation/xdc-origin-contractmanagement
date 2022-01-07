@@ -23,6 +23,13 @@ module.exports = {
     await validate(schema, req.body, res, next)
   },
 
+  validateGetDraftXrc20Token: async (req, res, next) => {
+    const schema = yup.object().shape({
+      tokenOwner: yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
+
   validateUpdateXrc20Token: async (req, res, next) => {
     const schema = yup.object().shape({
       tokenOwner: yup.string().min(8).required(),

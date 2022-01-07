@@ -177,4 +177,15 @@ export default class Manager {
             return "No such token exists!"
         }
     }
+
+    getDraftXRC20Token = async (requestData) => {
+        const tokens = await XRC20Token.findAll({
+            where: {
+                "tokenOwner": requestData.tokenOwner,
+                "status": "DRAFT"
+            }
+        });
+
+        return tokens;
+    }
 }
