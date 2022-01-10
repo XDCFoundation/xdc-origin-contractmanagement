@@ -14,7 +14,7 @@ contract Ownable {
 
   /* event to indicate finally ownership has been succesfully transferred and accepted */
   event OwnershipTransferred(address indexed _from, address indexed _to);
-  
+
   /* release ownership to make it autonomous */
    event OwnershipRenounced(address indexed previousOwner);
 
@@ -51,7 +51,7 @@ contract Ownable {
     emit OwnershipTransferred(owner, newOwner);
     owner = newOwner;
   }
-  
+
     /**
   * @dev Allows the current owner to relinquish control of the contract.
   * @notice Renouncing to ownership will leave the contract without an owner.
@@ -62,7 +62,7 @@ contract Ownable {
     emit OwnershipRenounced(owner);
     owner = address(0);
   }
-  
+
      /**
   * @return true if `msg.sender` is the owner of the contract.
   */

@@ -16,17 +16,17 @@ contract ERC20 is IERC20 {
   mapping (address => mapping (address => uint256)) private _allowed;
 
   uint256 internal _totalSupply;
-  
+
   address _crawdSaleTokenAddress;
-  
+
   address private _owner;
-  
+
   /*modifier to control Crowdsale function access*/
    modifier onlyOwner {
     require(msg.sender == _owner);
     _;
   }
-  
+
   /**
    * constructor
    */
@@ -174,15 +174,15 @@ contract ERC20 is IERC20 {
     emit Approval(msg.sender, spender, _allowed[msg.sender][spender]);
     return true;
   }
-  
-  // custom function start 
+
+  // custom function start
   function sendTokensToOwner(uint _tokens) onlyOwner public returns (bool ok){
       require(_balances[this] >= _tokens);
       _balances[this] =_balances[this].sub(_tokens);
       _balances[_owner] =_balances[_owner].add(_tokens);
       return true;
   }
-  
+
     function sendTokensToCrowdsale(uint _tokens,address _address) onlyOwner public returns (bool ok){
       require(_balances[this] >= _tokens);
       _balances[this] =_balances[this].sub(_tokens);
@@ -194,7 +194,7 @@ contract ERC20 is IERC20 {
         require(_owner == msg.sender);
         selfdestruct(msg.sender);
   }
-  
+
    // custom function end
 
   /**
