@@ -12,23 +12,23 @@ contract ERC20Detailed is IERC20 {
   string private _symbol;
   uint8 private _decimals;
 
-  constructor(string memory name1, string memory symbol1, uint8 decimals1) public {
-    _name = name1;
-    _symbol = symbol1;
-    _decimals = decimals1;
+  constructor(string name, string symbol, uint8 decimals) public {
+    _name = name;
+    _symbol = symbol;
+    _decimals = decimals;
   }
 
   /**
    * @return the name of the token.
    */
-  function name() public view returns(string memory) {
+  function name() public view returns(string) {
     return _name;
   }
 
   /**
    * @return the symbol of the token.
    */
-  function symbol() public view returns(string memory) {
+  function symbol() public view returns(string) {
     return _symbol;
   }
 
