@@ -5,7 +5,7 @@
  * @title Capped token
  * @dev Mintable token with a token cap.
  */
-abstract contract ERC20Capped is ERC20Mintable {
+contract ERC20Capped is ERC20Mintable {
 
   uint256 private _cap;
 
@@ -33,7 +33,6 @@ abstract contract ERC20Capped is ERC20Mintable {
     address to,
     uint256 amount
   )
-    override
     public
     returns (bool)
   {

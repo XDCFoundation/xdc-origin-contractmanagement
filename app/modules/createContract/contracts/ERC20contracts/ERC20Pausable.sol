@@ -5,13 +5,13 @@
  * @title Pausable token
  * @dev ERC20 modified with pausable transfers.
  **/
-abstract contract ERC20Pausable is ERC20, Pausable {
+contract ERC20Pausable is ERC20, Pausable {
 
   function transfer(
     address to,
     uint256 value
   )
-  override
+
     public
     whenNotPaused
     returns (bool)
@@ -24,7 +24,7 @@ abstract contract ERC20Pausable is ERC20, Pausable {
     address to,
     uint256 value
   )
-  override
+
     public
     whenNotPaused
     returns (bool)
@@ -36,7 +36,7 @@ abstract contract ERC20Pausable is ERC20, Pausable {
     address spender,
     uint256 value
   )
-    override
+
     public
     whenNotPaused
     returns (bool)
@@ -48,7 +48,7 @@ abstract contract ERC20Pausable is ERC20, Pausable {
     address spender,
     uint addedValue
   )
-    override
+
     public
     whenNotPaused
     returns (bool success)
@@ -60,7 +60,7 @@ abstract contract ERC20Pausable is ERC20, Pausable {
     address spender,
     uint subtractedValue
   )
-    override
+
     public
     whenNotPaused
     returns (bool success)

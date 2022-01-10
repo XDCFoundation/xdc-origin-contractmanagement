@@ -7,7 +7,7 @@
  * All the operations are done using the smallest and indivisible token unit,
  * just as on Ethereum all the operations are done in wei.
  */
-abstract contract ERC20Detailed is IERC20 {
+contract ERC20Detailed is IERC20 {
   string private _name;
   string private _symbol;
   uint8 private _decimals;
