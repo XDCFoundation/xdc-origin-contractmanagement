@@ -6,6 +6,7 @@ export default class Index {
     async saveXrc20TokenAsDraft (request, response) {
         console.log('Inside saveXrc20TokenAsDraft', request.body, 'createToken', 0, '')
         const [error, getMetersRes] = await Utils.parseResponse(new BLManager().saveXrc20TokenAsDraft(request.body))
+        console.log("getMetersRes ====", getMetersRes);
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.SAVED_AS_DRAFT, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
