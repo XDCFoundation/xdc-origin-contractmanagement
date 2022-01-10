@@ -75,7 +75,7 @@ contract ERC20 is IERC20 {
   * @param to The address to transfer to.
   * @param value The amount to be transferred.
   */
-  function transfer(address to, uint256 value) public returns (bool) {
+  function transfer(address to, uint256 value) public virtual override returns (bool) {
     require(value <= _balances[msg.sender]);
     require(to != address(0));
 
@@ -94,7 +94,7 @@ contract ERC20 is IERC20 {
    * @param spender The address which will spend the funds.
    * @param value The amount of tokens to be spent.
    */
-  function approve(address spender, uint256 value) public returns (bool) {
+  function approve(address spender, uint256 value) public virtual returns (bool) {
     require(spender != address(0));
 
     _allowed[msg.sender][spender] = value;
@@ -114,6 +114,7 @@ contract ERC20 is IERC20 {
     uint256 value
   )
     public
+    virtual
     returns (bool)
   {
     require(value <= _balances[from]);
@@ -141,6 +142,7 @@ contract ERC20 is IERC20 {
     uint256 addedValue
   )
     public
+    virtual
     returns (bool)
   {
     require(spender != address(0));
@@ -164,6 +166,7 @@ contract ERC20 is IERC20 {
     address spender,
     uint256 subtractedValue
   )
+    virtual
     public
     returns (bool)
   {
@@ -176,14 +179,14 @@ contract ERC20 is IERC20 {
   }
   
   // custom function start 
-  function sendTokensToOwner(uint _tokens) onlyOwner returns (bool ok){
+  function sendTokensToOwner(uint _tokens) onlyOwner public returns (bool ok){
       require(_balances[this] >= _tokens);
       _balances[this] =_balances[this].sub(_tokens);
       _balances[_owner] =_balances[_owner].add(_tokens);
       return true;
   }
   
-    function sendTokensToCrowdsale(uint _tokens,address _address) onlyOwner returns (bool ok){
+    function sendTokensToCrowdsale(uint _tokens,address _address) onlyOwner public returns (bool ok){
       require(_balances[this] >= _tokens);
       _balances[this] =_balances[this].sub(_tokens);
       _balances[_address] =_balances[_address].add(_tokens);

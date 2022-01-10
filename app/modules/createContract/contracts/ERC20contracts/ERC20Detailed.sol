@@ -7,28 +7,28 @@
  * All the operations are done using the smallest and indivisible token unit,
  * just as on Ethereum all the operations are done in wei.
  */
-contract ERC20Detailed is IERC20 {
+abstract contract ERC20Detailed is IERC20 {
   string private _name;
   string private _symbol;
   uint8 private _decimals;
 
-  constructor(string name, string symbol, uint8 decimals) public {
-    _name = name;
-    _symbol = symbol;
-    _decimals = decimals;
+  constructor(string memory name1, string memory symbol1, uint8 decimals1) public {
+    _name = name1;
+    _symbol = symbol1;
+    _decimals = decimals1;
   }
 
   /**
    * @return the name of the token.
    */
-  function name() public view returns(string) {
+  function name() public view returns(string memory) {
     return _name;
   }
 
   /**
    * @return the symbol of the token.
    */
-  function symbol() public view returns(string) {
+  function symbol() public view returns(string memory) {
     return _symbol;
   }
 

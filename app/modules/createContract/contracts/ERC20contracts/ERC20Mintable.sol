@@ -7,7 +7,7 @@
  * @title ERC20Mintable
  * @dev ERC20 minting logic
  */
-contract ERC20Mintable is ERC20, MinterRole {
+abstract contract ERC20Mintable is ERC20, MinterRole {
   event MintingFinished();
 
   bool private _mintingFinished = false;
@@ -35,6 +35,7 @@ contract ERC20Mintable is ERC20, MinterRole {
     uint256 amount
   )
     public
+    virtual
     onlyMinter
     onlyBeforeMintingFinished
     returns (bool)
