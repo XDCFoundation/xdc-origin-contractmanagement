@@ -19,6 +19,9 @@ module.exports = {
       tokenImage: yup.string().required(),
       tokenDecimals: yup.number().required(),
       tokenDescription: yup.string().required(),
+      isPausable: yup.boolean().required(),
+      isBurnable: yup.boolean().required(),
+      isMintable: yup.boolean().required(),
     })
     await validate(schema, req.body, res, next)
   },

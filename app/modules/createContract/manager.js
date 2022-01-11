@@ -22,9 +22,9 @@ export default class Manager {
             let SafeERC20 = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/SafeERC20.sol');
             let SafeMath = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/SafeMath.sol');
             let SignerRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/SignerRole.sol');
-            let isPausable = true;
-            let isBurnable = false;
-            let isMintable = true;
+            let isPausable = requestData.isPausable;
+            let isBurnable = requestData.isBurnable;
+            let isMintable = requestData.isMintable;
             let isUpgradeable = false;
             let ERC20CappedSign = "";
 
@@ -41,7 +41,7 @@ export default class Manager {
             let inherits = "";
 
             let decimalInZero = "";
-            for (let index = 0; index < 8; index++) { //for (let index = 0; index < req.body.token_decimals; index++) {
+            for (let index = 0; index < requestData.tokenDecimals; index++) { //for (let index = 0; index < req.body.token_decimals; index++) {
                 decimalInZero += '0';
             }
 
@@ -61,7 +61,7 @@ export default class Manager {
                 ERC20Mintable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Mintable.sol');
                 CapperRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/CapperRole.sol');
                 // let ERC20Capped = await fileReader.readEjsFile(__dirname + '/ERC20contracts/ERC20Capped.sol');
-                const amnt_cap = 1000 * 10; //parseFloat(parseFloat(req.body.token_supply)  * 10);
+                const amnt_cap = requestData.tokenInitialSupply * 10; //1000 * 10; //parseFloat(parseFloat(req.body.token_supply)  * 10);
                 ERC20CappedSign = "ERC20Capped(" + amnt_cap + "000000000000000000)"
                 inherits += ", ERC20Mintable,ERC20Capped";
             }
@@ -90,10 +90,10 @@ export default class Manager {
                 "ERC20Mintable": ERC20Mintable,
                 "inherits": inherits,
                 //data from form
-                totalSupply: 1000, //req.body.token_supply,
-                name: "Meta1", //req.body.token_name,
-                symbol: "M1", //req.body.token_symbol,
-                decimal: 8, //req.body.token_decimals,
+                totalSupply: requestData.tokenInitialSupply, //req.body.token_supply 1000,
+                name: requestData.tokenName, //req.body.token_name,
+                symbol: requestData.tokenSymbol, //req.body.token_symbol,
+                decimal: requestData.tokenDecimals, //req.body.token_decimals,
                 decimalInZero: decimalInZero, //"000000000000000000",
                 ERC20CappedSign: ERC20CappedSign
             }, async (err, data) => {
@@ -116,40 +116,40 @@ export default class Manager {
                 let output = await solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json));
 
                 let byteCode = output.byteCode;
-                let abi = output.interface;
+                // let abi = output.interface;
 
                 // let output = JSON.parse(solc.compile(JSON.stringify(input_json)));
 
-                console.log("output ABI ABI ABI ABI ABI -=-=-=-=-=-=-=-=-=-=", abi);
+                // console.log("output ABI ABI ABI ABI ABI -=-=-=-=-=-=-=-=-=-=", abi);
 
-                // const contractAbi = []; //the abi of the compiled contract
-                //
-                // const newXRCToken = { //need to store the abi of the contract too, also add a status key here very importantly.
-                //     tokenOwner: requestData.tokenOwner,
-                //     tokenName: requestData.tokenName,
-                //     tokenSymbol: requestData.tokenSymbol,
-                //     tokenImage: requestData.tokenImage,
-                //     tokenInitialSupply: requestData.tokenInitialSupply,
-                //     website: requestData.website ? requestData.website : "",
-                //     twitter: requestData.twitter ? requestData.twitter : "",
-                //     telegram: requestData.telegram ? requestData.telegram : "",
-                //     tokenDecimals: requestData.tokenDecimals,
-                //     tokenDescription: requestData.tokenDescription,
-                //     burnable: requestData.burnable,
-                //     mintable: requestData.mintable,
-                //     pausable: requestData.pausable,
-                //     contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
-                //     network: requestData.network,
-                //     status: "FAILED"
-                // }
-                //
-                // const response = await XRC20Token.create(newXRCToken); //here, the details of the drafted contracts of a user can be fetched using the "tokenOwner" value which is the xdcpay address here
-                //
-                // // return {"service": "running"};
-                //
-                if(output){
-                    return abi;
+                const contractAbi = output.interface;
+
+                const newXRCToken = { //need to store the abi of the contract too, also add a status key here very importantly.
+                    tokenOwner: requestData.tokenOwner,
+                    tokenName: requestData.tokenName,
+                    tokenSymbol: requestData.tokenSymbol,
+                    tokenImage: requestData.tokenImage,
+                    tokenInitialSupply: requestData.tokenInitialSupply,
+                    website: requestData.website ? requestData.website : "",
+                    twitter: requestData.twitter ? requestData.twitter : "",
+                    telegram: requestData.telegram ? requestData.telegram : "",
+                    tokenDecimals: requestData.tokenDecimals,
+                    tokenDescription: requestData.tokenDescription,
+                    burnable: requestData.burnable,
+                    mintable: requestData.mintable,
+                    pausable: requestData.pausable,
+                    contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
+                    network: requestData.network,
+                    status: "FAILED"
                 }
+
+                const response = await XRC20Token.create(newXntDidUpdateRCToken); //here, the details of the drafted contracts of a user can be fetched using the "tokenOwner" value which is the xdcpay address here
+
+                return response;
+
+                // if(output){
+                //     return abi;
+                // }
             });
         }
         catch(err){
