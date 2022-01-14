@@ -14,106 +14,106 @@ export default class Manager {
 
         // let MinterRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Coin.sol');
         try {
-            // let Roles = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Roles.sol');
-            // let ERC20 = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20.sol');
-            // let ERC20Detailed = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Detailed.sol');
-            // let IERC20 = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/IERC20.sol');
-            // let Ownable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Ownable.sol');
-            // let SafeERC20 = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/SafeERC20.sol');
-            // let SafeMath = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/SafeMath.sol');
-            // let SignerRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/SignerRole.sol');
-            // let isPausable = requestData.isPausable;
-            // let isBurnable = requestData.isBurnable;
-            // let isMintable = requestData.isMintable;
-            // let isUpgradeable = false;
-            // let ERC20CappedSign = "";
-            //
-            // let ERC20Burnable;
-            // let Pausable;
-            // let PauserRole;
-            // let ERC20Pausable;
-            // let MinterRole;
-            // let ERC20Capped;
-            // let ERC20Mintable;
-            // let CapperRole;
-            // let Upgradable;
-            //
-            // let inherits = "";
-            //
-            // let decimalInZero = "";
-            // for (let index = 0; index < requestData.tokenDecimals; index++) { //for (let index = 0; index < req.body.token_decimals; index++) {
-            //     decimalInZero += '0';
-            // }
-            //
-            // if (isBurnable) {
-            //     ERC20Burnable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Burnable.sol');
-            //     inherits += ", ERC20Burnable";
-            // }
-            // if (isPausable) {
-            //     Pausable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Pausable.sol');
-            //     PauserRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/PauserRole.sol');
-            //     ERC20Pausable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Pausable.sol');
-            //     inherits += " , ERC20Pausable";
-            // }
-            // if (isMintable) {
-            //     MinterRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/MinterRole.sol');
-            //     ERC20Capped = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Capped.sol');
-            //     ERC20Mintable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Mintable.sol');
-            //     CapperRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/CapperRole.sol');
-            //     // let ERC20Capped = await fileReader.readEjsFile(__dirname + '/ERC20contracts/ERC20Capped.sol');
-            //     const amnt_cap = requestData.tokenInitialSupply * 10; //1000 * 10; //parseFloat(parseFloat(req.body.token_supply)  * 10);
-            //     ERC20CappedSign = "ERC20Capped(" + amnt_cap + "000000000000000000)"
-            //     inherits += ", ERC20Mintable,ERC20Capped";
-            // }
-            // if (isUpgradeable) {
-            //     Upgradable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Upgradable.sol');
-            //     inherits += " , Upgradeable";
-            // }
-            //
-            // ejs.renderFile(__dirname + '/contracts/ERC20contracts/Coin.sol', {
-            //     "SafeERC20": SafeERC20,
-            //     "SafeMath": SafeMath,
-            //     "IERC20": IERC20,
-            //     "ERC20": ERC20,
-            //     "ERC20Capped": ERC20Capped,
-            //     "ERC20Detailed": ERC20Detailed,
-            //     "MinterRole": MinterRole,
-            //     "Ownable": Ownable,
-            //     "Pausable": Pausable,
-            //     "PauserRole": PauserRole,
-            //     "Roles": Roles,
-            //     "CapperRole": CapperRole,
-            //     "SignerRole": SignerRole,
-            //     "ERC20Burnable": ERC20Burnable,
-            //     "ERC20Pausable": ERC20Pausable,
-            //     "Upgradable": Upgradable,
-            //     "ERC20Mintable": ERC20Mintable,
-            //     "inherits": inherits,
-            //     //data from form
-            //     totalSupply: requestData.tokenInitialSupply, //req.body.token_supply 1000,
-            //     name: requestData.tokenName, //req.body.token_name,
-            //     symbol: requestData.tokenSymbol, //req.body.token_symbol,
-            //     decimal: requestData.tokenDecimals, //req.body.token_decimals,
-            //     decimalInZero: decimalInZero, //"000000000000000000",
-            //     ERC20CappedSign: ERC20CappedSign
-            // }, async (err, data) => {
-            //     if (err) {
-            //         console.log("errrrrror -=-=-=-=-=-=-=", err);
-            //     }
-            //     let input_json = {
-            //         language: "Solidity",
-            //         sources:
-            //             {file: {"content": data}},
-            //         settings: {
-            //             outputSelection: {
-            //                 "*": {
-            //                     "*": ["*"]
-            //                 }
-            //             }
-            //         }
-            //     }
+            let Roles = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Roles.sol');
+            let ERC20 = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20.sol');
+            let ERC20Detailed = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Detailed.sol');
+            let IERC20 = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/IERC20.sol');
+            let Ownable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Ownable.sol');
+            let SafeERC20 = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/SafeERC20.sol');
+            let SafeMath = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/SafeMath.sol');
+            let SignerRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/SignerRole.sol');
+            let isPausable = requestData.isPausable;
+            let isBurnable = requestData.isBurnable;
+            let isMintable = requestData.isMintable;
+            let isUpgradeable = false;
+            let ERC20CappedSign = "";
 
-                // let output = await solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json));
+            let ERC20Burnable;
+            let Pausable;
+            let PauserRole;
+            let ERC20Pausable;
+            let MinterRole;
+            let ERC20Capped;
+            let ERC20Mintable;
+            let CapperRole;
+            let Upgradable;
+
+            let inherits = "";
+
+            let decimalInZero = "";
+            for (let index = 0; index < requestData.tokenDecimals; index++) { //for (let index = 0; index < req.body.token_decimals; index++) {
+                decimalInZero += '0';
+            }
+
+            if (isBurnable) {
+                ERC20Burnable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Burnable.sol');
+                inherits += ", ERC20Burnable";
+            }
+            if (isPausable) {
+                Pausable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Pausable.sol');
+                PauserRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/PauserRole.sol');
+                ERC20Pausable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Pausable.sol');
+                inherits += " , ERC20Pausable";
+            }
+            if (isMintable) {
+                MinterRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/MinterRole.sol');
+                ERC20Capped = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Capped.sol');
+                ERC20Mintable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Mintable.sol');
+                CapperRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/CapperRole.sol');
+                // let ERC20Capped = await fileReader.readEjsFile(__dirname + '/ERC20contracts/ERC20Capped.sol');
+                const amnt_cap = requestData.tokenInitialSupply * 10; //1000 * 10; //parseFloat(parseFloat(req.body.token_supply)  * 10);
+                ERC20CappedSign = "ERC20Capped(" + amnt_cap + "000000000000000000)"
+                inherits += ", ERC20Mintable,ERC20Capped";
+            }
+            if (isUpgradeable) {
+                Upgradable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Upgradable.sol');
+                inherits += " , Upgradeable";
+            }
+
+            ejs.renderFile(__dirname + '/contracts/ERC20contracts/Coin.sol', {
+                "SafeERC20": SafeERC20,
+                "SafeMath": SafeMath,
+                "IERC20": IERC20,
+                "ERC20": ERC20,
+                "ERC20Capped": ERC20Capped,
+                "ERC20Detailed": ERC20Detailed,
+                "MinterRole": MinterRole,
+                "Ownable": Ownable,
+                "Pausable": Pausable,
+                "PauserRole": PauserRole,
+                "Roles": Roles,
+                "CapperRole": CapperRole,
+                "SignerRole": SignerRole,
+                "ERC20Burnable": ERC20Burnable,
+                "ERC20Pausable": ERC20Pausable,
+                "Upgradable": Upgradable,
+                "ERC20Mintable": ERC20Mintable,
+                "inherits": inherits,
+                //data from form
+                totalSupply: requestData.tokenInitialSupply, //req.body.token_supply 1000,
+                name: requestData.tokenName, //req.body.token_name,
+                symbol: requestData.tokenSymbol, //req.body.token_symbol,
+                decimal: requestData.tokenDecimals, //req.body.token_decimals,
+                decimalInZero: decimalInZero, //"000000000000000000",
+                ERC20CappedSign: ERC20CappedSign
+            }, async (err, data) => {
+                if (err) {
+                    console.log("errrrrror -=-=-=-=-=-=-=", err);
+                }
+                let input_json = {
+                    language: "Solidity",
+                    sources:
+                        {file: {"content": data}},
+                    settings: {
+                        outputSelection: {
+                            "*": {
+                                "*": ["*"]
+                            }
+                        }
+                    }
+                }
+
+                let output = await solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json));
 
                 // let byteCode = output.byteCode;
                 // let abi = output.interface;
@@ -122,7 +122,7 @@ export default class Manager {
 
                 // console.log("output ABI ABI ABI ABI ABI -=-=-=-=-=-=-=-=-=-=", abi);
 
-                const contractAbi = [];
+                const contractAbi = output.interface;
 
                 const newXRCToken = { //need to store the abi of the contract too, also add a status key here very importantly.
                     tokenOwner: requestData.tokenOwner,
@@ -142,14 +142,16 @@ export default class Manager {
                     network: requestData.network,
                 }
 
-                const response = await XRC20Token.create(newXRCToken); //here, the details of the drafted contracts of a user can be fetched using the "tokenOwner" value which is the xdcpay address here
+                return await XRC20Token.create(newXRCToken); //here, the details of the drafted contracts of a user can be fetched using the "tokenOwner" value which is the xdcpay address here
 
-                return response;
+                // console.log("response =-=-=-=-=-", response);
+                //
+                // return response;
 
                 // if(output){
                 //     return abi;
                 // }
-           // });
+           });
         }
         catch(err){
             console.log("ERRRROOOORRRR =-=-=-=-", err)
