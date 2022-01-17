@@ -38,6 +38,8 @@ export default class Manager {
             let CapperRole;
             let Upgradable;
 
+            let contractAbi = [];
+
             let inherits = "";
 
             let decimalInZero = "";
@@ -96,7 +98,7 @@ export default class Manager {
                 decimal: requestData.tokenDecimals, //req.body.token_decimals,
                 decimalInZero: decimalInZero, //"000000000000000000",
                 ERC20CappedSign: ERC20CappedSign
-            }, async (err, data) => {
+            },  (err, data) => {
                 if (err) {
                     console.log("errrrrror -=-=-=-=-=-=-=", err);
                 }
@@ -113,7 +115,7 @@ export default class Manager {
                     }
                 }
 
-                let output = await solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json));
+                let output = solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json));
 
                 // let byteCode = output.byteCode;
                 // let abi = output.interface;
@@ -122,27 +124,27 @@ export default class Manager {
 
                 // console.log("output ABI ABI ABI ABI ABI -=-=-=-=-=-=-=-=-=-=", abi);
 
-                const contractAbi = output.interface;
+                contractAbi = output.interface;
 
-                const newXRCToken = { //need to store the abi of the contract too, also add a status key here very importantly.
-                    tokenOwner: requestData.tokenOwner,
-                    tokenName: requestData.tokenName,
-                    tokenSymbol: requestData.tokenSymbol,
-                    tokenImage: requestData.tokenImage,
-                    tokenInitialSupply: requestData.tokenInitialSupply,
-                    website: requestData.website ? requestData.website : "",
-                    twitter: requestData.twitter ? requestData.twitter : "",
-                    telegram: requestData.telegram ? requestData.telegram : "",
-                    tokenDecimals: requestData.tokenDecimals,
-                    tokenDescription: requestData.tokenDescription,
-                    burnable: requestData.isBurnable,
-                    mintable: requestData.isMintable,
-                    pausable: requestData.isPausable,
-                    contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
-                    network: requestData.network,
-                }
-
-                return await XRC20Token.create(newXRCToken); //here, the details of the drafted contracts of a user can be fetched using the "tokenOwner" value which is the xdcpay address here
+                // const newXRCToken = { //need to store the abi of the contract too, also add a status key here very importantly.
+                //     tokenOwner: requestData.tokenOwner,
+                //     tokenName: requestData.tokenName,
+                //     tokenSymbol: requestData.tokenSymbol,
+                //     tokenImage: requestData.tokenImage,
+                //     tokenInitialSupply: requestData.tokenInitialSupply,
+                //     website: requestData.website ? requestData.website : "",
+                //     twitter: requestData.twitter ? requestData.twitter : "",
+                //     telegram: requestData.telegram ? requestData.telegram : "",
+                //     tokenDecimals: requestData.tokenDecimals,
+                //     tokenDescription: requestData.tokenDescription,
+                //     burnable: requestData.isBurnable,
+                //     mintable: requestData.isMintable,
+                //     pausable: requestData.isPausable,
+                //     contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
+                //     network: requestData.network,
+                // }
+                //
+                // return await XRC20Token.create(newXRCToken); //here, the details of the drafted contracts of a user can be fetched using the "tokenOwner" value which is the xdcpay address here
 
                 // console.log("response =-=-=-=-=-", response);
                 //
@@ -152,6 +154,26 @@ export default class Manager {
                 //     return abi;
                 // }
            });
+
+            const newXRCToken = { //need to store the abi of the contract too, also add a status key here very importantly.
+                tokenOwner: requestData.tokenOwner,
+                tokenName: requestData.tokenName,
+                tokenSymbol: requestData.tokenSymbol,
+                tokenImage: requestData.tokenImage,
+                tokenInitialSupply: requestData.tokenInitialSupply,
+                website: requestData.website ? requestData.website : "",
+                twitter: requestData.twitter ? requestData.twitter : "",
+                telegram: requestData.telegram ? requestData.telegram : "",
+                tokenDecimals: requestData.tokenDecimals,
+                tokenDescription: requestData.tokenDescription,
+                burnable: requestData.isBurnable,
+                mintable: requestData.isMintable,
+                pausable: requestData.isPausable,
+                contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
+                network: requestData.network,
+            }
+
+            return XRC20Token.create(newXRCToken);
         }
         catch(err){
             console.log("ERRRROOOORRRR =-=-=-=-", err)
