@@ -43,6 +43,8 @@ export default class Manager {
             let inherits = "";
 
             let decimalInZero = "";
+
+            let tokenContractCode = '';
             for (let index = 0; index < requestData.tokenDecimals; index++) { //for (let index = 0; index < req.body.token_decimals; index++) {
                 decimalInZero += '0';
             }
@@ -114,6 +116,8 @@ export default class Manager {
                         }
                     }
                 }
+                tokenContractCode = data;
+                // console.log("data =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-", data);
 
                 let output = solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json));
 
@@ -171,6 +175,7 @@ export default class Manager {
                 pausable: requestData.isPausable,
                 contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
                 network: requestData.network,
+                tokenContractCode: tokenContractCode
             }
 
             return XRC20Token.create(newXRCToken);
