@@ -107,6 +107,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: ""
     },
+    tokenContractCode: {
+      type: DataTypes.TEXT,
+      defaultValue: ""
+    },
     isDeleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
