@@ -115,6 +115,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       defaultValue: ""
     },
+    isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     isDeleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
