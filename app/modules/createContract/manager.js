@@ -6,13 +6,13 @@ const XRC20Token = db.XRC20Token;
 import solc from 'solc';
 import fileReader from "../fileReader/index"
 import ejs from "ejs";
-import { contractConstants } from '../../common/constants'
+import {apiFailureMessage, contractConstants, httpConstants} from '../../common/constants'
+import Utils from "../../utils";
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
 
         // API business logic
 
-        // let MinterRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Coin.sol');
         try {
             let Roles = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/Roles.sol');
             let ERC20 = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20.sol');
@@ -119,50 +119,18 @@ export default class Manager {
                     }
                 }
                 tokenContractCode = data;
-                // console.log("data =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-==-=-", data);
 
                 let output = solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json));
 
-                // let byteCode = output.byteCode;
-                // let abi = output.interface;
 
                 // let output = JSON.parse(solc.compile(JSON.stringify(input_json)));
 
-                // console.log("output ABI ABI ABI ABI ABI -=-=-=-=-=-=-=-=-=-=", abi);
 
                 contractAbi = output.interface;
                 byteCode = output.bytecode;
-
-                // const newXRCToken = { //need to store the abi of the contract too, also add a status key here very importantly.
-                //     tokenOwner: requestData.tokenOwner,
-                //     tokenName: requestData.tokenName,
-                //     tokenSymbol: requestData.tokenSymbol,
-                //     tokenImage: requestData.tokenImage,
-                //     tokenInitialSupply: requestData.tokenInitialSupply,
-                //     website: requestData.website ? requestData.website : "",
-                //     twitter: requestData.twitter ? requestData.twitter : "",
-                //     telegram: requestData.telegram ? requestData.telegram : "",
-                //     tokenDecimals: requestData.tokenDecimals,
-                //     tokenDescription: requestData.tokenDescription,
-                //     burnable: requestData.isBurnable,
-                //     mintable: requestData.isMintable,
-                //     pausable: requestData.isPausable,
-                //     contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
-                //     network: requestData.network,
-                // }
-                //
-                // return await XRC20Token.create(newXRCToken); //here, the details of the drafted contracts of a user can be fetched using the "tokenOwner" value which is the xdcpay address here
-
-                // console.log("response =-=-=-=-=-", response);
-                //
-                // return response;
-
-                // if(output){
-                //     return abi;
-                // }
            });
 
-            const newXRCToken = { //need to store the abi of the contract too, also add a status key here very importantly.
+            const newXRCToken = {
                 tokenOwner: requestData.tokenOwner,
                 tokenName: requestData.tokenName,
                 tokenSymbol: requestData.tokenSymbol,
@@ -190,6 +158,26 @@ export default class Manager {
 
 
 
+    }
+
+    checkExistingTokens = async (requestData) => {
+        const tokens = await XRC20Token.findAll({
+            where: {
+                "tokenName": requestData.tokenName,
+                "isDeleted": false
+            }
+        });
+
+        if(tokens.length > 0){
+            throw Utils.error(
+                {},
+                apiFailureMessage.TOKEN_NAME_EXISTS,
+                httpConstants.RESPONSE_CODES.FORBIDDEN
+            );
+        }
+        else{
+            return await this.saveXrc20TokenAsDraft(requestData);
+        }
     }
 
     updateXRC20Token = async (requestData) => {
