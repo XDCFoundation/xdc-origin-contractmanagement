@@ -8,6 +8,8 @@ import fileReader from "../fileReader/index"
 import ejs from "ejs";
 import {apiFailureMessage, contractConstants, httpConstants} from '../../common/constants'
 import Utils from "../../utils";
+import HttpService from "../../service/http-service";
+const axios = require("axios");
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
 
@@ -253,5 +255,68 @@ export default class Manager {
         });
 
         return token;
+    }
+
+    verifyXrc20Token = async (requestData) => {
+        try{
+            console.log("requestData =-=-=-=-=-=-=-=-=-", requestData);
+            const token = await XRC20Token.findAll({
+                where: {
+                    "id": requestData.tokenId,
+                    "isDeleted": false
+                }
+            });
+
+            return await this.verifyXrc20TokenManager(requestData.contractAddress, token[0].tokenContractCode, token[0].network, token[0].contractAbiString, token[0].tokenName);
+
+        }
+        catch(err){
+            console.log("err=-=-=-=-=-=-=", err);
+        }
+
+    }
+
+    verifyXrc20TokenManager = async (address, code, network, abi, tokenName) => {
+        console.log("address -=-=-=-==", address);
+        // console.log("code -=-=-=-==", code);
+        // console.log("network -=-=-=-==", network);
+        // console.log("abi -=-=-=-==", JSON.parse(abi));
+        console.log("tokenName -=-=-=-==", tokenName);
+
+        try{
+            let url = 'https://explorer.apothem.network/compile';
+            //
+            // let data = {
+            //     address: address,
+            //     optimization: false,
+            //     name: tokenName,
+            //     version: "v0.4.24+commit.e67f0147",
+            //     action: "compile",
+            //     code: code,
+            //     abi: "",
+            // }
+
+            // let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '/compile', data)
+
+            const resp = await axios.post(url, {
+                address: address,
+                optimization: false,
+                name: tokenName,
+                version: "v0.4.24+commit.e67f0147",
+                action: "compile",
+                code: code,
+                abi: "",
+            });
+
+            console.log("response =-=-=-=-=-=-=-=", resp);
+
+            // if (!response || !response.responseData || !response.success)
+            //     throw Utils.error({}, response.message || apiFailureMessage.USER_CREATE_AUTH0, httpConstants.RESPONSE_CODES.FORBIDDEN);
+
+            return resp;
+        }
+        catch(err){
+            console.log("ERRRRRRRR -=-=---=-=-=-=-=-====-=-", err);
+        }
     }
 }

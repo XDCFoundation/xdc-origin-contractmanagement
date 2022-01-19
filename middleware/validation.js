@@ -54,6 +54,14 @@ module.exports = {
     })
     await validate(schema, req.body, res, next)
   },
+
+  validateVerifyXrc20Token: async (req, res, next) => {
+    const schema = yup.object().shape({
+      tokenId: yup.number().required(),
+      contractAddress: yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
 }
 
 const validate = async (schema, reqData, res, next) => {
