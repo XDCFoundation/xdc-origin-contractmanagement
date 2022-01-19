@@ -111,6 +111,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT,
       defaultValue: ""
     },
+    byteCode: {
+      type: DataTypes.TEXT,
+      defaultValue: ""
+    },
     isDeleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false

@@ -44,6 +44,8 @@ export default class Manager {
 
             let decimalInZero = "";
 
+            let byteCode = "";
+
             let tokenContractCode = '';
             for (let index = 0; index < requestData.tokenDecimals; index++) { //for (let index = 0; index < req.body.token_decimals; index++) {
                 decimalInZero += '0';
@@ -129,6 +131,7 @@ export default class Manager {
                 // console.log("output ABI ABI ABI ABI ABI -=-=-=-=-=-=-=-=-=-=", abi);
 
                 contractAbi = output.interface;
+                byteCode = output.bytecode;
 
                 // const newXRCToken = { //need to store the abi of the contract too, also add a status key here very importantly.
                 //     tokenOwner: requestData.tokenOwner,
@@ -175,7 +178,8 @@ export default class Manager {
                 pausable: requestData.isPausable,
                 contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
                 network: requestData.network,
-                tokenContractCode: tokenContractCode
+                tokenContractCode: tokenContractCode,
+                byteCode: byteCode
             }
 
             return XRC20Token.create(newXRCToken);
