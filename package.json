@@ -37,6 +37,7 @@
     "yup": "^0.29.3"
   },
   "devDependencies": {
+    "axios": "^0.25.0",
     "dotenv": "^10.0.0"
   }
 }
