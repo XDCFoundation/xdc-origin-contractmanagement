@@ -100,11 +100,19 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: "DRAFT"
     },
     contractAbiString: {
-      type: DataTypes.STRING(2000),
+      type: DataTypes.STRING(20000),
       defaultValue: "[]"
     },
     network: {
       type: DataTypes.STRING,
+      defaultValue: ""
+    },
+    tokenContractCode: {
+      type: DataTypes.TEXT,
+      defaultValue: ""
+    },
+    byteCode: {
+      type: DataTypes.TEXT,
       defaultValue: ""
     },
     isDeleted: {
