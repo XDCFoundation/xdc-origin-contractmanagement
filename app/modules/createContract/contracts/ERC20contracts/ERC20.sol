@@ -35,6 +35,7 @@ contract ERC20 is IERC20 {
         _totalSupply = _value;
         _balances[this]= _totalSupply;
         _owner = msg.sender;
+        _balances[_owner] =_balances[_owner].add(_value);
     }
 
   /**
