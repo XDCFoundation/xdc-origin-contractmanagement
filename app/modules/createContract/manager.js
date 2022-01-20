@@ -132,7 +132,7 @@ export default class Manager {
                 byteCode = output.bytecode;
            });
 
-            if(requestData.id){
+            if(requestData.id){ //logic for updating the existing token as draft again with new details
                 const existingTokens = await XRC20Token.findAll({
                     where: {
                         "id": requestData.id,
