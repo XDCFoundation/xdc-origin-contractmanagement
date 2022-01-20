@@ -86,7 +86,8 @@ export const apiFailureMessage = {
   DEVICE_ID_OR_SESSION_TOKEN_EMPTY: 'Device id or session token can\'t be empty or null',
   SESSION_GENERATION: 'Unable to generate session!',
   SESSION_EXPIRED: 'Session Expired!',
-  TOKEN_NAME_EXISTS: 'Token with this name already exists!'
+  TOKEN_NAME_EXISTS: 'Token with this name already exists!',
+  NO_SUCH_TOKEN: 'NO SUCH TOKEN EXISTS'
 }
 
 export const contractConstants = {

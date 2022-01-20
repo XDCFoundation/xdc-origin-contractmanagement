@@ -132,27 +132,67 @@ export default class Manager {
                 byteCode = output.bytecode;
            });
 
-            const newXRCToken = {
-                tokenOwner: requestData.tokenOwner,
-                tokenName: requestData.tokenName,
-                tokenSymbol: requestData.tokenSymbol,
-                tokenImage: requestData.tokenImage,
-                tokenInitialSupply: requestData.tokenInitialSupply,
-                website: requestData.website ? requestData.website : "",
-                twitter: requestData.twitter ? requestData.twitter : "",
-                telegram: requestData.telegram ? requestData.telegram : "",
-                tokenDecimals: requestData.tokenDecimals,
-                tokenDescription: requestData.tokenDescription,
-                burnable: requestData.isBurnable,
-                mintable: requestData.isMintable,
-                pausable: requestData.isPausable,
-                contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
-                network: requestData.network,
-                tokenContractCode: tokenContractCode,
-                byteCode: byteCode
-            }
+            if(requestData.id){
+                const existingTokens = await XRC20Token.findAll({
+                    where: {
+                        "id": requestData.id,
+                        "isDeleted": false
+                    }
+                });
 
-            return XRC20Token.create(newXRCToken);
+                let existingToken = existingTokens[0];
+
+
+                let xRCToken = {
+                    tokenOwner: requestData.tokenOwner ? requestData.tokenOwner : existingToken.tokenOwner,
+                    tokenName: requestData.tokenName ? requestData.tokenName : existingToken.tokenName,
+                    tokenSymbol: requestData.tokenSymbol ? requestData.tokenSymbol : existingToken.tokenSymbol,
+                    tokenImage: requestData.tokenImage ? requestData.tokenImage : existingToken.tokenImage,
+                    tokenInitialSupply: requestData.tokenInitialSupply ? requestData.tokenInitialSupply : existingToken.tokenInitialSupply,
+                    website: requestData.website ? requestData.website : existingToken.website,
+                    twitter: requestData.twitter ? requestData.twitter : existingToken.twitter,
+                    telegram: requestData.telegram ? requestData.telegram : existingToken.telegram,
+                    tokenDecimals: requestData.tokenDecimals ? requestData.tokenDecimals : existingToken.tokenDecimals,
+                    tokenDescription: requestData.tokenDescription ? requestData.tokenDescription : existingToken.tokenDescription,
+                    burnable: requestData.isBurnable ? requestData.isBurnable : existingToken.isBurnable,
+                    mintable: requestData.isMintable ? requestData.isMintable : existingToken.isMintable,
+                    pausable: requestData.isPausable ? requestData.isPausable : existingToken.isPausable,
+                    contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
+                    network: requestData.network ? requestData.network : existingToken.network,
+                    tokenContractCode: tokenContractCode,
+                    byteCode: byteCode
+                }
+
+
+                return await XRC20Token.update(
+                    xRCToken,
+                    { where: { tokenOwner: requestData.tokenOwner,  id: requestData.id, isDeleted: false} },
+                )
+
+            }
+            else{
+                const newXRCToken = {
+                    tokenOwner: requestData.tokenOwner,
+                    tokenName: requestData.tokenName,
+                    tokenSymbol: requestData.tokenSymbol,
+                    tokenImage: requestData.tokenImage,
+                    tokenInitialSupply: requestData.tokenInitialSupply,
+                    website: requestData.website ? requestData.website : "",
+                    twitter: requestData.twitter ? requestData.twitter : "",
+                    telegram: requestData.telegram ? requestData.telegram : "",
+                    tokenDecimals: requestData.tokenDecimals,
+                    tokenDescription: requestData.tokenDescription,
+                    burnable: requestData.isBurnable,
+                    mintable: requestData.isMintable,
+                    pausable: requestData.isPausable,
+                    contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
+                    network: requestData.network,
+                    tokenContractCode: tokenContractCode,
+                    byteCode: byteCode
+                }
+
+                return XRC20Token.create(newXRCToken);
+            }
         }
         catch(err){
             console.log("ERRRROOOORRRR =-=-=-=-", err)
@@ -163,19 +203,24 @@ export default class Manager {
     }
 
     checkExistingTokens = async (requestData) => {
-        const tokens = await XRC20Token.findAll({
-            where: {
-                "tokenName": requestData.tokenName,
-                "isDeleted": false
-            }
-        });
+        if(requestData.id){
+            const tokens = await XRC20Token.findAll({
+                where: {
+                    "id": requestData.id,
+                    "isDeleted": false
+                }
+            });
 
-        if(tokens.length > 0){
-            throw Utils.error(
-                {},
-                apiFailureMessage.TOKEN_NAME_EXISTS,
-                httpConstants.RESPONSE_CODES.FORBIDDEN
-            );
+            if(tokens.length > 0){
+                return await this.saveXrc20TokenAsDraft(requestData);
+            }
+            else{
+                throw Utils.error(
+                    {},
+                    apiFailureMessage.NO_SUCH_TOKEN,
+                    httpConstants.RESPONSE_CODES.NOT_FOUND
+                );
+            }
         }
         else{
             return await this.saveXrc20TokenAsDraft(requestData);
