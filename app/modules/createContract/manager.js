@@ -8,6 +8,8 @@ import fileReader from "../fileReader/index"
 import ejs from "ejs";
 import {apiFailureMessage, contractConstants, httpConstants} from '../../common/constants'
 import Utils from "../../utils";
+import HttpService from "../../service/http-service";
+const axios = require("axios");
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
 
@@ -130,27 +132,67 @@ export default class Manager {
                 byteCode = output.bytecode;
            });
 
-            const newXRCToken = {
-                tokenOwner: requestData.tokenOwner,
-                tokenName: requestData.tokenName,
-                tokenSymbol: requestData.tokenSymbol,
-                tokenImage: requestData.tokenImage,
-                tokenInitialSupply: requestData.tokenInitialSupply,
-                website: requestData.website ? requestData.website : "",
-                twitter: requestData.twitter ? requestData.twitter : "",
-                telegram: requestData.telegram ? requestData.telegram : "",
-                tokenDecimals: requestData.tokenDecimals,
-                tokenDescription: requestData.tokenDescription,
-                burnable: requestData.isBurnable,
-                mintable: requestData.isMintable,
-                pausable: requestData.isPausable,
-                contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
-                network: requestData.network,
-                tokenContractCode: tokenContractCode,
-                byteCode: byteCode
-            }
+            if(requestData.id){ //logic for updating the existing token as draft again with new details
+                const existingTokens = await XRC20Token.findAll({
+                    where: {
+                        "id": requestData.id,
+                        "isDeleted": false
+                    }
+                });
 
-            return XRC20Token.create(newXRCToken);
+                let existingToken = existingTokens[0];
+
+
+                let xRCToken = {
+                    tokenOwner: requestData.tokenOwner ? requestData.tokenOwner : existingToken.tokenOwner,
+                    tokenName: requestData.tokenName ? requestData.tokenName : existingToken.tokenName,
+                    tokenSymbol: requestData.tokenSymbol ? requestData.tokenSymbol : existingToken.tokenSymbol,
+                    tokenImage: requestData.tokenImage ? requestData.tokenImage : existingToken.tokenImage,
+                    tokenInitialSupply: requestData.tokenInitialSupply ? requestData.tokenInitialSupply : existingToken.tokenInitialSupply,
+                    website: requestData.website ? requestData.website : existingToken.website,
+                    twitter: requestData.twitter ? requestData.twitter : existingToken.twitter,
+                    telegram: requestData.telegram ? requestData.telegram : existingToken.telegram,
+                    tokenDecimals: requestData.tokenDecimals ? requestData.tokenDecimals : existingToken.tokenDecimals,
+                    tokenDescription: requestData.tokenDescription ? requestData.tokenDescription : existingToken.tokenDescription,
+                    burnable: requestData.isBurnable ? requestData.isBurnable : existingToken.isBurnable,
+                    mintable: requestData.isMintable ? requestData.isMintable : existingToken.isMintable,
+                    pausable: requestData.isPausable ? requestData.isPausable : existingToken.isPausable,
+                    contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
+                    network: requestData.network ? requestData.network : existingToken.network,
+                    tokenContractCode: tokenContractCode,
+                    byteCode: byteCode
+                }
+
+
+                return await XRC20Token.update(
+                    xRCToken,
+                    { where: { tokenOwner: requestData.tokenOwner,  id: requestData.id, isDeleted: false} },
+                )
+
+            }
+            else{
+                const newXRCToken = {
+                    tokenOwner: requestData.tokenOwner,
+                    tokenName: requestData.tokenName,
+                    tokenSymbol: requestData.tokenSymbol,
+                    tokenImage: requestData.tokenImage,
+                    tokenInitialSupply: requestData.tokenInitialSupply,
+                    website: requestData.website ? requestData.website : "",
+                    twitter: requestData.twitter ? requestData.twitter : "",
+                    telegram: requestData.telegram ? requestData.telegram : "",
+                    tokenDecimals: requestData.tokenDecimals,
+                    tokenDescription: requestData.tokenDescription,
+                    burnable: requestData.isBurnable,
+                    mintable: requestData.isMintable,
+                    pausable: requestData.isPausable,
+                    contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
+                    network: requestData.network,
+                    tokenContractCode: tokenContractCode,
+                    byteCode: byteCode
+                }
+
+                return XRC20Token.create(newXRCToken);
+            }
         }
         catch(err){
             console.log("ERRRROOOORRRR =-=-=-=-", err)
@@ -161,19 +203,24 @@ export default class Manager {
     }
 
     checkExistingTokens = async (requestData) => {
-        const tokens = await XRC20Token.findAll({
-            where: {
-                "tokenName": requestData.tokenName,
-                "isDeleted": false
-            }
-        });
+        if(requestData.id){
+            const tokens = await XRC20Token.findAll({
+                where: {
+                    "id": requestData.id,
+                    "isDeleted": false
+                }
+            });
 
-        if(tokens.length > 0){
-            throw Utils.error(
-                {},
-                apiFailureMessage.TOKEN_NAME_EXISTS,
-                httpConstants.RESPONSE_CODES.FORBIDDEN
-            );
+            if(tokens.length > 0){
+                return await this.saveXrc20TokenAsDraft(requestData);
+            }
+            else{
+                throw Utils.error(
+                    {},
+                    apiFailureMessage.NO_SUCH_TOKEN,
+                    httpConstants.RESPONSE_CODES.NOT_FOUND
+                );
+            }
         }
         else{
             return await this.saveXrc20TokenAsDraft(requestData);
@@ -253,5 +300,68 @@ export default class Manager {
         });
 
         return token;
+    }
+
+    verifyXrc20Token = async (requestData) => {
+        try{
+            console.log("requestData =-=-=-=-=-=-=-=-=-", requestData);
+            const token = await XRC20Token.findAll({
+                where: {
+                    "id": requestData.tokenId,
+                    "isDeleted": false
+                }
+            });
+
+            return await this.verifyXrc20TokenManager(requestData.contractAddress, token[0].tokenContractCode, token[0].network, token[0].contractAbiString, token[0].tokenName);
+
+        }
+        catch(err){
+            console.log("err=-=-=-=-=-=-=", err);
+        }
+
+    }
+
+    verifyXrc20TokenManager = async (address, code, network, abi, tokenName) => {
+        console.log("address -=-=-=-==", address);
+        // console.log("code -=-=-=-==", code);
+        // console.log("network -=-=-=-==", network);
+        // console.log("abi -=-=-=-==", JSON.parse(abi));
+        console.log("tokenName -=-=-=-==", tokenName);
+
+        try{
+            let url = 'https://explorer.apothem.network/compile';
+            //
+            // let data = {
+            //     address: address,
+            //     optimization: false,
+            //     name: tokenName,
+            //     version: "v0.4.24+commit.e67f0147",
+            //     action: "compile",
+            //     code: code,
+            //     abi: "",
+            // }
+
+            // let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '/compile', data)
+
+            const resp = await axios.post(url, {
+                address: address,
+                optimization: false,
+                name: tokenName,
+                version: "v0.4.24+commit.e67f0147",
+                action: "compile",
+                code: code,
+                abi: "",
+            });
+
+            console.log("response =-=-=-=-=-=-=-=", resp);
+
+            // if (!response || !response.responseData || !response.success)
+            //     throw Utils.error({}, response.message || apiFailureMessage.USER_CREATE_AUTH0, httpConstants.RESPONSE_CODES.FORBIDDEN);
+
+            return resp;
+        }
+        catch(err){
+            console.log("ERRRRRRRR -=-=---=-=-=-=-=-====-=-", err);
+        }
     }
 }
