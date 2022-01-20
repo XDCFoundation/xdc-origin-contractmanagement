@@ -164,10 +164,16 @@ export default class Manager {
                 }
 
 
-                return await XRC20Token.update(
+                await XRC20Token.update(
                     xRCToken,
                     { where: { tokenOwner: requestData.tokenOwner,  id: requestData.id, isDeleted: false} },
                 )
+
+                return XRC20Token.findAll({
+                    where: {
+                        "id": requestData.id
+                    }
+                });
 
             }
             else{
@@ -343,22 +349,22 @@ export default class Manager {
 
             // let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '/compile', data)
 
-            const resp = await axios.post(url, {
-                address: address,
-                optimization: false,
-                name: tokenName,
-                version: "v0.4.24+commit.e67f0147",
-                action: "compile",
-                code: code,
-                abi: "",
-            });
+            // const resp = await axios.post(url, {
+            //     address: address,
+            //     optimization: false,
+            //     name: tokenName,
+            //     version: "v0.4.24+commit.e67f0147",
+            //     action: "compile",
+            //     code: code,
+            //     abi: "",
+            // });
 
-            console.log("response =-=-=-=-=-=-=-=", resp);
+            console.log("response =-=-=-=-=-=-=-=", code);
 
             // if (!response || !response.responseData || !response.success)
             //     throw Utils.error({}, response.message || apiFailureMessage.USER_CREATE_AUTH0, httpConstants.RESPONSE_CODES.FORBIDDEN);
 
-            return resp;
+            return {};
         }
         catch(err){
             console.log("ERRRRRRRR -=-=---=-=-=-=-=-====-=-", err);
