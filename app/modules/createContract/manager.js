@@ -10,6 +10,7 @@ import {apiFailureMessage, contractConstants, httpConstants} from '../../common/
 import Utils from "../../utils";
 import HttpService from "../../service/http-service";
 const axios = require("axios");
+import WebSocketService from '../../service/WebsocketService';
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
 
@@ -122,10 +123,12 @@ export default class Manager {
                 }
                 tokenContractCode = data;
 
-                let output = solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json));
+                let output = solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json)); // the reason for the contract not being verified might lie here. Here, the bytecode we're sending comes from the 'coin' field inside the copiled output of the 'data', but for verification we're only sending the 'data' and its not processing the right coin key.
 
 
                 // let output = JSON.parse(solc.compile(JSON.stringify(input_json)));
+
+                console.log("output -=-=-=-=-=-=-=-=-=", output.metadata);
 
 
                 contractAbi = output.interface;
@@ -265,6 +268,7 @@ export default class Manager {
                 "status": {
                     [Op.or]: ["DRAFT", "FAILED"]
                 },
+                "network": requestData.network,
                 "isDeleted": false
             }
         });
@@ -359,15 +363,51 @@ export default class Manager {
             //     abi: "",
             // });
 
-            console.log("response =-=-=-=-=-=-=-=", code);
+            let code2 = "pragma solidity ^0.4.24;contract SimpleStorage {string storedData;uint256 count = 0;mapping(uint256 => string) public tweets;function createTweet(uint256 tweetId, string tweet) public {storedData = tweet;tweets[tweetId] = tweet;count+=1;}function getTweetByTweetId(uint256 tweetId) public view returns (string) {return tweets[tweetId];}function getCount() public view returns (uint256) {return count;}}"
+
+            console.log("response =-=-=-=-=-=-=-=", code2);
 
             // if (!response || !response.responseData || !response.success)
             //     throw Utils.error({}, response.message || apiFailureMessage.USER_CREATE_AUTH0, httpConstants.RESPONSE_CODES.FORBIDDEN);
 
-            return {};
+            return code2;
         }
         catch(err){
             console.log("ERRRRRRRR -=-=---=-=-=-=-=-====-=-", err);
+        }
+    }
+
+    verifyXrc20 = async (settings, provider) => {
+        let web3 =  await WebSocketService.webSocketConnection(provider);
+        let solc_version = settings['solc_version'];
+        let file_name = settings['file_name'];
+        let contract_name = settings['contract_name'];
+        let contract_address = settings['contract_address'];
+        let is_optimized = settings['is_optimized'];
+        let source_code = settings['source_code'];
+        const responseStatus = []
+        let input = sourse_code;
+        let bytecode_from_compiler;
+        let bytecode_from_blockchain;
+        let output;
+        let bytecode;
+
+        let input_json = {
+            language: "Solidity",
+            sources:
+                {file: {"content": input} },
+            settings: {
+                optimizer: {
+                    // disabled by default
+                    enabled: is_optimized,
+                    runs: 200
+                },
+                outputSelection: {
+                    "*": {
+                        "*": [ "*" ]
+                    }
+                }
+            }
         }
     }
 }
