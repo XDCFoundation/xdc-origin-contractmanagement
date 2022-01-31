@@ -87,6 +87,7 @@ export const apiFailureMessage = {
   SESSION_GENERATION: 'Unable to generate session!',
   SESSION_EXPIRED: 'Session Expired!',
   TOKEN_NAME_EXISTS: 'Token with this name already exists!',
+  TOKEN_SYMBOL_EXISTS: 'Token with this symbol already exists!',
   NO_SUCH_TOKEN: 'NO SUCH TOKEN EXISTS'
 }
 
