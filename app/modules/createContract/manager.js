@@ -128,7 +128,7 @@ export default class Manager {
 
                 // let output = JSON.parse(solc.compile(JSON.stringify(input_json)));
 
-                console.log("output -=-=-=-=-=-=-=-=-=", output.metadata);
+                // console.log("output -=-=-=-=-=-=-=-=-=", output.metadata);
 
 
                 contractAbi = output.interface;
@@ -208,6 +208,50 @@ export default class Manager {
         }
 
 
+
+    }
+
+    checkTokensWithSameTokenName = async (requestData) => {
+        if(requestData.id){ //if the client is trying to update existing token
+            // console.log("216 else =-=-=-=-=-=-=-=-=")
+            return await this.checkExistingTokens(requestData);
+        }
+        else{ //if the client is trying to create a new token
+            const tokensWithSameName = await XRC20Token.findAll({
+                where: {
+                    "tokenName": requestData.tokenName,
+                    "isDeleted": false
+                }
+            });
+
+            const tokensWithSameSymbol = await XRC20Token.findAll({
+                where: {
+                    "tokenSymbol": requestData.tokenSymbol,
+                    "isDeleted": false
+                }
+            });
+
+            // console.log("tokensWithSameSymbol =-=-=-=-=-=-=-", tokensWithSameSymbol.length);
+
+            if(tokensWithSameName.length > 0){
+                throw Utils.error(
+                    {},
+                    apiFailureMessage.TOKEN_NAME_EXISTS,
+                    httpConstants.RESPONSE_CODES.FORBIDDEN
+                )
+            }
+            else if(tokensWithSameSymbol.length > 0){
+                throw Utils.error(
+                    {},
+                    apiFailureMessage.TOKEN_SYMBOL_EXISTS,
+                    httpConstants.RESPONSE_CODES.FORBIDDEN
+                )
+            }
+            else{
+                // console.log("248 else =-=-=-=-=-=-=-=-=")
+                return await this.checkExistingTokens(requestData);
+            }
+        }
 
     }
 
