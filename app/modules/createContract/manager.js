@@ -204,7 +204,7 @@ export default class Manager {
             }
         }
         catch(err){
-            console.log("ERRRROOOORRRR =-=-=-=-", err)
+            console.log("ERROR in saveXrc20TokenAsDraft =-=-=-=-=-=-=-=-=", err)
         }
 
 
