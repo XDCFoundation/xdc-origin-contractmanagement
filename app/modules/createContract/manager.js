@@ -290,6 +290,18 @@ export default class Manager {
         });
 
         if(tokenDetails.length !== 0){
+
+            if(requestData.smartContractAddress !== ""){
+                const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0]))
+
+                if(!getSocialMediaUpdateRes){
+                    console.log("ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
+                }
+                else{
+                    console.log("SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
+                }
+            }
+
             let verifyRequest = {
                 tokenId: requestData.tokenId,
                 contractAddress: requestData.smartContractAddress
@@ -329,6 +341,31 @@ export default class Manager {
         else{
             return "No such token exists!"
         }
+    }
+
+    saveSocialMediaUrlsInObservatory = async (contractAddress, tokenDetails) => {
+        console.log("saveSocialMediaUrlsInObservatory =-=-=-=-=", tokenDetails.tokenName);
+        let url = "https://1lzur2qul1.execute-api.us-east-2.amazonaws.com/prod/update-contracts/"+contractAddress;
+
+        let data = {
+            contractAddress: contractAddress,
+            website: tokenDetails.website,
+            telegram: tokenDetails.telegram,
+            twitter: tokenDetails.twitter,
+            // email: tokenDetails.email,
+            // linkedIn: tokenDetails.linkedIn,
+            // reddit: tokenDetails.reddit,
+            // coinGecko: tokenDetails.coinGecko,
+            symbolUrl: tokenDetails.tokenImage
+        }
+
+        let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data)
+
+        if (!response || !response.success)
+            throw Utils.error({}, apiFailureMessage.COULD_NOT_UPDATE_TOKEN_SOCIAL_MEDIA_URLS, httpConstants.RESPONSE_CODES.FORBIDDEN);
+
+        return response;
+
     }
 
     getDraftXRC20Token = async (requestData) => {
