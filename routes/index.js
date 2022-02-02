@@ -19,4 +19,5 @@ module.exports = (app) => {
     app.delete("/delete-xrc20token/:id", ValidationManger.validateDeleteXrc20Token, new CreateContractModule().deleteXrc20Token);
     app.post("/get-xrc20Token-by-id", ValidationManger.validateGetXrc20TokenById, new CreateContractModule().getXrc20TokenById);
     app.post("/verify-xrc20-token", ValidationManger.validateVerifyXrc20Token, new CreateContractModule().verifyXrc20Token);
+    app.post("/get-deployed-xrc20token", ValidationManger.validateGetDraftXrc20Token, new CreateContractModule().getDeployedXRC20Token);
 };
