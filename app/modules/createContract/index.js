@@ -45,4 +45,11 @@ export default class Index {
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.FETCH_SUCCESS, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
+
+    async getDeployedXRC20Token (request, response) {
+        console.log('Inside getDeployedXRC20Token', request.body, 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().getDeployedXRC20Token(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.TOKEN_DETAILS_FETCHED, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
 }
