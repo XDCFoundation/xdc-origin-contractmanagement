@@ -89,7 +89,8 @@ export const apiFailureMessage = {
   TOKEN_NAME_EXISTS: 'Token with this name already exists!',
   TOKEN_SYMBOL_EXISTS: 'Token with this symbol already exists!',
   NO_SUCH_TOKEN: 'NO SUCH TOKEN EXISTS',
-  COULD_NOT_VERIFY_TOKEN: 'COULD NOT VERIFY THE TOKEN'
+  COULD_NOT_VERIFY_TOKEN: 'COULD NOT VERIFY THE TOKEN',
+  COULD_NOT_UPDATE_TOKEN_SOCIAL_MEDIA_URLS: 'COULD NOT UPDATE TOKEN SOCIAL MEDIA URLS'
 }
 
 export const contractConstants = {
