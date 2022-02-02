@@ -421,6 +421,19 @@ export default class Manager {
         }
     }
 
+    getDeployedXRC20Token = async (requestData) => {
+        const tokens = await XRC20Token.findAll({
+            where: {
+                "tokenOwner": requestData.tokenOwner, //need to add or operation here for 'FAILED' status
+                "status": "DEPLOYED",
+                "network": requestData.network,
+                "isDeleted": false
+            }
+        });
+
+        return tokens;
+    }
+
     verifyXrc20 = async (settings, provider) => {
         let web3 =  await WebSocketService.webSocketConnection(provider);
         let solc_version = settings['solc_version'];
