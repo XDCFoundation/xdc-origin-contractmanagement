@@ -281,6 +281,7 @@ export default class Manager {
     }
 
     updateXRC20Token = async (requestData) => {
+
         const tokenDetails = await XRC20Token.findAll({
             where: {
                 "tokenOwner": requestData.tokenOwner,
@@ -289,9 +290,34 @@ export default class Manager {
         });
 
         if(tokenDetails.length !== 0){
-            const token = tokenDetails[0];
+            let verifyRequest = {
+                tokenId: requestData.tokenId,
+                contractAddress: requestData.smartContractAddress
+            }
+
+            const [error, getVerificationRes] = await Utils.parseResponse(this.verifyXrc20Token(verifyRequest))
+
+
+            let updateObj = {};
+
+            if(!getVerificationRes){
+                updateObj = {
+                    smartContractAddress: requestData.smartContractAddress,
+                    status: requestData.status,
+                    isVerified: false
+                }
+            }
+            else{
+                updateObj = {
+                    smartContractAddress: requestData.smartContractAddress,
+                    status: requestData.status,
+                    isVerified: true
+                }
+            }
+
+            // const token = tokenDetails[0];
             await XRC20Token.update(
-                { smartContractAddress: requestData.smartContractAddress, status: requestData.status},
+                updateObj,
                 { where: { tokenOwner: requestData.tokenOwner,  id: requestData.tokenId, isDeleted: false} },
             )
             return XRC20Token.findAll({
@@ -366,8 +392,13 @@ export default class Manager {
                 }
             });
 
-            return await this.verifyXrc20TokenManager(requestData.contractAddress, token[0].tokenContractCode, token[0].network, token[0].contractAbiString, token[0].tokenName);
-
+            const [error, getRes] = await Utils.parseResponse(this.verifyXrc20TokenManager(requestData.contractAddress, token[0].tokenContractCode, token[0].network, token[0].contractAbiString, token[0].tokenName));
+            if (!getRes) {
+                throw error;
+            }
+            else{
+                return getRes;
+            }
         }
         catch(err){
             console.log("err=-=-=-=-=-=-=", err);
@@ -376,45 +407,28 @@ export default class Manager {
     }
 
     verifyXrc20TokenManager = async (address, code, network, abi, tokenName) => {
-        console.log("address -=-=-=-==", address);
-        // console.log("code -=-=-=-==", code);
-        // console.log("network -=-=-=-==", network);
-        // console.log("abi -=-=-=-==", JSON.parse(abi));
-        console.log("tokenName -=-=-=-==", tokenName);
-
         try{
-            let url = 'https://explorer.apothem.network/compile';
-            //
-            // let data = {
-            //     address: address,
-            //     optimization: false,
-            //     name: tokenName,
-            //     version: "v0.4.24+commit.e67f0147",
-            //     action: "compile",
-            //     code: code,
-            //     abi: "",
-            // }
+            let url = 'https://1lzur2qul1.execute-api.us-east-2.amazonaws.com/prod/verify-contract';
 
-            // let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '/compile', data)
+            let data = {
+                addr: address,
+                argument: "",
+                optimise: false,
+                contractname: tokenName,
+                version: "v0.4.24+commit.e67f0147",
+                code: code,
+                isVersionEnable: false
+            }
 
-            // const resp = await axios.post(url, {
-            //     address: address,
-            //     optimization: false,
-            //     name: tokenName,
-            //     version: "v0.4.24+commit.e67f0147",
-            //     action: "compile",
-            //     code: code,
-            //     abi: "",
-            // });
+            let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data)
+            // console.log("response -==--=-=-=-=-=-=-=-", response);
 
-            let code2 = "pragma solidity ^0.4.24;contract SimpleStorage {string storedData;uint256 count = 0;mapping(uint256 => string) public tweets;function createTweet(uint256 tweetId, string tweet) public {storedData = tweet;tweets[tweetId] = tweet;count+=1;}function getTweetByTweetId(uint256 tweetId) public view returns (string) {return tweets[tweetId];}function getCount() public view returns (uint256) {return count;}}"
+            // let code2 = "pragma solidity ^0.4.24;contract SimpleStorage {string storedData;uint256 count = 0;mapping(uint256 => string) public tweets;function createTweet(uint256 tweetId, string tweet) public {storedData = tweet;tweets[tweetId] = tweet;count+=1;}function getTweetByTweetId(uint256 tweetId) public view returns (string) {return tweets[tweetId];}function getCount() public view returns (uint256) {return count;}}"
 
-            console.log("response =-=-=-=-=-=-=-=", code2);
+            if (!response || !response.responseData || !response.success)
+                throw Utils.error({}, apiFailureMessage.COULD_NOT_VERIFY_TOKEN, httpConstants.RESPONSE_CODES.FORBIDDEN);
 
-            // if (!response || !response.responseData || !response.success)
-            //     throw Utils.error({}, response.message || apiFailureMessage.USER_CREATE_AUTH0, httpConstants.RESPONSE_CODES.FORBIDDEN);
-
-            return code2;
+            return response;
         }
         catch(err){
             console.log("ERRRRRRRR -=-=---=-=-=-=-=-====-=-", err);
