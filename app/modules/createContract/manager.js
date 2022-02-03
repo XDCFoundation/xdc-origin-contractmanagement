@@ -456,7 +456,7 @@ export default class Manager {
                 contractname: "Coin",
                 version: "v0.4.24+commit.e67f0147",
                 code: code,
-                isVersionEnable: false
+                // isVersionEnable: false
             }
 
             let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data)
