@@ -361,6 +361,8 @@ export default class Manager {
 
         let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data)
 
+        console.log("saveSocialMediaUrlsInObservatory response =-=-=-=-=-=-=-", url, contractAddress, response);
+
         if (!response || !response.success)
             throw Utils.error({}, apiFailureMessage.COULD_NOT_UPDATE_TOKEN_SOCIAL_MEDIA_URLS, httpConstants.RESPONSE_CODES.FORBIDDEN);
 
@@ -451,7 +453,7 @@ export default class Manager {
                 addr: address,
                 argument: "",
                 optimise: false,
-                contractname: tokenName,
+                contractname: "Coin",
                 version: "v0.4.24+commit.e67f0147",
                 code: code,
                 isVersionEnable: false
