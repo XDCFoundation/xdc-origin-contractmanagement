@@ -450,9 +450,13 @@ export default class Manager {
     verifyXrc20TokenManager = async (address, code, network, abi, tokenName) => {
         try{
             let url = 'https://1lzur2qul1.execute-api.us-east-2.amazonaws.com/prod/verify-contract';
+            //
+            let editedAdr = "0x" + address.slice(3);
+
+            console.log("editedAdr editedAdr editedAdr editedAdr =-=-=-=", editedAdr);
 
             let data = {
-                addr: address,
+                addr: editedAdr,
                 argument: "",
                 optimise: false,
                 contractname: "Coin",
@@ -460,6 +464,8 @@ export default class Manager {
                 code: code,
                 // isVersionEnable: false
             }
+
+            console.log("data =-=-=-=-", data);
 
             let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data)
             // console.log("response -==--=-=-=-=-=-=-=-", response);
