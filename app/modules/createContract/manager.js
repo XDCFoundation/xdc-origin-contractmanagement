@@ -359,7 +359,11 @@ export default class Manager {
             symbolUrl: tokenDetails.tokenImage
         }
 
+        console.log("data =-=-=-=-=-", data);
+
         let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data)
+
+        console.log("saveSocialMediaUrlsInObservatory response =-=-=-=-=-=-=-", url, contractAddress, response);
 
         if (!response || !response.success)
             throw Utils.error({}, apiFailureMessage.COULD_NOT_UPDATE_TOKEN_SOCIAL_MEDIA_URLS, httpConstants.RESPONSE_CODES.FORBIDDEN);
@@ -451,16 +455,18 @@ export default class Manager {
                 addr: address,
                 argument: "",
                 optimise: false,
-                contractname: tokenName,
+                contractname: "Coin",
                 version: "v0.4.24+commit.e67f0147",
                 code: code,
-                isVersionEnable: false
+                // isVersionEnable: false
             }
 
             let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data)
             // console.log("response -==--=-=-=-=-=-=-=-", response);
 
             // let code2 = "pragma solidity ^0.4.24;contract SimpleStorage {string storedData;uint256 count = 0;mapping(uint256 => string) public tweets;function createTweet(uint256 tweetId, string tweet) public {storedData = tweet;tweets[tweetId] = tweet;count+=1;}function getTweetByTweetId(uint256 tweetId) public view returns (string) {return tweets[tweetId];}function getCount() public view returns (uint256) {return count;}}"
+
+            console.log("verification response =-=--", response);
 
             if (!response || !response.responseData || !response.success)
                 throw Utils.error({}, apiFailureMessage.COULD_NOT_VERIFY_TOKEN, httpConstants.RESPONSE_CODES.FORBIDDEN);
