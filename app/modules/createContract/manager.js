@@ -502,7 +502,7 @@ export default class Manager {
     mintBurnXrc20Token = async (requestData) => {
         const tokens = await XRC20Token.findAll({
             where: {
-                "tokenOwner": requestData.tokenOwner, //need to add or operation here for 'FAILED' status
+                "tokenOwner": requestData.tokenOwner,
                 "id": requestData.tokenId,
                 "network": requestData.network,
                 "smartContractAddress": requestData.smartContractAddress,
@@ -551,7 +551,7 @@ export default class Manager {
     pauseResumeXrc20Token = async (requestData) => {
         const tokens = await XRC20Token.findAll({
             where: {
-                "tokenOwner": requestData.tokenOwner, //need to add or operation here for 'FAILED' status
+                "tokenOwner": requestData.tokenOwner,
                 "id": requestData.tokenId,
                 "network": requestData.network,
                 "smartContractAddress": requestData.smartContractAddress,
@@ -562,6 +562,37 @@ export default class Manager {
         if(tokens.length > 0){
             let updateObj = {
                 isPaused: requestData.pause
+            }
+
+            await XRC20Token.update(
+                updateObj,
+                { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
+            )
+            return XRC20Token.findAll({
+                where: {
+                    "id": requestData.tokenId
+                }
+            });
+        }
+        else{
+            throw Utils.error({}, apiFailureMessage.NO_SUCH_TOKEN, httpConstants.RESPONSE_CODES.NOT_FOUND);
+        }
+    }
+
+    transferOwnershipXrc20Token = async (requestData) => {
+        const tokens = await XRC20Token.findAll({
+            where: {
+                "tokenOwner": requestData.tokenOwner,
+                "id": requestData.tokenId,
+                "network": requestData.network,
+                "smartContractAddress": requestData.smartContractAddress,
+                "isDeleted": false
+            }
+        });
+
+        if(tokens.length > 0){
+            let updateObj = {
+                tokenOwner: requestData.newTokenOwner
             }
 
             await XRC20Token.update(
