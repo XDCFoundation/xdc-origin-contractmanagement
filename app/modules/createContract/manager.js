@@ -548,6 +548,37 @@ export default class Manager {
         }
     }
 
+    pauseResumeXrc20Token = async (requestData) => {
+        const tokens = await XRC20Token.findAll({
+            where: {
+                "tokenOwner": requestData.tokenOwner, //need to add or operation here for 'FAILED' status
+                "id": requestData.tokenId,
+                "network": requestData.network,
+                "smartContractAddress": requestData.smartContractAddress,
+                "isDeleted": false
+            }
+        });
+
+        if(tokens.length > 0){
+            let updateObj = {
+                isPaused: requestData.pause
+            }
+
+            await XRC20Token.update(
+                updateObj,
+                { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
+            )
+            return XRC20Token.findAll({
+                where: {
+                    "id": requestData.tokenId
+                }
+            });
+        }
+        else{
+            throw Utils.error({}, apiFailureMessage.NO_SUCH_TOKEN, httpConstants.RESPONSE_CODES.NOT_FOUND);
+        }
+    }
+
     verifyXrc20 = async (settings, provider) => {
         let web3 =  await WebSocketService.webSocketConnection(provider);
         let solc_version = settings['solc_version'];

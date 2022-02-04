@@ -59,4 +59,11 @@ export default class Index {
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
+
+    async pauseResumeXrc20Token(request, response) {
+        console.log('Inside pauseResumeXrc20Token', request.body, 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().pauseResumeXrc20Token(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
 }
