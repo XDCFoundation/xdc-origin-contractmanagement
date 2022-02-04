@@ -163,7 +163,8 @@ export default class Manager {
                     contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
                     network: requestData.network ? requestData.network : existingToken.network,
                     tokenContractCode: tokenContractCode,
-                    byteCode: byteCode
+                    byteCode: byteCode,
+                    tokenCurrentSupply: requestData.tokenInitialSupply ? requestData.tokenInitialSupply : existingToken.tokenInitialSupply,
                 }
 
 
@@ -197,7 +198,8 @@ export default class Manager {
                     contractAbiString: (contractAbi.length !== 0) ? JSON.stringify(contractAbi) : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
                     network: requestData.network,
                     tokenContractCode: tokenContractCode,
-                    byteCode: byteCode
+                    byteCode: byteCode,
+                    tokenCurrentSupply: requestData.tokenInitialSupply,
                 }
 
                 return XRC20Token.create(newXRCToken);
