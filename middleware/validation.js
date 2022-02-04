@@ -62,6 +62,18 @@ module.exports = {
     })
     await validate(schema, req.body, res, next)
   },
+
+  validateMintBurnXrc20Token: async (req, res, next) => {
+    const schema = yup.object().shape({
+      tokenOwner: yup.string().required(),
+      tokenId: yup.number().required(),
+      operation: yup.string().required(),
+      mintedTokens: yup.number().required(),
+      burntTokens: yup.number().required(),
+      network: yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
 }
 
 const validate = async (schema, reqData, res, next) => {
