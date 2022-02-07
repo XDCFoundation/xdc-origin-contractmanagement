@@ -23,5 +23,6 @@ module.exports = (app) => {
     app.post("/mint-burn-xrc20Token", ValidationManger.validateMintBurnXrc20Token, new CreateContractModule().mintBurnXrc20Token);
     app.post("/pause-resume-xrc20-token", ValidationManger.validatePauseResumeXrc20Token, new CreateContractModule().pauseResumeXrc20Token);
     app.post("/transfer-ownership-xrc20-token", ValidationManger.validateTransferOwnershipXrc20Token, new CreateContractModule().transferOwnershipXrc20Token);
+    app.post("/update-social-media-urls", ValidationManger.validateUpdateSocialMediaUrls, new CreateContractModule().updateSocialMediaUrls);
 
 };

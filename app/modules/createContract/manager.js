@@ -294,7 +294,7 @@ export default class Manager {
         if(tokenDetails.length !== 0){
 
             if(requestData.smartContractAddress !== ""){
-                const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0]))
+                const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0], {}))
 
                 if(!getSocialMediaUpdateRes){
                     console.log("ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
@@ -345,20 +345,27 @@ export default class Manager {
         }
     }
 
-    saveSocialMediaUrlsInObservatory = async (contractAddress, tokenDetails) => {
+    saveSocialMediaUrlsInObservatory = async (contractAddress, tokenDetails, updateObj) => {
         console.log("saveSocialMediaUrlsInObservatory =-=-=-=-=", tokenDetails.tokenName);
         let url = "https://1lzur2qul1.execute-api.us-east-2.amazonaws.com/prod/update-contracts/"+contractAddress;
 
-        let data = {
-            contractAddress: contractAddress,
-            website: tokenDetails.website,
-            telegram: tokenDetails.telegram,
-            twitter: tokenDetails.twitter,
-            // email: tokenDetails.email,
-            // linkedIn: tokenDetails.linkedIn,
-            // reddit: tokenDetails.reddit,
-            // coinGecko: tokenDetails.coinGecko,
-            symbolUrl: tokenDetails.tokenImage
+        let data = {};
+
+        if(updateObj === {}){
+            data = {
+                contractAddress: contractAddress,
+                website: tokenDetails.website,
+                telegram: tokenDetails.telegram,
+                twitter: tokenDetails.twitter,
+                // email: tokenDetails.email,
+                // linkedIn: tokenDetails.linkedIn,
+                // reddit: tokenDetails.reddit,
+                // coinGecko: tokenDetails.coinGecko,
+                symbolUrl: tokenDetails.tokenImage
+            }
+        }
+        else{
+            data = updateObj;
         }
 
         console.log("data =-=-=-=-=-", data);
@@ -372,6 +379,100 @@ export default class Manager {
 
         return response;
 
+    }
+
+    updateSocialMediaUrls = async (requestData) => {
+        const tokens = await XRC20Token.findAll({
+            where: {
+                "tokenOwner": requestData.tokenOwner,
+                "id": requestData.tokenId,
+                "network": requestData.network,
+                "smartContractAddress": requestData.smartContractAddress,
+                "isDeleted": false
+            }
+        });
+
+        if(tokens.length > 0){
+
+            let updateObj = {
+                contractAddress: requestData.smartContractAddress
+            };
+
+            if(requestData.website){
+                updateObj.website = requestData.website;
+            }
+            if(requestData.twitter){
+                updateObj.twitter = requestData.twitter;
+            }
+            if(requestData.telegram){
+                updateObj.telegram = requestData.telegram;
+            }
+            if(requestData.email){
+                updateObj.email = requestData.email;
+            }
+            if(requestData.linkedIn){
+                updateObj.linkedIn = requestData.linkedIn;
+            }
+            if(requestData.reddit){
+                updateObj.reddit = requestData.reddit;
+            }
+            if(requestData.coinGecko){
+                updateObj.coinGecko = requestData.coinGecko;
+            }
+            if(requestData.symbolUrl){
+                updateObj.symbolUrl = requestData.symbolUrl;
+            }
+
+
+            const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokens[0], updateObj)
+
+            if(!getSocialMediaUpdateRes){
+                throw Utils.error({}, apiFailureMessage.COULD_NOT_UPDATE_TOKEN_SOCIAL_MEDIA_URLS, httpConstants.RESPONSE_CODES.FORBIDDEN);
+            }
+            else{
+
+                let xrc20TokenUpdateObj = {};
+
+                if(requestData.website){
+                    xrc20TokenUpdateObj.website = requestData.website;
+                }
+                if(requestData.twitter){
+                    xrc20TokenUpdateObj.twitter = requestData.twitter;
+                }
+                if(requestData.telegram){
+                    xrc20TokenUpdateObj.telegram = requestData.telegram;
+                }
+                if(requestData.email){
+                    xrc20TokenUpdateObj.email = requestData.email;
+                }
+                if(requestData.linkedIn){
+                    xrc20TokenUpdateObj.linkedIn = requestData.linkedIn;
+                }
+                if(requestData.reddit){
+                    xrc20TokenUpdateObj.reddit = requestData.reddit;
+                }
+                if(requestData.coinGecko){
+                    xrc20TokenUpdateObj.coinGecko = requestData.coinGecko;
+                }
+                if(requestData.symbolUrl){
+                    xrc20TokenUpdateObj.tokenImage = requestData.symbolUrl;
+                }
+
+                await XRC20Token.update(
+                    xrc20TokenUpdateObj,
+                    { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
+                )
+                return XRC20Token.findAll({
+                    where: {
+                        "id": requestData.tokenId
+                    }
+                });
+            }
+
+        }
+        else{
+            throw Utils.error({}, apiFailureMessage.NO_SUCH_TOKEN, httpConstants.RESPONSE_CODES.NOT_FOUND);
+        }
     }
 
     getDraftXRC20Token = async (requestData) => {
