@@ -70,7 +70,8 @@ export const apiSuccessMessage = {
   SAVED_AS_DRAFT: 'Contract saved as draft successfully',
   TOKEN_DETAILS_UPDATED: 'Token details updated successfully',
   TOKEN_DETAILS_FETCHED: 'Token details fetched successfully',
-  TOKEN_DELETED: 'Token deleted successfully'
+  TOKEN_DELETED: 'Token deleted successfully',
+  DETAILS_SAVED_SUCCESSFULLY: 'Details saved successfully'
 }
 
 export const apiEndpoints = {

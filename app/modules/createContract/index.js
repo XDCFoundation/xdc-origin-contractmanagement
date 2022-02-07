@@ -5,7 +5,7 @@ import BLManager from './manager'
 export default class Index {
     async saveXrc20TokenAsDraft (request, response) {
         console.log('Inside saveXrc20TokenAsDraft', request.body, 'createToken', 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().checkTokensWithSameTokenName(request.body))
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().checkExistingTokens(request.body))
         // console.log("getMetersRes ====", getMetersRes);
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.SAVED_AS_DRAFT, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
@@ -51,5 +51,26 @@ export default class Index {
         const [error, getMetersRes] = await Utils.parseResponse(new BLManager().getDeployedXRC20Token(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.TOKEN_DETAILS_FETCHED, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
+
+    async mintBurnXrc20Token (request, response) {
+        console.log('Inside mintBurnXrc20Token', request.body, 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().mintBurnXrc20Token(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
+
+    async pauseResumeXrc20Token(request, response) {
+        console.log('Inside pauseResumeXrc20Token', request.body, 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().pauseResumeXrc20Token(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
+
+    async transferOwnershipXrc20Token(request, response) {
+        console.log('Inside transferOwnershipXrc20Token', request.body, 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().transferOwnershipXrc20Token(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 }
