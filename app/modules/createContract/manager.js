@@ -349,6 +349,8 @@ export default class Manager {
         console.log("saveSocialMediaUrlsInObservatory =-=-=-=-=", tokenDetails.tokenName);
         let url = "https://1lzur2qul1.execute-api.us-east-2.amazonaws.com/prod/update-contracts/"+contractAddress;
 
+        console.log("saveSocialMediaUrlsInObservatory updateObj =-=-=-=-=-=-=-=-=-=-=-=-", updateObj)
+
         let data = {};
 
         if(updateObj === {}){
@@ -394,6 +396,8 @@ export default class Manager {
 
         if(tokens.length > 0){
 
+            console.log("line 397 =-=-=-=-=");
+
             let updateObj = {
                 contractAddress: requestData.smartContractAddress
             };
@@ -423,14 +427,17 @@ export default class Manager {
                 updateObj.symbolUrl = requestData.symbolUrl;
             }
 
+            console.log("updateObj =-=-=-=-=-=-", updateObj)
 
-            const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokens[0], updateObj)
 
-            if(!getSocialMediaUpdateRes){
-                throw Utils.error({}, apiFailureMessage.COULD_NOT_UPDATE_TOKEN_SOCIAL_MEDIA_URLS, httpConstants.RESPONSE_CODES.FORBIDDEN);
-            }
-            else{
+            await this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokens[0], updateObj)
 
+            // if(!getSocialMediaUpdateRes){
+            //     console.log("ERROR ERROR ERROR ERROR ERROR =-=-=-=-=-=-=-=-=-=-")
+            //     throw Utils.error({}, apiFailureMessage.COULD_NOT_UPDATE_TOKEN_SOCIAL_MEDIA_URLS, httpConstants.RESPONSE_CODES.FORBIDDEN);
+            // }
+            // else{
+                console.log("SUCCESS IN UPDATING URLS =-=-=-=-=-=-=-=-=-=-")
                 let xrc20TokenUpdateObj = {};
 
                 if(requestData.website){
@@ -458,6 +465,8 @@ export default class Manager {
                     xrc20TokenUpdateObj.tokenImage = requestData.symbolUrl;
                 }
 
+                console.log("xrc20TokenUpdateObj =-=-=-=-=-=-", xrc20TokenUpdateObj)
+
                 await XRC20Token.update(
                     xrc20TokenUpdateObj,
                     { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
@@ -467,7 +476,7 @@ export default class Manager {
                         "id": requestData.tokenId
                     }
                 });
-            }
+            //}
 
         }
         else{
