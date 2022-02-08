@@ -359,6 +359,7 @@ export default class Manager {
                 website: tokenDetails.website,
                 telegram: tokenDetails.telegram,
                 twitter: tokenDetails.twitter,
+                description: tokenDetails.tokenDescription,
                 // email: tokenDetails.email,
                 // linkedIn: tokenDetails.linkedIn,
                 // reddit: tokenDetails.reddit,
