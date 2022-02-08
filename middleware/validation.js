@@ -96,6 +96,16 @@ module.exports = {
     })
     await validate(schema, req.body, res, next)
   },
+
+  validateUpdateSocialMediaUrls: async (req, res, next) => {
+    const schema = yup.object().shape({
+      tokenOwner: yup.string().required(),
+      tokenId: yup.number().required(),
+      smartContractAddress: yup.string().required(),
+      network: yup.string().required()
+    })
+    await validate(schema, req.body, res, next)
+  },
 }
 
 const validate = async (schema, reqData, res, next) => {
