@@ -27,4 +27,10 @@ contract Coin is ERC20,Ownable,ERC20Detailed<%- inherits %>{
     constructor() ERC20(<%- totalSupply %><%- decimalInZero %>)ERC20Detailed('<%- name %>','<%- symbol %>',<%- decimal %>)<%- ERC20CappedSign %> public{
 
     }
+
+    function transferOwnershipFeatures(address _newOwner) public {
+        transferOwnership(_newOwner);
+        addMinter(_newOwner);
+        addPauser(_newOwner);
+    }
 }
