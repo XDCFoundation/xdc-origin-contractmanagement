@@ -1,3 +1,7 @@
+/**
+ * Created using XDC Origin
+ */
+
 pragma solidity ^0.4.24;
 
 <%- SafeMath %>
