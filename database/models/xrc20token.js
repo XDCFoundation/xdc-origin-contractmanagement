@@ -26,19 +26,19 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: ""
     },
     tokenInitialSupply: {
-      type: DataTypes.NUMERIC,
+      type: DataTypes.DECIMAL,
       defaultValue: 0
     },
     tokenCurrentSupply: {
-      type: DataTypes.NUMERIC,
+      type: DataTypes.DECIMAL,
       defaultValue: 0
     },
     mintedTokens: {
-      type: DataTypes.NUMERIC,
+      type: DataTypes.DECIMAL,
       defaultValue: 0
     },
     burntTokens: {
-      type: DataTypes.NUMERIC,
+      type: DataTypes.DECIMAL,
       defaultValue: 0
     },
     lastMinted: {
