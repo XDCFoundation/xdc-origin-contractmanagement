@@ -7,4 +7,5 @@ module.exports = {
   DB_DATABASE: process.env.DB_DATABASE || 'xdc-mycontract-dev',
   DB_PASSWORD: process.env.DB_PASSWORD || 'wh!teRoom39',
   DB_PORT: process.env.DB_PORT || '5432',
+  OBSERVATORY_X_API_KEY: process.env.OBSERVATORY_X_API_KEY || 'UYIQSLAYpd1i6aOAXL1okajcWJhoDQJr5KX82Zlu',
 }
