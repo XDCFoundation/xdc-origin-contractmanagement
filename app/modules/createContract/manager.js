@@ -11,6 +11,7 @@ import Utils from "../../utils";
 import HttpService from "../../service/http-service";
 const axios = require("axios");
 import WebSocketService from '../../service/WebsocketService';
+import Config from "../../../config"
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
 
@@ -578,9 +579,11 @@ export default class Manager {
                 // isVersionEnable: false
             }
 
+            const headers = {"content-type": "application/json", "X-API-KEY": Config.OBSERVATORY_X_API_KEY};
+
             console.log("data =-=-=-=-", data);
 
-            let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data)
+            let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data, headers)
             // console.log("response -==--=-=-=-=-=-=-=-", response);
 
             // let code2 = "pragma solidity ^0.4.24;contract SimpleStorage {string storedData;uint256 count = 0;mapping(uint256 => string) public tweets;function createTweet(uint256 tweetId, string tweet) public {storedData = tweet;tweets[tweetId] = tweet;count+=1;}function getTweetByTweetId(uint256 tweetId) public view returns (string) {return tweets[tweetId];}function getCount() public view returns (uint256) {return count;}}"
