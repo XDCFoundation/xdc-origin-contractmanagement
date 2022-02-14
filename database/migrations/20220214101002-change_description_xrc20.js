@@ -2,23 +2,18 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return Promise.all([ queryInterface.addColumn(
-        'XRC20Tokens',
-        'tokenDecimals',
-        Sequelize.ARRAY(Sequelize.INTEGER),
-    ),
-      queryInterface.addColumn(
-          'XRC20Tokens',
-          'tokenDescription',
-          Sequelize.ARRAY(Sequelize.STRING),
-      )
-    ]);
     /**
      * Add altering commands here.
      *
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
+    return Promise.all([ queryInterface.changeColumn(
+        'XRC20Tokens',
+        'tokenDescription',
+        Sequelize.TEXT,
+    )
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {
