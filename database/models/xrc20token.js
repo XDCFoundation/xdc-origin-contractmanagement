@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0
     },
     tokenDescription: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       defaultValue: ""
     },
     status: {
@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: "DRAFT"
     },
     contractAbiString: {
-      type: DataTypes.STRING(20000),
+      type: DataTypes.TEXT,
       defaultValue: "[]"
     },
     network: {
