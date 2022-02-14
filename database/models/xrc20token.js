@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: "DRAFT"
     },
     contractAbiString: {
-      type: DataTypes.STRING(20000),
+      type: DataTypes.TEXT,
       defaultValue: "[]"
     },
     network: {
