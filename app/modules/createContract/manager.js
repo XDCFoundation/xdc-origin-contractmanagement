@@ -14,7 +14,6 @@ import WebSocketService from '../../service/WebsocketService';
 import Config from "../../../config"
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
-
         // API business logic
 
         try {
@@ -99,6 +98,8 @@ export default class Manager {
                 "Upgradable": Upgradable,
                 "ERC20Mintable": ERC20Mintable,
                 "inherits": inherits,
+                "addAsMinter": isMintable ? "addMinter(_newOwner);" : "",
+                "addAsPauser": isPausable ? "addPauser(_newOwner);" : "",
                 //data from form
                 totalSupply: requestData.tokenInitialSupply, //req.body.token_supply 1000,
                 name: requestData.tokenName, //req.body.token_name,
@@ -108,7 +109,7 @@ export default class Manager {
                 ERC20CappedSign: ERC20CappedSign
             },  (err, data) => {
                 if (err) {
-                    console.log("errrrrror -=-=-=-=-=-=-=", err);
+                    console.log("errrrrror rrrrrrrrrrrrrrrrrrrrrrrrrrrr -=-=-=-=-=-=-=", err);
                 }
                 let input_json = {
                     language: "Solidity",
@@ -124,6 +125,7 @@ export default class Manager {
                 }
                 tokenContractCode = data;
 
+
                 let output = solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json)); // the reason for the contract not being verified might lie here. Here, the bytecode we're sending comes from the 'coin' field inside the copiled output of the 'data', but for verification we're only sending the 'data' and its not processing the right coin key.
 
 
@@ -133,6 +135,7 @@ export default class Manager {
 
 
                 contractAbi = output.interface;
+
                 byteCode = output.bytecode;
            });
 

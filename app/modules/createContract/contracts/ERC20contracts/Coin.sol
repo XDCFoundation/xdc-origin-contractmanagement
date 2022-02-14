@@ -30,7 +30,7 @@ contract Coin is ERC20,Ownable,ERC20Detailed<%- inherits %>{
 
     function transferOwnershipFeatures(address _newOwner) public {
         transferOwnership(_newOwner);
-        addMinter(_newOwner);
-        addPauser(_newOwner);
+        <%- addAsMinter %>
+        <%- addAsPauser %>
     }
 }
