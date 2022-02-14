@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0
     },
     tokenDescription: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       defaultValue: ""
     },
     status: {

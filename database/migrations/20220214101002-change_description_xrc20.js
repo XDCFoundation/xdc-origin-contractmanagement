@@ -10,7 +10,7 @@ module.exports = {
      */
     return Promise.all([ queryInterface.changeColumn(
         'XRC20Tokens',
-        'contractAbiString',
+        'tokenDescription',
         Sequelize.TEXT,
     )
     ]);
