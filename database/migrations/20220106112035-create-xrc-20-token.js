@@ -24,16 +24,16 @@ module.exports = {
         type: Sequelize.STRING
       },
       tokenInitialSupply: {
-        type: Sequelize.INTEGER
+        type: Sequelize.DECIMAL
       },
       tokenCurrentSupply: {
-        type: Sequelize.INTEGER
+        type: Sequelize.DECIMAL
       },
       mintedTokens: {
-        type: Sequelize.INTEGER
+        type: Sequelize.DECIMAL
       },
       burntTokens: {
-        type: Sequelize.INTEGER
+        type: Sequelize.DECIMAL
       },
       lastMinted: {
         type: Sequelize.DATE
@@ -61,6 +61,45 @@ module.exports = {
       },
       coinGecko: {
         type: Sequelize.STRING
+      },
+      pausable: {
+        type: Sequelize.BOOLEAN
+      },
+      mintable: {
+        type: Sequelize.BOOLEAN
+      },
+      burnable: {
+        type: Sequelize.BOOLEAN
+      },
+      tokenDecimals: {
+        type: Sequelize.INTEGER
+      },
+      tokenDescription: {
+        type: Sequelize.STRING
+      },
+      status: {
+        type: Sequelize.STRING
+      },
+      contractAbiString: {
+        type: Sequelize.TEXT
+      },
+      network: {
+        type: Sequelize.STRING
+      },
+      tokenContractCode: {
+        type: Sequelize.TEXT
+      },
+      byteCode: {
+        type: Sequelize.TEXT
+      },
+      isVerified: {
+        type: Sequelize.BOOLEAN
+      },
+      isPaused: {
+        type: Sequelize.BOOLEAN
+      },
+      isDeleted: {
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,
