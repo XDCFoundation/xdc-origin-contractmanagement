@@ -26,19 +26,19 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: ""
     },
     tokenInitialSupply: {
-      type: DataTypes.NUMERIC,
+      type: DataTypes.DECIMAL,
       defaultValue: 0
     },
     tokenCurrentSupply: {
-      type: DataTypes.NUMERIC,
+      type: DataTypes.DECIMAL,
       defaultValue: 0
     },
     mintedTokens: {
-      type: DataTypes.NUMERIC,
+      type: DataTypes.DECIMAL,
       defaultValue: 0
     },
     burntTokens: {
-      type: DataTypes.NUMERIC,
+      type: DataTypes.DECIMAL,
       defaultValue: 0
     },
     lastMinted: {
@@ -92,7 +92,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: 0
     },
     tokenDescription: {
-      type: DataTypes.STRING,
+      type: DataTypes.TEXT,
       defaultValue: ""
     },
     status: {
@@ -100,7 +100,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: "DRAFT"
     },
     contractAbiString: {
-      type: DataTypes.STRING(20000),
+      type: DataTypes.TEXT,
       defaultValue: "[]"
     },
     network: {
@@ -116,6 +116,10 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: ""
     },
     isVerified: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
+    isPaused: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
