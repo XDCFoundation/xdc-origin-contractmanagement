@@ -634,16 +634,16 @@ export default class Manager {
             console.log("currentTime in UTC =-=-=-=-=-=-=-=-=-=-=-=", currentTime);
             if(requestData.operation === "mint"){
                 updateObj = {
-                    mintedTokens: tokenFetched.mintedTokens + requestData.mintedTokens,
+                    mintedTokens: parseInt(tokenFetched.mintedTokens) + parseInt(requestData.mintedTokens),
                     lastMinted: currentTime,
-                    tokenCurrentSupply: tokenFetched.tokenCurrentSupply + requestData.mintedTokens
+                    tokenCurrentSupply: parseInt(tokenFetched.tokenCurrentSupply) + parseInt(requestData.mintedTokens)
                 }
             }
             else if(requestData.operation === "burn"){
                 updateObj = {
-                    burntTokens: tokenFetched.burntTokens + requestData.burntTokens,
+                    burntTokens: parseInt(tokenFetched.burntTokens) + parseInt(requestData.burntTokens),
                     lastBurnt: currentTime,
-                    tokenCurrentSupply: tokenFetched.tokenCurrentSupply - requestData.burntTokens
+                    tokenCurrentSupply: parseInt(tokenFetched.tokenCurrentSupply) - parseInt(requestData.burntTokens)
                 }
             }
 
