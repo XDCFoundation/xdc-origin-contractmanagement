@@ -435,14 +435,16 @@ export default class Manager {
             console.log("updateObj =-=-=-=-=-=-", updateObj)
 
 
-            await this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokens[0], updateObj)
+            if(requestData.network === "XDC Mainnet"){
+                await this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokens[0], updateObj)
+                console.log("SUCCESS IN UPDATING URLS =-=-=-=-=-=-=-=-=-=-")
+            }
 
             // if(!getSocialMediaUpdateRes){
             //     console.log("ERROR ERROR ERROR ERROR ERROR =-=-=-=-=-=-=-=-=-=-")
             //     throw Utils.error({}, apiFailureMessage.COULD_NOT_UPDATE_TOKEN_SOCIAL_MEDIA_URLS, httpConstants.RESPONSE_CODES.FORBIDDEN);
             // }
             // else{
-                console.log("SUCCESS IN UPDATING URLS =-=-=-=-=-=-=-=-=-=-")
                 let xrc20TokenUpdateObj = {};
 
                 if(requestData.website){
