@@ -353,11 +353,12 @@ export default class Manager {
         console.log("saveSocialMediaUrlsInObservatory =-=-=-=-=", tokenDetails.tokenName);
         let url = "https://1lzur2qul1.execute-api.us-east-2.amazonaws.com/prod/update-contracts/"+contractAddress;
 
-        console.log("saveSocialMediaUrlsInObservatory updateObj =-=-=-=-=-=-=-=-=-=-=-=-", updateObj)
+        console.log("saveSocialMediaUrlsInObservatory updateObj =-=-=-=-=-=-=-=-=-=-=-=-", typeof updateObj)
 
-        let data = {};
+        let data;
 
-        if(updateObj === {}){
+        if(Object.keys(updateObj).length === 0){
+            console.log("IIIIIIIIFFFFFFFFFFF");
             data = {
                 contractAddress: contractAddress,
                 website: tokenDetails.website,
@@ -372,6 +373,7 @@ export default class Manager {
             }
         }
         else{
+            console.log("EEEEELLLLLLLLLSSSSSSEEEEE");
             data = updateObj;
         }
 
@@ -586,7 +588,7 @@ export default class Manager {
 
             const headers = {"content-type": "application/json", "X-API-KEY": Config.OBSERVATORY_X_API_KEY};
 
-            console.log("data =-=-=-=-", data);
+            // console.log("data =-=-=-=-", data);
 
             let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data, headers)
             // console.log("response -==--=-=-=-=-=-=-=-", response);
