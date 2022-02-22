@@ -409,28 +409,28 @@ export default class Manager {
                 contractAddress: requestData.smartContractAddress
             };
 
-            if(requestData.website){
+            if(requestData.hasOwnProperty('website')){
                 updateObj.website = requestData.website;
             }
-            if(requestData.twitter){
+            if(requestData.hasOwnProperty('twitter')){
                 updateObj.twitter = requestData.twitter;
             }
-            if(requestData.telegram){
+            if(requestData.hasOwnProperty('telegram')){
                 updateObj.telegram = requestData.telegram;
             }
-            if(requestData.email){
+            if(requestData.hasOwnProperty('email')){
                 updateObj.email = requestData.email;
             }
-            if(requestData.linkedIn){
+            if(requestData.hasOwnProperty('linkedIn')){
                 updateObj.linkedIn = requestData.linkedIn;
             }
-            if(requestData.reddit){
+            if(requestData.hasOwnProperty('reddit')){
                 updateObj.reddit = requestData.reddit;
             }
-            if(requestData.coinGecko){
+            if(requestData.hasOwnProperty('coinGecko')){
                 updateObj.coinGecko = requestData.coinGecko;
             }
-            if(requestData.symbolUrl){
+            if(requestData.hasOwnProperty('symbolUrl')){
                 updateObj.symbolUrl = requestData.symbolUrl;
             }
 
@@ -449,28 +449,28 @@ export default class Manager {
             // else{
                 let xrc20TokenUpdateObj = {};
 
-                if(requestData.website){
+                if(requestData.hasOwnProperty('website')){
                     xrc20TokenUpdateObj.website = requestData.website;
                 }
-                if(requestData.twitter){
+                if(requestData.hasOwnProperty('twitter')){
                     xrc20TokenUpdateObj.twitter = requestData.twitter;
                 }
-                if(requestData.telegram){
+                if(requestData.hasOwnProperty('telegram')){
                     xrc20TokenUpdateObj.telegram = requestData.telegram;
                 }
-                if(requestData.email){
+                if(requestData.hasOwnProperty('email')){
                     xrc20TokenUpdateObj.email = requestData.email;
                 }
-                if(requestData.linkedIn){
+                if(requestData.hasOwnProperty('linkedIn')){
                     xrc20TokenUpdateObj.linkedIn = requestData.linkedIn;
                 }
-                if(requestData.reddit){
+                if(requestData.hasOwnProperty('reddit')){
                     xrc20TokenUpdateObj.reddit = requestData.reddit;
                 }
-                if(requestData.coinGecko){
+                if(requestData.hasOwnProperty('coinGecko')){
                     xrc20TokenUpdateObj.coinGecko = requestData.coinGecko;
                 }
-                if(requestData.symbolUrl){
+                if(requestData.hasOwnProperty('symbolUrl')){
                     xrc20TokenUpdateObj.tokenImage = requestData.symbolUrl;
                 }
 
