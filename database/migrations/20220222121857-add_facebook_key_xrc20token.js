@@ -8,10 +8,10 @@ module.exports = {
      * Example:
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
-    return Promise.all([ queryInterface.changeColumn(
+    return Promise.all([queryInterface.addColumn(
         'XRC20Tokens',
-        'tokenDescription',
-        Sequelize.TEXT,
+        'facebook',
+        Sequelize.STRING,
     )
     ]);
   },
