@@ -433,6 +433,9 @@ export default class Manager {
             if(requestData.hasOwnProperty('symbolUrl')){
                 updateObj.symbolUrl = requestData.symbolUrl;
             }
+            if(requestData.hasOwnProperty('facebook')){
+                updateObj.facebook = requestData.facebook;
+            }
 
             console.log("updateObj =-=-=-=-=-=-", updateObj)
 
@@ -472,6 +475,9 @@ export default class Manager {
                 }
                 if(requestData.hasOwnProperty('symbolUrl')){
                     xrc20TokenUpdateObj.tokenImage = requestData.symbolUrl;
+                }
+                if(requestData.hasOwnProperty('facebook')){
+                    xrc20TokenUpdateObj.facebook = requestData.facebook;
                 }
 
                 console.log("xrc20TokenUpdateObj =-=-=-=-=-=-", xrc20TokenUpdateObj)

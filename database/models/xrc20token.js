@@ -75,6 +75,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       defaultValue: ""
     },
+    facebook: {
+      type: DataTypes.STRING,
+      defaultValue: ""
+    },
     pausable: {
       type: DataTypes.BOOLEAN,
       defaultValue: false
