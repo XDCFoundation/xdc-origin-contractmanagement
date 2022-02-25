@@ -1,7 +1,6 @@
 import {Op} from "sequelize";
 
 const db = require('../../../database/models/index');
-// const solc = require('solc');
 const XRC20Token = db.XRC20Token;
 import solc from 'solc';
 import fileReader from "../fileReader/index"
@@ -9,8 +8,7 @@ import ejs from "ejs";
 import {apiFailureMessage, contractConstants, httpConstants} from '../../common/constants'
 import Utils from "../../utils";
 import HttpService from "../../service/http-service";
-const axios = require("axios");
-import WebSocketService from '../../service/WebsocketService';
+// import WebSocketService from '../../service/WebsocketService';
 import Config from "../../../config"
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
@@ -50,7 +48,7 @@ export default class Manager {
             let byteCode = "";
 
             let tokenContractCode = '';
-            for (let index = 0; index < requestData.tokenDecimals; index++) { //for (let index = 0; index < req.body.token_decimals; index++) {
+            for (let index = 0; index < requestData.tokenDecimals; index++) {
                 decimalInZero += '0';
             }
 
@@ -69,7 +67,6 @@ export default class Manager {
                 ERC20Capped = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Capped.sol');
                 ERC20Mintable = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/ERC20Mintable.sol');
                 CapperRole = await fileReader.readEjsFile(__dirname + '/contracts/ERC20contracts/CapperRole.sol');
-                // let ERC20Capped = await fileReader.readEjsFile(__dirname + '/ERC20contracts/ERC20Capped.sol');
                 const amnt_cap = requestData.tokenInitialSupply * 10; //1000 * 10; //parseFloat(parseFloat(req.body.token_supply)  * 10);
                 ERC20CappedSign = "ERC20Capped(" + amnt_cap + "000000000000000000)"
                 inherits += ", ERC20Mintable,ERC20Capped";
@@ -101,38 +98,21 @@ export default class Manager {
                 "addAsMinter": isMintable ? "addMinter(_newOwner);" : "",
                 "addAsPauser": isPausable ? "addPauser(_newOwner);" : "",
                 //data from form
-                totalSupply: requestData.tokenInitialSupply, //req.body.token_supply 1000,
-                name: requestData.tokenName, //req.body.token_name,
-                symbol: requestData.tokenSymbol, //req.body.token_symbol,
-                decimal: requestData.tokenDecimals, //req.body.token_decimals,
-                decimalInZero: decimalInZero, //"000000000000000000",
+                totalSupply: requestData.tokenInitialSupply,
+                name: requestData.tokenName,
+                symbol: requestData.tokenSymbol,
+                decimal: requestData.tokenDecimals,
+                decimalInZero: decimalInZero,
                 ERC20CappedSign: ERC20CappedSign
             },  (err, data) => {
                 if (err) {
-                    console.log("errrrrror rrrrrrrrrrrrrrrrrrrrrrrrrrrr -=-=-=-=-=-=-=", err);
+                    console.log("ejs.renderFile ERROR =======>", err);
                 }
-                let input_json = {
-                    language: "Solidity",
-                    sources:
-                        {file: {"content": data}},
-                    settings: {
-                        outputSelection: {
-                            "*": {
-                                "*": ["*"]
-                            }
-                        }
-                    }
-                }
+
                 tokenContractCode = data;
 
 
-                let output = solc.compile(data).contracts[':Coin']; //await solc.compile(JSON.stringify(input_json)); // the reason for the contract not being verified might lie here. Here, the bytecode we're sending comes from the 'coin' field inside the copiled output of the 'data', but for verification we're only sending the 'data' and its not processing the right coin key.
-
-
-                // let output = JSON.parse(solc.compile(JSON.stringify(input_json)));
-
-                // console.log("output -=-=-=-=-=-=-=-=-=", output.metadata);
-
+                let output = solc.compile(data).contracts[':Coin'];
 
                 contractAbi = output.interface;
 
@@ -161,9 +141,9 @@ export default class Manager {
                     telegram: requestData.telegram ? requestData.telegram : existingToken.telegram,
                     tokenDecimals: requestData.tokenDecimals ? requestData.tokenDecimals : existingToken.tokenDecimals,
                     tokenDescription: requestData.tokenDescription ? requestData.tokenDescription : existingToken.tokenDescription,
-                    burnable: requestData.isBurnable, // ? requestData.isBurnable : existingToken.isBurnable,
-                    mintable: requestData.isMintable, // ? requestData.isMintable : existingToken.isMintable,
-                    pausable: requestData.isPausable, // ? requestData.isPausable : existingToken.isPausable,
+                    burnable: requestData.isBurnable,
+                    mintable: requestData.isMintable,
+                    pausable: requestData.isPausable,
                     contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
                     network: requestData.network ? requestData.network : existingToken.network,
                     tokenContractCode: tokenContractCode,
@@ -210,7 +190,7 @@ export default class Manager {
             }
         }
         catch(err){
-            console.log("ERROR in saveXrc20TokenAsDraft =-=-=-=-=-=-=-=-=", err)
+            console.log("ERROR in saveXrc20TokenAsDraft =======>", err)
         }
 
 
@@ -219,7 +199,6 @@ export default class Manager {
 
     checkTokensWithSameTokenName = async (requestData) => {
         if(requestData.id){ //if the client is trying to update existing token
-            // console.log("216 else =-=-=-=-=-=-=-=-=")
             return await this.checkExistingTokens(requestData);
         }
         else{ //if the client is trying to create a new token
@@ -237,8 +216,6 @@ export default class Manager {
                 }
             });
 
-            // console.log("tokensWithSameSymbol =-=-=-=-=-=-=-", tokensWithSameSymbol.length);
-
             if(tokensWithSameName.length > 0){
                 throw Utils.error(
                     {},
@@ -254,7 +231,6 @@ export default class Manager {
                 )
             }
             else{
-                // console.log("248 else =-=-=-=-=-=-=-=-=")
                 return await this.checkExistingTokens(requestData);
             }
         }
@@ -301,10 +277,10 @@ export default class Manager {
                 const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0], {}))
 
                 if(!getSocialMediaUpdateRes){
-                    console.log("ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
+                    console.log("updateXRC20Token =======> ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
                 }
                 else{
-                    console.log("SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
+                    console.log("updateXRC20Token =======> SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
                 }
             }
 
@@ -333,7 +309,6 @@ export default class Manager {
                 }
             }
 
-            // const token = tokenDetails[0];
             await XRC20Token.update(
                 updateObj,
                 { where: { tokenOwner: requestData.tokenOwner,  id: requestData.tokenId, isDeleted: false} },
@@ -350,15 +325,11 @@ export default class Manager {
     }
 
     saveSocialMediaUrlsInObservatory = async (contractAddress, tokenDetails, updateObj) => {
-        console.log("saveSocialMediaUrlsInObservatory =-=-=-=-=", tokenDetails.tokenName);
         let url = "https://1lzur2qul1.execute-api.us-east-2.amazonaws.com/prod/update-contracts/"+contractAddress;
-
-        console.log("saveSocialMediaUrlsInObservatory updateObj =-=-=-=-=-=-=-=-=-=-=-=-", typeof updateObj)
 
         let data;
 
         if(Object.keys(updateObj).length === 0){
-            console.log("IIIIIIIIFFFFFFFFFFF");
             data = {
                 contractAddress: contractAddress,
                 website: tokenDetails.website,
@@ -373,15 +344,12 @@ export default class Manager {
             }
         }
         else{
-            console.log("EEEEELLLLLLLLLSSSSSSEEEEE");
             data = updateObj;
         }
 
-        console.log("data =-=-=-=-=-", data);
-
         let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data)
 
-        console.log("saveSocialMediaUrlsInObservatory response =-=-=-=-=-=-=-", url, contractAddress, response);
+        console.log("saveSocialMediaUrlsInObservatory response =======>", url, contractAddress, response);
 
         if (!response || !response.success)
             throw Utils.error({}, apiFailureMessage.COULD_NOT_UPDATE_TOKEN_SOCIAL_MEDIA_URLS, httpConstants.RESPONSE_CODES.FORBIDDEN);
@@ -403,7 +371,6 @@ export default class Manager {
 
         if(tokens.length > 0){
 
-            console.log("line 397 =-=-=-=-=");
 
             let updateObj = {
                 contractAddress: requestData.smartContractAddress
@@ -437,19 +404,14 @@ export default class Manager {
                 updateObj.facebook = requestData.facebook;
             }
 
-            console.log("updateObj =-=-=-=-=-=-", updateObj)
 
 
             if(requestData.network === "XDC Mainnet"){
                 await this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokens[0], updateObj)
-                console.log("SUCCESS IN UPDATING URLS =-=-=-=-=-=-=-=-=-=-")
+                console.log("========= SUCCESS IN UPDATING URLS FOR MAINNET IN OBSERVER =========")
             }
 
-            // if(!getSocialMediaUpdateRes){
-            //     console.log("ERROR ERROR ERROR ERROR ERROR =-=-=-=-=-=-=-=-=-=-")
-            //     throw Utils.error({}, apiFailureMessage.COULD_NOT_UPDATE_TOKEN_SOCIAL_MEDIA_URLS, httpConstants.RESPONSE_CODES.FORBIDDEN);
-            // }
-            // else{
+
                 let xrc20TokenUpdateObj = {};
 
                 if(requestData.hasOwnProperty('website')){
@@ -480,8 +442,6 @@ export default class Manager {
                     xrc20TokenUpdateObj.facebook = requestData.facebook;
                 }
 
-                console.log("xrc20TokenUpdateObj =-=-=-=-=-=-", xrc20TokenUpdateObj)
-
                 await XRC20Token.update(
                     xrc20TokenUpdateObj,
                     { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
@@ -491,7 +451,6 @@ export default class Manager {
                         "id": requestData.tokenId
                     }
                 });
-            //}
 
         }
         else{
@@ -502,7 +461,7 @@ export default class Manager {
     getDraftXRC20Token = async (requestData) => {
         const tokens = await XRC20Token.findAll({
             where: {
-                "tokenOwner": requestData.tokenOwner, //need to add or operation here for 'FAILED' status
+                "tokenOwner": requestData.tokenOwner,
                 "status": {
                     [Op.or]: ["DRAFT", "FAILED"]
                 },
@@ -552,7 +511,7 @@ export default class Manager {
 
     verifyXrc20Token = async (requestData) => {
         try{
-            console.log("requestData =-=-=-=-=-=-=-=-=-", requestData);
+            console.log("verifyXrc20Token requestData =======>", requestData);
             const token = await XRC20Token.findAll({
                 where: {
                     "id": requestData.tokenId,
@@ -569,7 +528,7 @@ export default class Manager {
             }
         }
         catch(err){
-            console.log("err=-=-=-=-=-=-=", err);
+            console.log("ERROR IN verifyXrc20Token =======>", err);
         }
 
     }
@@ -594,14 +553,10 @@ export default class Manager {
 
             const headers = {"content-type": "application/json", "X-API-KEY": Config.OBSERVATORY_X_API_KEY};
 
-            // console.log("data =-=-=-=-", data);
 
             let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data, headers)
-            // console.log("response -==--=-=-=-=-=-=-=-", response);
 
-            // let code2 = "pragma solidity ^0.4.24;contract SimpleStorage {string storedData;uint256 count = 0;mapping(uint256 => string) public tweets;function createTweet(uint256 tweetId, string tweet) public {storedData = tweet;tweets[tweetId] = tweet;count+=1;}function getTweetByTweetId(uint256 tweetId) public view returns (string) {return tweets[tweetId];}function getCount() public view returns (uint256) {return count;}}"
-
-            console.log("verification response =-=--", response);
+            console.log("verification response in verifyXrc20TokenManager =======>", response);
 
             if (!response || !response.responseData || !response.success)
                 throw Utils.error({}, apiFailureMessage.COULD_NOT_VERIFY_TOKEN, httpConstants.RESPONSE_CODES.FORBIDDEN);
@@ -609,14 +564,14 @@ export default class Manager {
             return response;
         }
         catch(err){
-            console.log("ERRRRRRRR -=-=---=-=-=-=-=-====-=-", err);
+            console.log("ERROR IN verifyXrc20TokenManager =======>", err);
         }
     }
 
     getDeployedXRC20Token = async (requestData) => {
         const tokens = await XRC20Token.findAll({
             where: {
-                "tokenOwner": requestData.tokenOwner, //need to add or operation here for 'FAILED' status
+                "tokenOwner": requestData.tokenOwner,
                 "status": "DEPLOYED",
                 "network": requestData.network,
                 "isDeleted": false
@@ -641,7 +596,7 @@ export default class Manager {
             let tokenFetched = tokens[0];
             let updateObj = {};
             let currentTime = (new Date).toISOString();
-            console.log("currentTime in UTC =-=-=-=-=-=-=-=-=-=-=-=", currentTime);
+            console.log("mintBurnXrc20Token currentTime in UTC =======>", currentTime);
             if(requestData.operation === "mint"){
                 updateObj = {
                     mintedTokens: parseInt(tokenFetched.mintedTokens) + parseInt(requestData.mintedTokens),
@@ -737,37 +692,37 @@ export default class Manager {
         }
     }
 
-    verifyXrc20 = async (settings, provider) => {
-        let web3 =  await WebSocketService.webSocketConnection(provider);
-        let solc_version = settings['solc_version'];
-        let file_name = settings['file_name'];
-        let contract_name = settings['contract_name'];
-        let contract_address = settings['contract_address'];
-        let is_optimized = settings['is_optimized'];
-        let source_code = settings['source_code'];
-        const responseStatus = []
-        let input = sourse_code;
-        let bytecode_from_compiler;
-        let bytecode_from_blockchain;
-        let output;
-        let bytecode;
-
-        let input_json = {
-            language: "Solidity",
-            sources:
-                {file: {"content": input} },
-            settings: {
-                optimizer: {
-                    // disabled by default
-                    enabled: is_optimized,
-                    runs: 200
-                },
-                outputSelection: {
-                    "*": {
-                        "*": [ "*" ]
-                    }
-                }
-            }
-        }
-    }
+    // verifyXrc20 = async (settings, provider) => {
+    //     let web3 =  await WebSocketService.webSocketConnection(provider);
+    //     let solc_version = settings['solc_version'];
+    //     let file_name = settings['file_name'];
+    //     let contract_name = settings['contract_name'];
+    //     let contract_address = settings['contract_address'];
+    //     let is_optimized = settings['is_optimized'];
+    //     let source_code = settings['source_code'];
+    //     const responseStatus = []
+    //     let input = sourse_code;
+    //     let bytecode_from_compiler;
+    //     let bytecode_from_blockchain;
+    //     let output;
+    //     let bytecode;
+    //
+    //     let input_json = {
+    //         language: "Solidity",
+    //         sources:
+    //             {file: {"content": input} },
+    //         settings: {
+    //             optimizer: {
+    //                 // disabled by default
+    //                 enabled: is_optimized,
+    //                 runs: 200
+    //             },
+    //             outputSelection: {
+    //                 "*": {
+    //                     "*": [ "*" ]
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }
