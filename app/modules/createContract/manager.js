@@ -325,7 +325,7 @@ export default class Manager {
     }
 
     saveSocialMediaUrlsInObservatory = async (contractAddress, tokenDetails, updateObj) => {
-        let url = "https://1lzur2qul1.execute-api.us-east-2.amazonaws.com/prod/update-contracts/"+contractAddress;
+        let url = Config.OBSERVATORY_BASE_URL + "/update-contracts/" + contractAddress;
 
         let data;
 
@@ -535,7 +535,7 @@ export default class Manager {
 
     verifyXrc20TokenManager = async (address, code, network, abi, tokenName) => {
         try{
-            let url = 'https://1lzur2qul1.execute-api.us-east-2.amazonaws.com/prod/verify-contract';
+            let url = Config.OBSERVATORY_BASE_URL + '/verify-contract';
             //
             let editedAdr = "0x" + address.slice(3);
 
