@@ -36,8 +36,6 @@ contract ERC20Capped is ERC20Mintable {
     public
     returns (bool)
   {
-    require(totalSupply().add(amount) <= _cap);
-
     return super.mint(to, amount);
   }
 
