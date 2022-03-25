@@ -692,6 +692,71 @@ export default class Manager {
         }
     }
 
+    createNftCollection = async (requestData) => {
+
+        var SafeMath = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/SafeMath.sol');
+        var Roles = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Roles.sol');
+        var ERC721Holder = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Holder.sol');
+        var Address = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Address.sol');
+        var ERC165 = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC165.sol');
+        var ERC721Mintable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Mintable.sol');
+        var ERC721Enumerable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Enumerable.sol');
+        var ERC721Metadata = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Metadata.sol');
+        var isPausable = false;
+        var isBurnable = false;
+        var isOwnable = false;
+        var ERC721Burnable, ERC721Pausable, Ownable, inherits = "";
+
+        if (isBurnable) {
+            ERC721Burnable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Burnable.sol');
+            inherits += ", Burnable";
+        }
+
+        if (isPausable) {
+            ERC721Pausable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Pausable.sol');
+            inherits += ", Pausable";
+        }
+        if (isOwnable) {
+            Ownable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Ownable.sol');
+            inherits += ", Ownable";
+        }
+
+        let output = {};
+        let oData = {};
+        let contractAbi = [];
+        let byteCode = "";
+
+        ejs.renderFile(__dirname + '/contracts/ERC721contracts/Coin.sol', {
+            'SafeMath': SafeMath,
+            'Roles': Roles,
+            'ERC721Holder': ERC721Holder,
+            'Address': Address,
+            'ERC165': ERC165,
+            'ERC721Enumerable': ERC721Enumerable,
+            'ERC721Metadata': ERC721Metadata,
+            'ERC721Burnable': ERC721Burnable,
+            'ERC721Mintable': ERC721Mintable,
+            'ERC721Pausable': ERC721Pausable,
+            'Ownable': Ownable,
+            'tokenName': "NFT Collection 4",
+            'tokenSymbol': "NFTC4",
+            'inherits': inherits
+        }, (err, data) => {
+            if (err)
+                console.log(err);
+
+            oData = data;
+            let output = solc.compile(data).contracts[':Coin'];
+
+            contractAbi = output.interface;
+
+            byteCode = output.bytecode;
+        });
+
+        return {"code": oData, "abi": contractAbi, "byteCode": byteCode};
+
+    }
+
     // verifyXrc20 = async (settings, provider) => {
     //     let web3 =  await WebSocketService.webSocketConnection(provider);
     //     let solc_version = settings['solc_version'];
