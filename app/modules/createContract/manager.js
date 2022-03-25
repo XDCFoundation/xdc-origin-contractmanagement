@@ -2,6 +2,7 @@ import {Op} from "sequelize";
 
 const db = require('../../../database/models/index');
 const XRC20Token = db.XRC20Token;
+const XRC721Token = db.XRC721Token;
 import solc from 'solc';
 import fileReader from "../fileReader/index"
 import ejs from "ejs";
@@ -694,18 +695,18 @@ export default class Manager {
 
     createNftCollection = async (requestData) => {
 
-        var SafeMath = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/SafeMath.sol');
-        var Roles = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Roles.sol');
-        var ERC721Holder = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Holder.sol');
-        var Address = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Address.sol');
-        var ERC165 = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC165.sol');
-        var ERC721Mintable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Mintable.sol');
-        var ERC721Enumerable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Enumerable.sol');
-        var ERC721Metadata = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Metadata.sol');
-        var isPausable = false;
-        var isBurnable = false;
-        var isOwnable = false;
-        var ERC721Burnable, ERC721Pausable, Ownable, inherits = "";
+        let SafeMath = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/SafeMath.sol');
+        let Roles = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Roles.sol');
+        let ERC721Holder = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Holder.sol');
+        let Address = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Address.sol');
+        let ERC165 = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC165.sol');
+        let ERC721Mintable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Mintable.sol');
+        let ERC721Enumerable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Enumerable.sol');
+        let ERC721Metadata = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Metadata.sol');
+        let isPausable = false;
+        let isBurnable = false;
+        let isOwnable = false;
+        let ERC721Burnable, ERC721Pausable, Ownable, inherits = "";
 
         if (isBurnable) {
             ERC721Burnable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Burnable.sol');
@@ -753,41 +754,25 @@ export default class Manager {
             byteCode = output.bytecode;
         });
 
-        return {"code": oData, "abi": contractAbi, "byteCode": byteCode};
+
+        const newXRC721Token = {
+            tokenOwner: "requestData.tokenOwner",
+            tokenName: "requestData.tokenName",
+            tokenSymbol: "requestData.tokenSymbol",
+            tokenImage: "requestData.tokenImage",
+            website: "website",
+            twitter: "twitter",
+            telegram: "telegram",
+            tokenDescription: "requestData.tokenDescription",
+            network: "XDC Mainnet",
+            tokenContractCode: "tokenContractCode",
+            byteCode: "byteCode",
+        }
+
+        return XRC721Token.create(newXRC721Token);
+
+        // return {"code": oData, "abi": contractAbi, "byteCode": byteCode};
 
     }
 
-    // verifyXrc20 = async (settings, provider) => {
-    //     let web3 =  await WebSocketService.webSocketConnection(provider);
-    //     let solc_version = settings['solc_version'];
-    //     let file_name = settings['file_name'];
-    //     let contract_name = settings['contract_name'];
-    //     let contract_address = settings['contract_address'];
-    //     let is_optimized = settings['is_optimized'];
-    //     let source_code = settings['source_code'];
-    //     const responseStatus = []
-    //     let input = sourse_code;
-    //     let bytecode_from_compiler;
-    //     let bytecode_from_blockchain;
-    //     let output;
-    //     let bytecode;
-    //
-    //     let input_json = {
-    //         language: "Solidity",
-    //         sources:
-    //             {file: {"content": input} },
-    //         settings: {
-    //             optimizer: {
-    //                 // disabled by default
-    //                 enabled: is_optimized,
-    //                 runs: 200
-    //             },
-    //             outputSelection: {
-    //                 "*": {
-    //                     "*": [ "*" ]
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
 }
