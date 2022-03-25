@@ -738,8 +738,8 @@ export default class Manager {
             'ERC721Mintable': ERC721Mintable,
             'ERC721Pausable': ERC721Pausable,
             'Ownable': Ownable,
-            'tokenName': "NFT Collection 3",
-            'tokenSymbol': "NFTC3",
+            'tokenName': "NFT Collection 4",
+            'tokenSymbol': "NFTC4",
             'inherits': inherits
         }, (err, data) => {
             if (err)
@@ -754,7 +754,7 @@ export default class Manager {
         });
 
         return {"code": oData, "abi": contractAbi, "byteCode": byteCode};
-        
+
     }
 
     // verifyXrc20 = async (settings, provider) => {
