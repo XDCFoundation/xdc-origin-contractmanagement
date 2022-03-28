@@ -775,4 +775,37 @@ export default class Manager {
 
     }
 
+    // verifyXrc20 = async (settings, provider) => {
+    //     let web3 =  await WebSocketService.webSocketConnection(provider);
+    //     let solc_version = settings['solc_version'];
+    //     let file_name = settings['file_name'];
+    //     let contract_name = settings['contract_name'];
+    //     let contract_address = settings['contract_address'];
+    //     let is_optimized = settings['is_optimized'];
+    //     let source_code = settings['source_code'];
+    //     const responseStatus = []
+    //     let input = sourse_code;
+    //     let bytecode_from_compiler;
+    //     let bytecode_from_blockchain;
+    //     let output;
+    //     let bytecode;
+    //
+    //     let input_json = {
+    //         language: "Solidity",
+    //         sources:
+    //             {file: {"content": input} },
+    //         settings: {
+    //             optimizer: {
+    //                 // disabled by default
+    //                 enabled: is_optimized,
+    //                 runs: 200
+    //             },
+    //             outputSelection: {
+    //                 "*": {
+    //                     "*": [ "*" ]
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }
