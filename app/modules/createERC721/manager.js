@@ -1,7 +1,4 @@
-import {Op} from "sequelize";
-
 const db = require('../../../database/models/index');
-const XRC20Token = db.XRC20Token;
 const XRC721Token = db.XRC721Token;
 const NFT=db.NFT;
 import solc from 'solc';
@@ -10,10 +7,9 @@ import ejs from "ejs";
 import {apiFailureMessage, contractConstants, httpConstants} from '../../common/constants'
 import Utils from "../../utils";
 import HttpService from "../../service/http-service";
-// import WebSocketService from '../../service/WebsocketService';
 import Config from "../../../config";
-//import contract from "../createContract/contracts"
-//import Config from "../"
+
+
 
 export default class Manager {
 
@@ -66,8 +62,6 @@ export default class Manager {
             'ERC721Mintable': ERC721Mintable,
             'ERC721Pausable': ERC721Pausable,
             'Ownable': Ownable,
-            // 'tokenName': "NFT Collection 4",
-            // 'tokenSymbol': "NFTC4",
             tokenName: requestData.tokenName,
             tokenSymbol: requestData.tokenSymbol,
             'inherits': inherits
@@ -77,7 +71,6 @@ export default class Manager {
                 console.log(err,"error");
             
             tokenContractCode = data;
-            // oData = data;
               output = solc.compile(data).contracts[':Coin'];
             
               contractAbi = output.interface;
@@ -105,11 +98,7 @@ export default class Manager {
 
         return XRC721Token.create(newXRC721Token);
     
-        // return {"code": oData, "abi": contractAbi, "byteCode": byteCode};
-    
     }
-
-    
 
     findToken = async (requestData) => {
         const tokensFromDB = await XRC721Token.findAll({
@@ -123,7 +112,6 @@ export default class Manager {
         return tokensFromDB;
 
     }
-
     createrNFT = async(requestData)=>{
         const newNFT = {
             collectionId:requestData.collectionId,
@@ -154,10 +142,10 @@ export default class Manager {
             //     const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0], {}))
 
             //     if(!getSocialMediaUpdateRes){
-            //         console.log("updateXRC20Token =======> ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
+            //         console.log("update721Token =======> ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
             //     }
             //     else{
-            //         console.log("updateXRC20Token =======> SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
+            //         console.log("update721Token =======> SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
             //     }
             // }
 
@@ -166,7 +154,7 @@ export default class Manager {
             //     contractAddress: requestData.smartContractAddress
             // }
 
-            // const [error, getVerificationRes] = await Utils.parseResponse(this.verifyXrc20Token(verifyRequest))
+            // const [error, getVerificationRes] = await Utils.parseResponse(this.verify721Token(verifyRequest))
 
 
             let updateObj = {};
@@ -247,17 +235,17 @@ export default class Manager {
 
     }
 
-    verifyXrc20Token = async (requestData) => {
+    verify721Token = async (requestData) => {
         try{
-            console.log("verifyXrc20Token requestData =======>", requestData);
-            const token = await XRC20Token.findAll({
+            console.log("verify721Token requestData =======>", requestData);
+            const token = await XRC721Token.findAll({
                 where: {
                     "id": requestData.tokenId,
                     "isDeleted": false
                 }
             });
 
-            const [error, getRes] = await Utils.parseResponse(this.verifyXrc20TokenManager(requestData.contractAddress, token[0].tokenContractCode, token[0].network, token[0].contractAbiString, token[0].tokenName));
+            const [error, getRes] = await Utils.parseResponse(this.verify721TokenManager(requestData.contractAddress, token[0].tokenContractCode, token[0].network, token[0].contractAbiString, token[0].tokenName));
             if (!getRes) {
                 throw error;
             }
@@ -266,12 +254,12 @@ export default class Manager {
             }
         }
         catch(err){
-            console.log("ERROR IN verifyXrc20Token =======>", err);
+            console.log("ERROR IN verify721Token =======>", err);
         }
 
     }
 
-    verifyXrc20TokenManager = async (address, code, network, abi, tokenName) => {
+    verify721TokenManager = async (address, code, network, abi, tokenName) => {
         try{
             let url = Config.OBSERVATORY_BASE_URL + '/verify-contract';
             //
@@ -294,7 +282,7 @@ export default class Manager {
 
             let response = await HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, url, '', data, headers)
 
-            console.log("verification response in verifyXrc20TokenManager =======>", response);
+            console.log("verification response in verify721TokenManager =======>", response);
 
             if (!response || !response.responseData || !response.success)
                 throw Utils.error({}, apiFailureMessage.COULD_NOT_VERIFY_TOKEN, httpConstants.RESPONSE_CODES.FORBIDDEN);
@@ -302,7 +290,7 @@ export default class Manager {
             return response;
         }
         catch(err){
-            console.log("ERROR IN verifyXrc20TokenManager =======>", err);
+            console.log("ERROR IN verify721TokenManager =======>", err);
         }
     }
 

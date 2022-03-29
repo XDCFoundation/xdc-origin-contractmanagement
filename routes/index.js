@@ -30,14 +30,15 @@ module.exports = (app) => {
     app.post("/update-social-media-urls", ValidationManger.validateUpdateSocialMediaUrls, new CreateContractModule().updateSocialMediaUrls);
 
 
-    app.post("/erc721",new CreateERC721().createNftCollection)
-    app.get("/findalltokens",new CreateERC721().findToken)
-    app.post("/update-token-721",new CreateERC721().updateToken721)
-    app.post("/create-nft",new CreateERC721().createrNFT)
-    app.post("/update-Nft",new CreateERC721().updateNft)
+    
 
     // XRC721 apis
 
     app.get("/create-nft-collection", new CreateContractModule().createNftCollection);
+    app.post("/create-nft-collection",new CreateERC721().createNftCollection)
+    app.get("/find-all-tokens",new CreateERC721().findToken)
+    app.post("/update-token-721",new CreateERC721().updateToken721)
+    app.post("/create-nft",new CreateERC721().createrNFT)
+    app.post("/update-nft",new CreateERC721().updateNft)
 
 };
