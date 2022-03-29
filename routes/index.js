@@ -5,6 +5,7 @@ import * as ValidationManger from "../middleware/validation";
 import TestModule from "../app/modules/testModule";
 import CreateContractModule from "../app/modules/createContract";
 import {stringConstants} from "../app/common/constants";
+import CreateERC721 from "../app/modules/createERC721"
 
 module.exports = (app) => {
     app.get('/', (req, res) => res.send(stringConstants.SERVICE_STATUS_HTML));
@@ -29,8 +30,15 @@ module.exports = (app) => {
     app.post("/update-social-media-urls", ValidationManger.validateUpdateSocialMediaUrls, new CreateContractModule().updateSocialMediaUrls);
 
 
+    
+
     // XRC721 apis
 
     app.get("/create-nft-collection", new CreateContractModule().createNftCollection);
+    app.post("/create-nft-collection",new CreateERC721().createNftCollection)
+    app.get("/find-all-tokens",new CreateERC721().findToken)
+    app.post("/update-token-721",new CreateERC721().updateToken721)
+    app.post("/create-nft",new CreateERC721().createrNFT)
+    app.post("/update-nft",new CreateERC721().updateNft)
 
 };
