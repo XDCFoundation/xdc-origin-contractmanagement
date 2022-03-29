@@ -150,41 +150,50 @@ export default class Manager {
 
         if(tokenDetails.length !== 0){
 
-            if(requestData.smartContractAddress !== ""){
-                const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0], {}))
+            // if(requestData.smartContractAddress !== ""){
+            //     const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0], {}))
 
-                if(!getSocialMediaUpdateRes){
-                    console.log("updateXRC20Token =======> ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
-                }
-                else{
-                    console.log("updateXRC20Token =======> SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
-                }
-            }
+            //     if(!getSocialMediaUpdateRes){
+            //         console.log("updateXRC20Token =======> ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
+            //     }
+            //     else{
+            //         console.log("updateXRC20Token =======> SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
+            //     }
+            // }
 
-            let verifyRequest = {
-                tokenId: requestData.tokenId,
-                contractAddress: requestData.smartContractAddress
-            }
+            // let verifyRequest = {
+            //     tokenId: requestData.tokenId,
+            //     contractAddress: requestData.smartContractAddress
+            // }
 
-            const [error, getVerificationRes] = await Utils.parseResponse(this.verifyXrc20Token(verifyRequest))
+            // const [error, getVerificationRes] = await Utils.parseResponse(this.verifyXrc20Token(verifyRequest))
 
 
             let updateObj = {};
 
-            if(!getVerificationRes){
-                updateObj = {
-                    smartContractAddress: requestData.smartContractAddress,
-                    status: requestData.status,
-                    isVerified: false
-                }
-            }
-            else{
-                updateObj = {
-                    smartContractAddress: requestData.smartContractAddress,
-                    status: requestData.status,
-                    isVerified: true
-                }
-            }
+            // if(!getVerificationRes){
+            //     updateObj = {
+            //         smartContractAddress: requestData.smartContractAddress,
+            //         status: requestData.status,
+            //         isVerified: false
+            //     }
+            // }
+            // else{
+            //     updateObj = {
+            //         smartContractAddress: requestData.smartContractAddress,
+            //         status: requestData.status,
+            //         isVerified: true
+            //     }
+            // }
+
+
+            updateObj = {
+                        smartContractAddress: requestData.smartContractAddress,
+                        status: requestData.status,
+                        isVerified: true
+                    }
+
+
 
             await XRC721Token.update(
                 updateObj,
