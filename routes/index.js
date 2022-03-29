@@ -28,7 +28,13 @@ module.exports = (app) => {
     app.post("/pause-resume-xrc20-token", ValidationManger.validatePauseResumeXrc20Token, new CreateContractModule().pauseResumeXrc20Token);
     app.post("/transfer-ownership-xrc20-token", ValidationManger.validateTransferOwnershipXrc20Token, new CreateContractModule().transferOwnershipXrc20Token);
     app.post("/update-social-media-urls", ValidationManger.validateUpdateSocialMediaUrls, new CreateContractModule().updateSocialMediaUrls);
+
+
     app.post("/erc721",new CreateERC721().createNftCollection)
+    app.get("/findalltokens",new CreateERC721().findToken)
+    app.post("/update-token-721",new CreateERC721().updateToken721)
+    app.post("/create-nft",new CreateERC721().createrNFT)
+    app.post("/update-Nft",new CreateERC721().updateNft)
 
     // XRC721 apis
 
