@@ -147,7 +147,8 @@ module.exports = {
       nftTokenId: yup.string().required(),
       nftOwner: yup.string().required(),
       status:yup.string().required(),
-      collectionId: yup.number().required()
+      collectionId: yup.number().required(),
+      id:yup.number().required()
     })
     await validate(schema, req.body, res, next)
   },

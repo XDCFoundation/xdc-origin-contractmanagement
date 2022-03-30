@@ -297,7 +297,8 @@ export default class Manager {
         const tokenDetails = await NFT.findAll({
             where:{
                 "nftOwner": requestData.nftOwner,
-                "collectionId": requestData.collectionId
+                "collectionId": requestData.collectionId,
+                "id":requestData.id
             }
         })
 
@@ -313,11 +314,12 @@ export default class Manager {
            
             await NFT.update(
                 updateObj,
-                { where: { nftOwner: requestData.nftOwner,  collectionId: requestData.collectionId, isDeleted: false} },
+                { where: { nftOwner: requestData.nftOwner,  collectionId: requestData.collectionId, isDeleted: false, id:requestData.id} },
             )
             return NFT.findAll({
                 where: {
-                    "collectionId": requestData.collectionId
+                    "collectionId": requestData.collectionId,
+                    "id":requestData.id
                 }
             });
         }
