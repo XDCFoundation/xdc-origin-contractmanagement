@@ -85,9 +85,9 @@ export default class Manager {
              tokenName: requestData.tokenName ,
              tokenSymbol: requestData.tokenSymbol ,
              tokenImage: requestData.tokenImage,
-             website: requestData.website,
-             twitter: requestData.twitter,
-             telegram: requestData.telegram,
+             website: requestData.website ? requestData.website : "",
+             twitter: requestData.twitter ? requestData.twitter : "",
+             telegram: requestData.telegram ? requestData.telegram : "",
              tokenDescription: requestData.tokenDescription,
              network: requestData.network,
              contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
@@ -351,15 +351,17 @@ export default class Manager {
         const tokensFromDB = await NFT.findAll({
             where:{
                 nftTokenId:requestData.nftTokenId,
+                collectionId:requestData.collectionId,
+                id:requestData.id,
                 isDeleted:false
             }
             
         });
-        if(tokensFromDB!="")
+        if(tokensFromDB.length!==0)
             return tokensFromDB;
         else
             return "No data found"
-
+            
     }
 
     deletingNft = async(requestData) =>{
@@ -371,14 +373,8 @@ export default class Manager {
                 nftTokenId:requestData.nftTokenId
             }}
         )
-        const tokensFromDB = await NFT.findAll({
-            where:{
-                nftTokenId:requestData.nftTokenId
-            }
-            
-        });
 
-        return tokensFromDB
+        return "NFT deleted successfully"
 
     }
 

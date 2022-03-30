@@ -42,6 +42,6 @@ module.exports = (app) => {
     app.post("/find-721-token",ValidationManger.validateFind721TokenAndNft,new CreateERC721().find721TokenAndNft)
     app.post("/find-nft",ValidationManger.validateFindNft,new CreateERC721().findNft)
     app.post("/delete-nft",ValidationManger.validateDeletingNft,new CreateERC721().deletingNft)
-    
+
 
 };
