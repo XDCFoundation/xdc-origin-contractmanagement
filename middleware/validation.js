@@ -162,6 +162,8 @@ module.exports = {
   validateFindNft: async (req, res, next) => {
     const schema = yup.object().shape({
       nftTokenId: yup.string().required(), 
+      collectionId:yup.number().required() ,
+      id:yup.number().required() 
     })
     await validate(schema, req.body, res, next)
   },
