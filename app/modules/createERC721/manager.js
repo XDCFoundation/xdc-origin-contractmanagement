@@ -48,7 +48,6 @@ export default class Manager {
         let contractAbi = [];
         let tokenContractCode = '';
         let byteCode = "";
-        console.log(Address,"addres--")
 
         ejs.renderFile(__dirname + '/../createContract/contracts/ERC721contracts/Coin.sol', {
             'SafeMath': SafeMath,
@@ -82,15 +81,15 @@ export default class Manager {
         });
     
         const newXRC721Token = {
-            tokenOwner: requestData.tokenOwner ? requestData.tokenOwner : existingToken.tokenOwner,
-             tokenName: requestData.tokenName ? requestData.tokenName : existingToken.tokenName,
-             tokenSymbol: requestData.tokenSymbol ? requestData.tokenSymbol : existingToken.tokenSymbol,
-             tokenImage: requestData.tokenImage ? requestData.tokenImage : existingToken.tokenImage,
-             website: requestData.website ? requestData.website : existingToken.website,
-             twitter: requestData.twitter ? requestData.twitter : existingToken.twitter,
-             telegram: requestData.telegram ? requestData.telegram : existingToken.telegram,
-             tokenDescription: requestData.tokenDescription ? requestData.tokenDescription : existingToken.tokenDescription,
-             network: requestData.network ? requestData.network : existingToken.network,
+            tokenOwner: requestData.tokenOwner ,
+             tokenName: requestData.tokenName ,
+             tokenSymbol: requestData.tokenSymbol ,
+             tokenImage: requestData.tokenImage,
+             website: requestData.website,
+             twitter: requestData.twitter,
+             telegram: requestData.telegram,
+             tokenDescription: requestData.tokenDescription,
+             network: requestData.network,
              contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
              tokenContractCode: tokenContractCode,
              byteCode: byteCode,
@@ -326,4 +325,62 @@ export default class Manager {
             return "No such token exists!"
         }
     }
+
+    
+
+    find721TokenAndNft = async (requestData) => {
+        const tokensFromDB = await XRC721Token.findAll({
+            where:{
+                id:requestData.id
+
+            }  
+        });
+        const NftFromDB = await NFT.findAll({
+            where:{
+                collectionId:requestData.id,
+                isDeleted:false
+
+            }  
+        });
+        return {tokensFromDB,"NftFromDB":NftFromDB};
+
+    }
+
+
+    findNft = async (requestData) => {
+        const tokensFromDB = await NFT.findAll({
+            where:{
+                nftTokenId:requestData.nftTokenId,
+                isDeleted:false
+            }
+            
+        });
+        if(tokensFromDB!="")
+            return tokensFromDB;
+        else
+            return "No data found"
+
+    }
+
+    deletingNft = async(requestData) =>{
+        
+
+        await NFT.update(
+            {isDeleted:true},
+            {where:{
+                nftTokenId:requestData.nftTokenId
+            }}
+        )
+        const tokensFromDB = await NFT.findAll({
+            where:{
+                nftTokenId:requestData.nftTokenId
+            }
+            
+        });
+
+        return tokensFromDB
+
+    }
+
+    
 }

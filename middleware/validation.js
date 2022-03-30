@@ -106,6 +106,76 @@ module.exports = {
     })
     await validate(schema, req.body, res, next)
   },
+
+
+  validateCreateNftCollection: async (req, res, next) => {
+    const schema = yup.object().shape({
+      tokenName: yup.string().required(),
+      tokenImage: yup.string().required(),
+      tokenSymbol: yup.string().required(),
+      tokenOwner: yup.string().required(),
+      tokenDescription: yup.string().required(),
+      network: yup.string().required()
+    })
+    await validate(schema, req.body, res, next)
+  }, 
+
+  validateUpdateToken721: async (req, res, next) => {
+    const schema = yup.object().shape({
+      smartContractAddress: yup.string().required(),
+      tokenOwner: yup.string().required(),
+      id: yup.number().required(),
+      status:yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+  validateCreaterNFT: async (req, res, next) => {
+    const schema = yup.object().shape({
+      collectionId:yup.number().required(),
+      nftDescription: yup.string().required(),
+      nftOwner: yup.string().required(),
+      nftName: yup.string().required(),
+      ipfsUrl: yup.string().required(),
+      network: yup.string().required()
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+  validateUpdateNft: async (req, res, next) => {
+    const schema = yup.object().shape({
+      nftTokenId: yup.string().required(),
+      nftOwner: yup.string().required(),
+      status:yup.string().required(),
+      collectionId: yup.number().required()
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+  validateFind721TokenAndNft: async (req, res, next) => {
+    const schema = yup.object().shape({
+      id: yup.number().required() 
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+  validateFindNft: async (req, res, next) => {
+    const schema = yup.object().shape({
+      nftTokenId: yup.string().required(), 
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+  validateDeletingNft: async (req, res, next) => {
+    const schema = yup.object().shape({
+      nftTokenId: yup.string().required(), 
+    })
+    await validate(schema, req.body, res, next)
+  }
+
+ 
+
+  
 }
 
 const validate = async (schema, reqData, res, next) => {
