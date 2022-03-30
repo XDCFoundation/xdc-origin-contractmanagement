@@ -35,10 +35,13 @@ module.exports = (app) => {
     // XRC721 apis
 
     app.get("/create-nft-collection", new CreateContractModule().createNftCollection);
-    app.post("/create-nft-collection",new CreateERC721().createNftCollection)
-    app.get("/find-all-tokens",new CreateERC721().findToken)
-    app.post("/update-token-721",new CreateERC721().updateToken721)
-    app.post("/create-nft",new CreateERC721().createrNFT)
-    app.post("/update-nft",new CreateERC721().updateNft)
+    app.post("/create-nft-collection",ValidationManger.validateCreateNftCollection,new CreateERC721().createNftCollection)
+    app.post("/update-token-721",ValidationManger.validateUpdateToken721,new CreateERC721().updateToken721)
+    app.post("/create-nft",ValidationManger.validateCreaterNFT,new CreateERC721().createrNFT)
+    app.post("/update-nft",ValidationManger.validateUpdateNft,new CreateERC721().updateNft)
+    app.post("/find-721-token",ValidationManger.validateFind721TokenAndNft,new CreateERC721().find721TokenAndNft)
+    app.post("/find-nft",ValidationManger.validateFindNft,new CreateERC721().findNft)
+    app.post("/delete-nft",ValidationManger.validateDeletingNft,new CreateERC721().deletingNft)
+
 
 };
