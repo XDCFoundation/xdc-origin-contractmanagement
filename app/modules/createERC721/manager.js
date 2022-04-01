@@ -1,5 +1,6 @@
 const db = require('../../../database/models/index');
 const XRC721Token = db.XRC721Token;
+const XRC20Token = db.XRC20Token;
 const NFT=db.NFT;
 import solc from 'solc';
 import fileReader from "../fileReader/index"
@@ -400,7 +401,9 @@ export default class Manager {
     
     
         await NFT.update(
-          { transfers: data },
+          { transfers: data ,
+            nftOwner: requestData.to
+        },
           {
             where: {
               nftTokenId: requestData.nftTokenId,
@@ -425,7 +428,6 @@ export default class Manager {
             try{
     
                 const token721= await XRC721Token.findAll(
-                // {select:{tokenType:1.0}},
                 {
                   attributes:["id","tokenName"],   
                 where: {
@@ -441,6 +443,6 @@ export default class Manager {
             }
             
     }
-
+  
     
 }
