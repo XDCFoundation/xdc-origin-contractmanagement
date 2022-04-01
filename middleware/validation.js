@@ -174,6 +174,25 @@ module.exports = {
       nftTokenId: yup.string().required(), 
     })
     await validate(schema, req.body, res, next)
+  },
+
+  validateNftTransfer: async (req, res, next) => {
+    const schema = yup.object().shape({
+      nftTokenId: yup.string().required(),
+      id:yup.number().required(),
+      to:yup.string().required(),
+      from:yup.string().required(),
+      when:yup.string().required(),
+      nftTokenId:yup.number().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+  validateXrcTokenByOwner: async (req, res, next) => {
+    const schema = yup.object().shape({
+      tokenOwner: yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
   }
 
  

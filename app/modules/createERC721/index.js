@@ -11,44 +11,58 @@ export default class Index {
     }
 
     async find721TokenAndNft (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
+        console.log('Inside find721TokenAndNft', request.body, 'createToken', 0, '')
         const [error, getMetersRes] = await Utils.parseResponse(new BLManager().find721TokenAndNft(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.FETCH_SUCCESS, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
     async updateToken721 (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
+        console.log('Inside updateToken721', request.body, 'createToken', 0, '')
         const [error, getMetersRes] = await Utils.parseResponse(new BLManager().updateToken721(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
     async createrNFT (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
+        console.log('Inside createrNFT', request.body, 'createToken', 0, '')
         const [error, getMetersRes] = await Utils.parseResponse(new BLManager().createrNFT(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.SAVED_AS_DRAFT, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
     async updateNft (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
+        console.log('Inside updateNft', request.body, 'createToken', 0, '')
         const [error, getMetersRes] = await Utils.parseResponse(new BLManager().updateNft(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
     async findNft (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
+        console.log('Inside findNft', request.body, 'createToken', 0, '')
         const [error, getMetersRes] = await Utils.parseResponse(new BLManager().findNft(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.FETCH_SUCCESS, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
     async deletingNft (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
+        console.log('Inside deletingNft', request.body, 'createToken', 0, '')
         const [error, getMetersRes] = await Utils.parseResponse(new BLManager().deletingNft(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.TOKEN_DELETED, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
+
+    async nftTransfer (request, response) {
+        console.log('Inside nftTransfer', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().nftTransfer(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
+
+    async xrcTokenByOwner (request, response) {
+        console.log('Inside xrcTokenByOwner', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().xrcTokenByOwner(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
     

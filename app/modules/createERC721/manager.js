@@ -380,5 +380,67 @@ export default class Manager {
 
     }
 
+
+    nftTransfer = async (requestData) => {
+        const transferDB = await NFT.findAll({
+          where: {
+            nftTokenId: requestData.nftTokenId,
+            id: requestData.id,
+          },
+        });
+    
+        let transfersArray = {};
+        transfersArray.to = requestData.to;
+        transfersArray.from = requestData.from;
+        transfersArray.date = requestData.when;
+    
+        let data = transferDB[0].transfers;
+        
+        data.push(transfersArray);
+    
+    
+        await NFT.update(
+          { transfers: data },
+          {
+            where: {
+              nftTokenId: requestData.nftTokenId,
+              id: requestData.id,
+            },
+          }
+        );
+    
+        
+        const tokensFromDB = await NFT.findAll({
+          where: {
+            nftTokenId: requestData.nftTokenId,
+            id: requestData.id,
+          },
+        });
+        
+        return tokensFromDB;
+      };
+    
+      
+    xrcTokenByOwner = async(requestData)=>{
+            try{
+    
+                const token721= await XRC721Token.findAll(
+                // {select:{tokenType:1.0}},
+                {
+                  attributes:["id","tokenName"],   
+                where: {
+                    tokenOwner: requestData.tokenOwner,
+                },
+                limit: requestData.limit,
+              });
+              return token721
+    
+            }
+            catch(e){
+                console.log("error",e)
+            }
+            
+    }
+
     
 }
