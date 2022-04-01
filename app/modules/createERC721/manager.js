@@ -1,5 +1,6 @@
 const db = require('../../../database/models/index');
 const XRC721Token = db.XRC721Token;
+const XRC20Token = db.XRC20Token;
 const NFT=db.NFT;
 import solc from 'solc';
 import fileReader from "../fileReader/index"
@@ -380,5 +381,68 @@ export default class Manager {
 
     }
 
+
+    nftTransfer = async (requestData) => {
+        const transferDB = await NFT.findAll({
+          where: {
+            nftTokenId: requestData.nftTokenId,
+            id: requestData.id,
+          },
+        });
+    
+        let transfersArray = {};
+        transfersArray.to = requestData.to;
+        transfersArray.from = requestData.from;
+        transfersArray.date = requestData.when;
+    
+        let data = transferDB[0].transfers;
+        
+        data.push(transfersArray);
+    
+    
+        await NFT.update(
+          { transfers: data ,
+            nftOwner: requestData.to
+        },
+          {
+            where: {
+              nftTokenId: requestData.nftTokenId,
+              id: requestData.id,
+            },
+          }
+        );
+    
+        
+        const tokensFromDB = await NFT.findAll({
+          where: {
+            nftTokenId: requestData.nftTokenId,
+            id: requestData.id,
+          },
+        });
+        
+        return tokensFromDB;
+      };
+    
+      
+    xrcTokenByOwner = async(requestData)=>{
+            try{
+    
+                const token721= await XRC721Token.findAll(
+                {
+                  attributes:["id","tokenName"],   
+                where: {
+                    tokenOwner: requestData.tokenOwner,
+                },
+                limit: requestData.limit,
+              });
+              return token721
+    
+            }
+            catch(e){
+                console.log("error",e)
+            }
+            
+    }
+  
     
 }
