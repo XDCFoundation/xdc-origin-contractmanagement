@@ -58,22 +58,6 @@ export default class Index {
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
-    async draftedTokens (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().draftedTokens(request.body))
-        if (!getMetersRes) { return Utils.handleError(error, request, response) }
-        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
-    }
-
-
-    async networkBasedSearch (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().networkBasedSearch(request.body))
-        if (!getMetersRes) { return Utils.handleError(error, request, response) }
-        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
-    }
-
-
     async xrcTokenByOwner (request, response) {
         console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
         const [error, getMetersRes] = await Utils.parseResponse(new BLManager().xrcTokenByOwner(request.body))
