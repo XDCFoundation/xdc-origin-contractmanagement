@@ -172,10 +172,19 @@ module.exports = {
   validateDeletingNft: async (req, res, next) => {
     const schema = yup.object().shape({
       nftTokenId: yup.string().required(), 
+      id:yup.number().required()
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+
+  validateNftTransfer: async (req, res, next) => {
+    const schema = yup.object().shape({
+      nftTokenId: yup.string().required(),
+      id:yup.number().required()
     })
     await validate(schema, req.body, res, next)
   }
-
  
 
   
