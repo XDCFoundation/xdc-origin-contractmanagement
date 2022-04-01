@@ -468,66 +468,7 @@ export default class Manager {
     return tokensFromDB;
   };
 
-  draftedTokens = async (requestData) => {
-    let newArray = [];
-    const draftedTokens721 = await XRC721Token.findAll({
-      where: {
-        status: requestData.status,
-      },
-      limit: requestData.limit,
-    });
-
-    const draftedTokens20 = await XRC20Token.findAll({
-      where: {
-        status: requestData.status,
-      },
-      limit: requestData.limit,
-    });
-    newArray=draftedTokens721
-    //console.log("draftedTokens721====",newArray)
-    console.log("draftedTokens20",draftedTokens20)
-    newArray.push(draftedTokens20)
-    //console.log("newArray.aggregate(draftedTokens20)====",newArray.aggregate(draftedTokens20))
-
-    return {newArray}
-    // newArray = (await draftedTokens721) + draftedTokens20;
-    // console.log(newArray, "00900");
-    // if (draftedTokens721.length !== 0 && draftedTokens20.length !== 0)
-    //   return await { newArray };
-    // //,draftedTokens20}
-    // else return "no data found";
-  };
-
-  networkBasedSearch = async (requestData) => {
-    let newArray = [];
-    const tokens721 = await XRC721Token.findAll({
-      where: {
-        network: requestData.network,
-      },
-      limit: requestData.limit,
-    });
-
-    const tokens20 = await XRC20Token.findAll({
-      where: {
-        network: requestData.network,
-      },
-      limit: requestData.limit,
-    });
-
-    newArray=tokens721
-
-    newArray.push(tokens20)
-
-    return {newArray}
-    //newArray= await draftedTokens721+draftedTokens20;
-    //console.log(newArray, "00900");
-    // if (draftedTokens721.length !== 0 && draftedTokens20.length !== 0)
-    //   return await { newArray };
-    // //,draftedTokens20}
-    // else return "no data found";
-    };
-
-
+  
     xrcTokenByOwner = async(requestData)=>{
         try{
 
