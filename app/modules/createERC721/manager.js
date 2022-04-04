@@ -433,8 +433,7 @@ export default class Manager {
                   attributes:["id","tokenName"],   
                 where: {
                     tokenOwner: requestData.tokenOwner,
-                },
-                limit: requestData.limit,
+                }
               });
               return token721
     
@@ -446,20 +445,18 @@ export default class Manager {
     }
 
 
-    draftedTokens = async (requestData) => {
+    draftedAndFailedErc721andErc20Tokens = async (requestData) => {
         let newArray = [];
         const draftedTokens721 = await XRC721Token.findAll({
           where: {
             [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
-          },
-          limit: requestData.limit,
+          }
         });
     
         const draftedTokens20 = await XRC20Token.findAll({
           where: {
             [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
-          },
-          limit: requestData.limit,
+          }
         });
         newArray=draftedTokens721.concat(draftedTokens20)
 
@@ -470,14 +467,13 @@ export default class Manager {
         
       };
     
-      networkBasedSearch = async (requestData) => {
+      erc721AndErc20TokenByNetwork = async (requestData) => {
         let newArray = [];
         const tokens721 = await XRC721Token.findAll({
           where: {
             network: requestData.network,
             status:"DEPLOYED"
-          },
-          limit: requestData.limit,
+          }
         });
     
         const tokens20 = await XRC20Token.findAll({
@@ -485,7 +481,6 @@ export default class Manager {
             network: requestData.network,
             status:"DEPLOYED"
           },
-          limit: requestData.limit,
         });
 
         newArray=tokens721.concat(tokens20)
@@ -499,20 +494,18 @@ export default class Manager {
         };
 
 
-        deployedTokens = async (requestData) => {
+        deployedErc721AndErc20Tokens = async (requestData) => {
             let newArray = [];
             const tokens721 = await XRC721Token.findAll({
               where: {
                 status:"DEPLOYED"
-              },
-              limit: requestData.limit,
+              }
             });
         
             const tokens20 = await XRC20Token.findAll({
               where: {
                 status:"DEPLOYED"
-              },
-              limit: requestData.limit,
+              }
             });
     
             newArray=tokens721.concat(tokens20)

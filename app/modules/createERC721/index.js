@@ -65,25 +65,25 @@ export default class Index {
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
-    async draftedTokens (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().draftedTokens(request.body))
+    async draftedAndFailedErc721andErc20Tokens (request, response) {
+        console.log('Inside draftedAndFailedErc721andErc20Tokens', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().draftedAndFailedErc721andErc20Tokens(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
 
-    async networkBasedSearch (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().networkBasedSearch(request.body))
+    async erc721AndErc20TokenByNetwork (request, response) {
+        console.log('Inside erc721AndErc20TokenByNetwork', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().erc721AndErc20TokenByNetwork(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
 
-    async deployedTokens (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().deployedTokens(request.body))
+    async deployedErc721AndErc20Tokens (request, response) {
+        console.log('Inside deployedErc721AndErc20Tokens', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().deployedErc721AndErc20Tokens(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
