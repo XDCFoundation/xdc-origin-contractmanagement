@@ -46,6 +46,7 @@ module.exports = (app) => {
     app.post("/xrc-721-token-by-owner",ValidationManger.validateXrcTokenByOwner,new CreateERC721().xrcTokenByOwner);
     app.post("/drafted-failed-tokens", new CreateERC721().draftedTokens);
     app.post("/network-based-search",ValidationManger.validateNetworkBasedSearch, new CreateERC721().networkBasedSearch);
+    app.post("/deployed-tokens", new CreateERC721().deployedTokens);
 
 
 };
