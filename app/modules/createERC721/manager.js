@@ -9,6 +9,7 @@ import {apiFailureMessage, contractConstants, httpConstants} from '../../common/
 import Utils from "../../utils";
 import HttpService from "../../service/http-service";
 import Config from "../../../config";
+import { Op } from "sequelize";
 
 
 
@@ -132,7 +133,7 @@ export default class Manager {
         const tokenDetails = await XRC721Token.findAll({
             where:{
                 "tokenOwner": requestData.tokenOwner,
-                "id": requestData.tokenId
+                "id": requestData.id
             }
         })
 
@@ -185,11 +186,11 @@ export default class Manager {
 
             await XRC721Token.update(
                 updateObj,
-                { where: { tokenOwner: requestData.tokenOwner,  id: requestData.tokenId, isDeleted: false} },
+                { where: { tokenOwner: requestData.tokenOwner,  id: requestData.id, isDeleted: false} },
             )
             return XRC721Token.findAll({
                 where: {
-                    "id": requestData.tokenId
+                    "id": requestData.id
                 }
             });
         }
@@ -443,6 +444,64 @@ export default class Manager {
             }
             
     }
-  
+
+
+    draftedTokens = async (requestData) => {
+        let newArray = [];
+        const draftedTokens721 = await XRC721Token.findAll({
+          where: {
+            [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+          },
+          limit: requestData.limit,
+        });
+    
+        const draftedTokens20 = await XRC20Token.findAll({
+          where: {
+            [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+          },
+          limit: requestData.limit,
+        });
+        newArray=draftedTokens721.concat(draftedTokens20)
+
+        if(newArray.length!==0)
+            return {draftedTokens721,draftedTokens20,newArray}
+        else
+            return "no data found"
+        
+      };
+    
+      networkBasedSearch = async (requestData) => {
+        let newArray = [];
+        const tokens721 = await XRC721Token.findAll({
+          where: {
+            network: requestData.network,
+            status:"DEPLOYED"
+          },
+          limit: requestData.limit,
+        });
+    
+        const tokens20 = await XRC20Token.findAll({
+          where: {
+            network: requestData.network,
+            status:"DEPLOYED"
+          },
+          limit: requestData.limit,
+        });
+
+        newArray=tokens721.concat(tokens20)
+
+        if(newArray.length!==0)
+            return {tokens721,tokens20,newArray}
+        else
+            return "no data found"
+
+
+        };
+
     
 }
+
+
+
+
+

@@ -44,6 +44,8 @@ module.exports = (app) => {
     app.post("/delete-nft",ValidationManger.validateDeletingNft,new CreateERC721().deletingNft)
     app.post("/tranfer-nft",ValidationManger.validateNftTransfer,new CreateERC721().nftTransfer)
     app.post("/xrc-721-token-by-owner",ValidationManger.validateXrcTokenByOwner,new CreateERC721().xrcTokenByOwner);
+    app.post("/drafted-failed-tokens", new CreateERC721().draftedTokens);
+    app.post("/network-based-search",ValidationManger.validateNetworkBasedSearch, new CreateERC721().networkBasedSearch);
 
 
 };
