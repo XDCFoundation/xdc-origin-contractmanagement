@@ -139,48 +139,48 @@ export default class Manager {
 
         if(tokenDetails.length !== 0){
 
-            // if(requestData.smartContractAddress !== ""){
-            //     const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0], {}))
+            if(requestData.smartContractAddress !== ""){
+                const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0], {}))
 
-            //     if(!getSocialMediaUpdateRes){
-            //         console.log("update721Token =======> ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
-            //     }
-            //     else{
-            //         console.log("update721Token =======> SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
-            //     }
-            // }
+                if(!getSocialMediaUpdateRes){
+                    console.log("update721Token =======> ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
+                }
+                else{
+                    console.log("update721Token =======> SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
+                }
+            }
 
-            // let verifyRequest = {
-            //     tokenId: requestData.tokenId,
-            //     contractAddress: requestData.smartContractAddress
-            // }
+            let verifyRequest = {
+                id: requestData.id,
+                contractAddress: requestData.smartContractAddress
+            }
 
-            // const [error, getVerificationRes] = await Utils.parseResponse(this.verify721Token(verifyRequest))
+            const [error, getVerificationRes] = await Utils.parseResponse(this.verify721Token(verifyRequest))
 
 
             let updateObj = {};
 
-            // if(!getVerificationRes){
-            //     updateObj = {
-            //         smartContractAddress: requestData.smartContractAddress,
-            //         status: requestData.status,
-            //         isVerified: false
-            //     }
-            // }
-            // else{
-            //     updateObj = {
-            //         smartContractAddress: requestData.smartContractAddress,
-            //         status: requestData.status,
-            //         isVerified: true
-            //     }
-            // }
+            if(!getVerificationRes){
+                updateObj = {
+                    smartContractAddress: requestData.smartContractAddress,
+                    status: requestData.status,
+                    isVerified: false
+                }
+            }
+            else{
+                updateObj = {
+                    smartContractAddress: requestData.smartContractAddress,
+                    status: requestData.status,
+                    isVerified: true
+                }
+            }
 
 
-            updateObj = {
-                        smartContractAddress: requestData.smartContractAddress,
-                        status: requestData.status,
-                        isVerified: true
-                    }
+            // updateObj = {
+            //             smartContractAddress: requestData.smartContractAddress,
+            //             status: requestData.status,
+            //             isVerified: true
+            //         }
 
 
 
@@ -241,7 +241,7 @@ export default class Manager {
             console.log("verify721Token requestData =======>", requestData);
             const token = await XRC721Token.findAll({
                 where: {
-                    "id": requestData.tokenId,
+                    "id": requestData.id,
                     "isDeleted": false
                 }
             });
