@@ -430,7 +430,7 @@ export default class Manager {
     
                 const token721= await XRC721Token.findAll(
                 {
-                  attributes:["id","tokenName"],   
+                  attributes:["id","tokenName","status"],   
                 where: {
                     tokenOwner: requestData.tokenOwner,
                 }
@@ -445,7 +445,7 @@ export default class Manager {
     }
 
 
-    draftedAndFailedErc721andErc20Tokens = async (requestData) => {
+    getDraftedAndFailedTokens = async (requestData) => {
         let newArray = [];
         const draftedTokens721 = await XRC721Token.findAll({
           where: {
@@ -467,7 +467,7 @@ export default class Manager {
         
       };
     
-      erc721AndErc20TokenByNetwork = async (requestData) => {
+      getXRC721AndXRC20TokensByNetwork = async (requestData) => {
         let newArray = [];
         const tokens721 = await XRC721Token.findAll({
           where: {
@@ -494,7 +494,7 @@ export default class Manager {
         };
 
 
-        deployedErc721AndErc20Tokens = async (requestData) => {
+        getDeployedTokens = async (requestData) => {
             let newArray = [];
             const tokens721 = await XRC721Token.findAll({
               where: {
