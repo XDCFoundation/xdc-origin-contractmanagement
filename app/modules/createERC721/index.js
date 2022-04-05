@@ -65,7 +65,30 @@ export default class Index {
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
+    async getDraftedAndFailedTokens (request, response) {
+        console.log('Inside getDraftedAndFailedTokens', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().getDraftedAndFailedTokens(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
 
+
+    async getXRC721AndXRC20TokensByNetwork (request, response) {
+        console.log('Inside getXRC721AndXRC20TokensByNetwork', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().getXRC721AndXRC20TokensByNetwork(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
+
+
+    async getDeployedTokens (request, response) {
+        console.log('Inside getDeployedTokens', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().getDeployedTokens(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
+
+    
 
     
 }

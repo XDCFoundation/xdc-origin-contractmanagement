@@ -9,6 +9,7 @@ import {apiFailureMessage, contractConstants, httpConstants} from '../../common/
 import Utils from "../../utils";
 import HttpService from "../../service/http-service";
 import Config from "../../../config";
+import { Op } from "sequelize";
 
 
 
@@ -132,64 +133,64 @@ export default class Manager {
         const tokenDetails = await XRC721Token.findAll({
             where:{
                 "tokenOwner": requestData.tokenOwner,
-                "id": requestData.tokenId
+                "id": requestData.id
             }
         })
 
         if(tokenDetails.length !== 0){
 
-            // if(requestData.smartContractAddress !== ""){
-            //     const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0], {}))
+            if(requestData.smartContractAddress !== ""){
+                const [errorSocialMediaUpdate, getSocialMediaUpdateRes] = await Utils.parseResponse(this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokenDetails[0], {}))
 
-            //     if(!getSocialMediaUpdateRes){
-            //         console.log("update721Token =======> ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
-            //     }
-            //     else{
-            //         console.log("update721Token =======> SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
-            //     }
-            // }
+                if(!getSocialMediaUpdateRes){
+                    console.log("update721Token =======> ERROR WHILE UPDATING SOCIAL MEDIA URLS!")
+                }
+                else{
+                    console.log("update721Token =======> SOCIAL MEDIA URLS FOR THE TOKEN UPDATED!")
+                }
+            }
 
-            // let verifyRequest = {
-            //     tokenId: requestData.tokenId,
-            //     contractAddress: requestData.smartContractAddress
-            // }
+            let verifyRequest = {
+                id: requestData.id,
+                contractAddress: requestData.smartContractAddress
+            }
 
-            // const [error, getVerificationRes] = await Utils.parseResponse(this.verify721Token(verifyRequest))
+            const [error, getVerificationRes] = await Utils.parseResponse(this.verify721Token(verifyRequest))
 
 
             let updateObj = {};
 
-            // if(!getVerificationRes){
-            //     updateObj = {
-            //         smartContractAddress: requestData.smartContractAddress,
-            //         status: requestData.status,
-            //         isVerified: false
-            //     }
-            // }
-            // else{
-            //     updateObj = {
-            //         smartContractAddress: requestData.smartContractAddress,
-            //         status: requestData.status,
-            //         isVerified: true
-            //     }
-            // }
+            if(!getVerificationRes){
+                updateObj = {
+                    smartContractAddress: requestData.smartContractAddress,
+                    status: requestData.status,
+                    isVerified: false
+                }
+            }
+            else{
+                updateObj = {
+                    smartContractAddress: requestData.smartContractAddress,
+                    status: requestData.status,
+                    isVerified: true
+                }
+            }
 
 
-            updateObj = {
-                        smartContractAddress: requestData.smartContractAddress,
-                        status: requestData.status,
-                        isVerified: true
-                    }
+            // updateObj = {
+            //             smartContractAddress: requestData.smartContractAddress,
+            //             status: requestData.status,
+            //             isVerified: true
+            //         }
 
 
 
             await XRC721Token.update(
                 updateObj,
-                { where: { tokenOwner: requestData.tokenOwner,  id: requestData.tokenId, isDeleted: false} },
+                { where: { tokenOwner: requestData.tokenOwner,  id: requestData.id, isDeleted: false} },
             )
             return XRC721Token.findAll({
                 where: {
-                    "id": requestData.tokenId
+                    "id": requestData.id
                 }
             });
         }
@@ -240,7 +241,7 @@ export default class Manager {
             console.log("verify721Token requestData =======>", requestData);
             const token = await XRC721Token.findAll({
                 where: {
-                    "id": requestData.tokenId,
+                    "id": requestData.id,
                     "isDeleted": false
                 }
             });
@@ -429,11 +430,10 @@ export default class Manager {
     
                 const token721= await XRC721Token.findAll(
                 {
-                  attributes:["id","tokenName"],   
+                  attributes:["id","tokenName","status"],   
                 where: {
                     tokenOwner: requestData.tokenOwner,
-                },
-                limit: requestData.limit,
+                }
               });
               return token721
     
@@ -443,6 +443,85 @@ export default class Manager {
             }
             
     }
-  
+
+
+    getDraftedAndFailedTokens = async (requestData) => {
+        let newArray = [];
+        const draftedTokens721 = await XRC721Token.findAll({
+          where: {
+            [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+          }
+        });
+    
+        const draftedTokens20 = await XRC20Token.findAll({
+          where: {
+            [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+          }
+        });
+        newArray=draftedTokens721.concat(draftedTokens20)
+
+        if(newArray.length!==0)
+            return {draftedTokens721,draftedTokens20,newArray}
+        else
+            return "no data found"
+        
+      };
+    
+      getXRC721AndXRC20TokensByNetwork = async (requestData) => {
+        let newArray = [];
+        const tokens721 = await XRC721Token.findAll({
+          where: {
+            network: requestData.network,
+            status:"DEPLOYED"
+          }
+        });
+    
+        const tokens20 = await XRC20Token.findAll({
+          where: {
+            network: requestData.network,
+            status:"DEPLOYED"
+          },
+        });
+
+        newArray=tokens721.concat(tokens20)
+
+        if(newArray.length!==0)
+            return {tokens721,tokens20,newArray}
+        else
+            return "no data found"
+
+
+        };
+
+
+        getDeployedTokens = async (requestData) => {
+            let newArray = [];
+            const tokens721 = await XRC721Token.findAll({
+              where: {
+                status:"DEPLOYED"
+              }
+            });
+        
+            const tokens20 = await XRC20Token.findAll({
+              where: {
+                status:"DEPLOYED"
+              }
+            });
+    
+            newArray=tokens721.concat(tokens20)
+    
+            if(newArray.length!==0)
+                return {tokens721,tokens20,newArray}
+            else
+                return "no data found"
+    
+    
+            };
+
     
 }
+
+
+
+
+

@@ -193,11 +193,16 @@ module.exports = {
       tokenOwner: yup.string().required(),
     })
     await validate(schema, req.body, res, next)
+  },
+
+
+  validateNetworkBasedSearch: async (req, res, next) => {
+    const schema = yup.object().shape({
+      network: yup.string().required()
+    })
+    await validate(schema, req.body, res, next)
   }
-
  
-
-  
 }
 
 const validate = async (schema, reqData, res, next) => {
