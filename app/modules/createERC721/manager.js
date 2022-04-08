@@ -536,9 +536,6 @@ export default class Manager {
 
               }
             });
-
-            console.log(tokens20,"22222")
-    
             newArray=tokens721.concat(tokens20)
     
             if(newArray.length!==0)
