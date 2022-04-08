@@ -450,12 +450,14 @@ export default class Manager {
         const draftedTokens721 = await XRC721Token.findAll({
           where: {
             [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+            tokenOwner: requestData.tokenOwner
           }
         });
     
         const draftedTokens20 = await XRC20Token.findAll({
           where: {
             [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+            tokenOwner: requestData.tokenOwner
           }
         });
         newArray=draftedTokens721.concat(draftedTokens20)
@@ -471,6 +473,7 @@ export default class Manager {
         let newArray = [];
         const tokens721 = await XRC721Token.findAll({
           where: {
+            tokenOwner: requestData.tokenOwner,
             network: requestData.network,
             status:"DEPLOYED"
           }
@@ -478,6 +481,7 @@ export default class Manager {
     
         const tokens20 = await XRC20Token.findAll({
           where: {
+            tokenOwner: requestData.tokenOwner,
             network: requestData.network,
             status:"DEPLOYED"
           },
@@ -498,13 +502,16 @@ export default class Manager {
             let newArray = [];
             const tokens721 = await XRC721Token.findAll({
               where: {
-                status:"DEPLOYED"
+                status:"DEPLOYED",
+                tokenOwner: requestData.tokenOwner
+                
               }
             });
         
             const tokens20 = await XRC20Token.findAll({
               where: {
-                status:"DEPLOYED"
+                status:"DEPLOYED",
+                tokenOwner: requestData.tokenOwner
               }
             });
     
