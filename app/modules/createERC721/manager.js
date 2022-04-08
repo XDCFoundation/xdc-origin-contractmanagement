@@ -510,7 +510,7 @@ export default class Manager {
             else
             return "no data found"
         }
-        
+
         
 
 
@@ -542,8 +542,7 @@ export default class Manager {
             newArray=tokens721.concat(tokens20)
     
             if(newArray.length!==0)
-                //return {tokens721,tokens20,newArray}
-                return {tokens20}
+                return {tokens721,tokens20,newArray}
             else
                 return "no data found"
     
