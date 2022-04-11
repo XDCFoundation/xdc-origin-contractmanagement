@@ -550,7 +550,7 @@ export default class Manager {
 
 
 
-            uploadContent = async (requestData) => {
+            getIpfsUrl = async (requestData) => {
                 try {
                     let contentUploadResponse = await this.parseRequestAndUploadFile(requestData, requestData.tokenOwner)
                     return {contentUploadResponse}

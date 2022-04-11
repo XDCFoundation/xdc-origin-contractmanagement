@@ -64,7 +64,7 @@ module.exports = (app) => {
     app.post("/get-xrc721-and-xrc20-tokens-by-network",ValidationManger.validateNetworkBasedSearch, new CreateERC721().getXRC721AndXRC20TokensByNetwork);
     app.post("/get-deployed-tokens",ValidationManger.validateGetDeployedTokens, new CreateERC721().getDeployedTokens);
 
-    app.post("/get-ipfs-url", upload.array('files'),  new CreateERC721().uploadContent);
+    app.post("/get-ipfs-url",ValidationManger.validateGetIpfsUrl, upload.array('files'),  new CreateERC721().getIpfsUrl);
     //Validators.validateAddContent,
 
 
