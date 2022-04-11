@@ -5,7 +5,23 @@ import * as ValidationManger from "../middleware/validation";
 import TestModule from "../app/modules/testModule";
 import CreateContractModule from "../app/modules/createContract";
 import {stringConstants} from "../app/common/constants";
-import CreateERC721 from "../app/modules/createERC721"
+import CreateERC721 from "../app/modules/createERC721";
+import multer from "multer";
+
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        if (!fs.existsSync('./uploads/')) {
+            fs.mkdirSync('./uploads/')
+        }
+        cb(null, './uploads/')
+    },
+    filename: async function (req, file, cb) {
+        await cb(null, file.originalname);
+    }
+});
+
+const upload = multer({storage: storage});
 
 module.exports = (app) => {
     app.get('/', (req, res) => res.send(stringConstants.SERVICE_STATUS_HTML));
@@ -47,6 +63,9 @@ module.exports = (app) => {
     app.post("/get-drafted-and-failed-tokens",ValidationManger.validateGetDraftedAndFailedTokens, new CreateERC721().getDraftedAndFailedTokens);
     app.post("/get-xrc721-and-xrc20-tokens-by-network",ValidationManger.validateNetworkBasedSearch, new CreateERC721().getXRC721AndXRC20TokensByNetwork);
     app.post("/get-deployed-tokens",ValidationManger.validateGetDeployedTokens, new CreateERC721().getDeployedTokens);
+
+    app.post("/get-ipfs-url", upload.array('files'),  new CreateERC721().uploadContent);
+    //Validators.validateAddContent,
 
 
 };

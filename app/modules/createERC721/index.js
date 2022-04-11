@@ -88,6 +88,18 @@ export default class Index {
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
+    async uploadContent(request, response) {
+        try {
+          const [error, uploadContentRes] = await Utils.parseResponse(new BLManager().uploadContent(request.body))
+          if (!uploadContentRes) {
+            return Utils.handleError(error, request, response)
+          }
+          return Utils.response(response, uploadContentRes, apiSuccessMessage.ADD_CONTENT_SUCCESS, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+        } catch (error) {
+          return Utils.handleError(error, request, response)
+        }
+      }
+
     
 
     
