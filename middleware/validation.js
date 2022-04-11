@@ -200,6 +200,7 @@ module.exports = {
     const schema = yup.object().shape({
       network: yup.string().required(),
       tokenOwner: yup.string().required(),
+      type:yup.string().required(),
     })
     await validate(schema, req.body, res, next)
   },
@@ -207,6 +208,7 @@ module.exports = {
   validateGetDeployedTokens: async (req, res, next) => {
     const schema = yup.object().shape({
       tokenOwner: yup.string().required(),
+      network: yup.string().required(),
     })
     await validate(schema, req.body, res, next)
   },
@@ -214,6 +216,7 @@ module.exports = {
   validateGetDraftedAndFailedTokens: async (req, res, next) => {
     const schema = yup.object().shape({
       tokenOwner: yup.string().required(),
+      network: yup.string().required(),
     })
     await validate(schema, req.body, res, next)
   }

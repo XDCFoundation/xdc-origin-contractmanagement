@@ -452,14 +452,16 @@ export default class Manager {
         const draftedTokens721 = await XRC721Token.findAll({
           where: {
             [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
-            tokenOwner: requestData.tokenOwner
+            tokenOwner: requestData.tokenOwner,
+            network: requestData.network
           }
         });
     
         const draftedTokens20 = await XRC20Token.findAll({
           where: {
             [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
-            tokenOwner: requestData.tokenOwner
+            tokenOwner: requestData.tokenOwner,
+            network: requestData.network
           }
         });
         newArray=draftedTokens721.concat(draftedTokens20)
@@ -473,6 +475,7 @@ export default class Manager {
     
       getXRC721AndXRC20TokensByNetwork = async (requestData) => {
         let newArray = [];
+        let type=requestData.type
         const tokens721 = await XRC721Token.findAll({
           where: {
             tokenOwner: requestData.tokenOwner,
@@ -491,10 +494,26 @@ export default class Manager {
 
         newArray=tokens721.concat(tokens20)
 
-        if(newArray.length!==0)
-            return {tokens721,tokens20,newArray}
+        if(type==="XRC721"){
+            if(tokens721.length!==0)
+            return {tokens721}
         else
             return "no data found"
+        }
+        else if(type==="XRC20"){
+            if(tokens20.length!==0)
+            return {tokens20}
+            else
+            return "no data found"
+        }
+        else if(type==="ALL"){
+            if(newArray.length!==0)
+            return {newArray}
+            else
+            return "no data found"
+        }
+
+        
 
 
         };
@@ -505,7 +524,8 @@ export default class Manager {
             const tokens721 = await XRC721Token.findAll({
               where: {
                 status:"DEPLOYED",
-                tokenOwner: requestData.tokenOwner
+                tokenOwner: requestData.tokenOwner,
+                network: requestData.network
                 
               }
             });
@@ -513,10 +533,11 @@ export default class Manager {
             const tokens20 = await XRC20Token.findAll({
               where: {
                 status:"DEPLOYED",
-                tokenOwner: requestData.tokenOwner
+                tokenOwner: requestData.tokenOwner,
+                network: requestData.network
+
               }
             });
-    
             newArray=tokens721.concat(tokens20)
     
             if(newArray.length!==0)
