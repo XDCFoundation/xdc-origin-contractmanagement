@@ -65,7 +65,6 @@ module.exports = (app) => {
     app.post("/get-deployed-tokens",ValidationManger.validateGetDeployedTokens, new CreateERC721().getDeployedTokens);
 
     app.post("/get-ipfs-url",ValidationManger.validateGetIpfsUrl, upload.array('files'),  new CreateERC721().getIpfsUrl);
-    //Validators.validateAddContent,
 
 
 };
