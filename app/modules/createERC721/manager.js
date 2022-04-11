@@ -10,6 +10,8 @@ import Utils from "../../utils";
 import HttpService from "../../service/http-service";
 import Config from "../../../config";
 import { Op } from "sequelize";
+import fs from 'fs';
+import ipfsClient from "ipfs-http-client";
 
 
 
@@ -545,6 +547,110 @@ export default class Manager {
     
     
             };
+
+
+
+            getIpfsUrl = async (requestData) => {
+                try {
+                    let contentUploadResponse = await this.parseRequestAndUploadFile(requestData, requestData.tokenOwner)
+                    return {contentUploadResponse}
+                } catch (err) {
+                    throw new Error(err)
+                }
+            }
+
+
+            getFileHash = async (file, path) => {
+
+                try {
+                    const ipfs = await ipfsClient.create({
+                        host: Config.IPFS_IP,
+                        port: Config.IPFS_PORT,
+                        protocol: Config.IPFS_PROTOCOL,
+                    });
+        
+                    const fileAdded = await ipfs.add({path, content: file}, {onlyHash: true});
+                    if (!fileAdded || !fileAdded.cid) {
+                        throw "failed to generate file hash"
+                    }
+                    return fileAdded.cid;
+                } catch (error) {
+                    throw (error)
+                }
+            }
+
+            addFileToIPFS =  async (file, path) => {
+                
+                try {
+                    const ipfs = await ipfsClient.create({
+                        host: Config.IPFS_IP,
+                        port: Config.IPFS_PORT,
+                        protocol: Config.IPFS_PROTOCOL,
+                    });
+                    
+                    const fileAdded = await ipfs.add({path, content: file});
+                    if (!fileAdded || !fileAdded.cid) {
+                        throw "failed to upload file to IPFS"
+                    }
+                    return fileAdded.cid;
+                } catch (error) {
+                    throw (error)
+                }
+            }
+        
+        
+            parseRequestAndUploadFile = async (uploadObj, userId) => {
+                try {
+                    let requestData = uploadObj
+
+                    let fileName = (requestData.fileName).replace(/\s/g, '')
+
+                    let key = `${userId}/${Config.FOLDER_NAME}/${fileName}`;
+
+                    let content = fs.readFileSync(__dirname + `/uploads/${fileName}`)
+
+                    await fs.renameSync(__dirname + `/uploads/${fileName}`, __dirname + `/uploads/XDCNFT.mp4`)
+                    let keyForValidation = 'CIDs/XDCNFT.mp4'
+                    let renamedFile = fs.readFileSync(__dirname + `/uploads/XDCNFT.mp4`)
+
+                    let newFileHash = await this.getFileHash(renamedFile, keyForValidation);
+
+                    const contentAddress = newFileHash.toString()
+        
+                    let fileUploadToIPFSResponse = await this.addFileToIPFS(content, key);
+
+        
+                    let ipfsUrl = Config.IPFS_HOST_URL + fileUploadToIPFSResponse.toString() + `/${Config.FOLDER_NAME}/` + fileName
+
+                    let metadata = JSON.stringify({
+                        name:requestData.name,
+                        description: requestData.description,
+                        ipfsImageUrl:ipfsUrl
+                    })
+
+
+                    fileName = `${Date.now()}_${requestData.tokenOwner}_metadata.json`;
+                    key = `${userId}/${Config.FOLDER_NAME}/${fileName}`;
+
+                    fs.writeFileSync(fileName, metadata)
+                    let uploadMetaDataResponse = await this.addFileToIPFS(fs.readFileSync(fileName), key)
+
+                    let metadataUrl = Config.IPFS_HOST_URL + uploadMetaDataResponse.toString() + `/${Config.FOLDER_NAME}/` + fileName
+
+
+                    fs.unlinkSync(fileName)
+        
+                    return {
+                        ...requestData,
+                        ipfsUrl,
+                        metadataUrl,
+                    }
+        
+                } catch (err) {
+                    throw new Error(err);
+                }
+            }
+        
 
     
 }

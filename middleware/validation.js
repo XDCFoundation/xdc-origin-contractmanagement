@@ -219,7 +219,19 @@ module.exports = {
       network: yup.string().required(),
     })
     await validate(schema, req.body, res, next)
+  },
+
+  validateGetIpfsUrl: async (req, res, next) => {
+    const schema = yup.object().shape({
+      name: yup.string().required(),
+      tokenOwner:yup.string().required(),
+      fileName:yup.string().required(),
+      description: yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
   }
+
+
 
 
  
