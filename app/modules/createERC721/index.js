@@ -90,7 +90,7 @@ export default class Index {
 
     async getIpfsUrl(request, response) {
         try {
-          const [error, getIpfsUrlRes] = await Utils.parseResponse(new BLManager().getIpfsUrl(request.body))
+          const [error, getIpfsUrlRes] = await Utils.parseResponse(new BLManager().getIpfsUrl(request.file, request.body))
           if (!getIpfsUrlRes) {
             return Utils.handleError(error, request, response)
           }

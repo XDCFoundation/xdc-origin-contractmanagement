@@ -550,9 +550,9 @@ export default class Manager {
 
 
 
-            getIpfsUrl = async (requestData) => {
+            getIpfsUrl = async (file, requestData) => {
                 try {
-                    let contentUploadResponse = await this.parseRequestAndUploadFile(requestData, requestData.tokenOwner)
+                    let contentUploadResponse = await this.parseRequestAndUploadFile(file, requestData)
                     return {contentUploadResponse}
                 } catch (err) {
                     throw new Error(err)
@@ -599,46 +599,28 @@ export default class Manager {
             }
         
         
-            parseRequestAndUploadFile = async (uploadObj, userId) => {
+            parseRequestAndUploadFile = async (file, requestData) => {
                 try {
-                    let requestData = uploadObj
+                    let fileName = (file.originalname).replace(/\s/g, '')
+                    let key = `${requestData.tokenOwner}/${Config.FOLDER_NAME}/${fileName}`;
+                    let content = file.buffer;
 
-                    let fileName = (requestData.fileName).replace(/\s/g, '')
-
-                    let key = `${userId}/${Config.FOLDER_NAME}/${fileName}`;
-
-                    let content = fs.readFileSync(__dirname + `/uploads/${fileName}`)
-
-                    await fs.renameSync(__dirname + `/uploads/${fileName}`, __dirname + `/uploads/XDCNFT.mp4`)
-                    let keyForValidation = 'CIDs/XDCNFT.mp4'
-                    let renamedFile = fs.readFileSync(__dirname + `/uploads/XDCNFT.mp4`)
-
-                    let newFileHash = await this.getFileHash(renamedFile, keyForValidation);
-
-                    const contentAddress = newFileHash.toString()
-        
                     let fileUploadToIPFSResponse = await this.addFileToIPFS(content, key);
 
-        
                     let ipfsUrl = Config.IPFS_HOST_URL + fileUploadToIPFSResponse.toString() + `/${Config.FOLDER_NAME}/` + fileName
 
                     let metadata = JSON.stringify({
-                        name:requestData.name,
-                        description: requestData.description,
+                        name:requestData.nftName,
+                        description: requestData.nftDescription,
                         ipfsImageUrl:ipfsUrl
                     })
 
-
                     fileName = `${Date.now()}_${requestData.tokenOwner}_metadata.json`;
-                    key = `${userId}/${Config.FOLDER_NAME}/${fileName}`;
+                    key = `${requestData.tokenOwner}/${Config.FOLDER_NAME}/${fileName}`;
 
-                    fs.writeFileSync(fileName, metadata)
-                    let uploadMetaDataResponse = await this.addFileToIPFS(fs.readFileSync(fileName), key)
+                    let uploadMetaDataResponse = await this.addFileToIPFS(metadata, key)
 
                     let metadataUrl = Config.IPFS_HOST_URL + uploadMetaDataResponse.toString() + `/${Config.FOLDER_NAME}/` + fileName
-
-
-                    fs.unlinkSync(fileName)
         
                     return {
                         ...requestData,
