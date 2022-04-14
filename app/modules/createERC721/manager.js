@@ -432,7 +432,7 @@ export default class Manager {
     
                 const token721= await XRC721Token.findAll(
                 {
-                  attributes:["id","tokenName","status"],   
+                  attributes:["id","tokenName","status","network"],   
                 where: {
                     tokenOwner: requestData.tokenOwner,
                 }
