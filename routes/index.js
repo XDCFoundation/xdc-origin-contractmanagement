@@ -8,20 +8,7 @@ import {stringConstants} from "../app/common/constants";
 import CreateERC721 from "../app/modules/createERC721";
 import multer from "multer";
 
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        if (!fs.existsSync('./uploads/')) {
-            fs.mkdirSync('./uploads/')
-        }
-        cb(null, './uploads/')
-    },
-    filename: async function (req, file, cb) {
-        await cb(null, file.originalname);
-    }
-});
-
-const upload = multer({storage: storage});
+const upload = multer();
 
 module.exports = (app) => {
     app.get('/', (req, res) => res.send(stringConstants.SERVICE_STATUS_HTML));
@@ -64,7 +51,7 @@ module.exports = (app) => {
     app.post("/get-xrc721-and-xrc20-tokens-by-network",ValidationManger.validateNetworkBasedSearch, new CreateERC721().getXRC721AndXRC20TokensByNetwork);
     app.post("/get-deployed-tokens",ValidationManger.validateGetDeployedTokens, new CreateERC721().getDeployedTokens);
 
-    app.post("/get-ipfs-url",ValidationManger.validateGetIpfsUrl, upload.array('files'),  new CreateERC721().getIpfsUrl);
+    app.post("/get-ipfs-url", upload.single('files'), ValidationManger.validateGetIpfsUrl,  new CreateERC721().getIpfsUrl);
 
 
 };
