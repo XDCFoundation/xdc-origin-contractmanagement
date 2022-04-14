@@ -610,8 +610,8 @@ export default class Manager {
                     let ipfsUrl = Config.IPFS_HOST_URL + fileUploadToIPFSResponse.toString() + `/${Config.FOLDER_NAME}/` + fileName
 
                     let metadata = JSON.stringify({
-                        name:requestData.nftName,
-                        description: requestData.nftDescription,
+                        name:requestData.name,
+                        description: requestData.description,
                         ipfsImageUrl:ipfsUrl
                     })
 
