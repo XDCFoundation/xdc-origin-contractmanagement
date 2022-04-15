@@ -11,6 +11,7 @@
   "author": "Leewayhertz",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.1115.0",
     "babel": "^6.23.0",
     "babel-cli": "^6.26.0",
     "babel-preset-node8": "^1.2.0",

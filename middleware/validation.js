@@ -106,6 +106,13 @@ module.exports = {
     })
     await validate(schema, req.body, res, next)
   },
+
+  validateUploadXrc20File: async (req, res, next) => {
+    const schema = yup.object().shape({
+      fileName:yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
 }
 
 const validate = async (schema, reqData, res, next) => {

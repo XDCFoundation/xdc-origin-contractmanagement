@@ -5,6 +5,9 @@ import * as ValidationManger from "../middleware/validation";
 import TestModule from "../app/modules/testModule";
 import CreateContractModule from "../app/modules/createContract";
 import {stringConstants} from "../app/common/constants";
+import multer from "multer";
+
+const upload = multer();
 
 module.exports = (app) => {
     app.get('/', (req, res) => res.send(stringConstants.SERVICE_STATUS_HTML));
@@ -24,5 +27,9 @@ module.exports = (app) => {
     app.post("/pause-resume-xrc20-token", ValidationManger.validatePauseResumeXrc20Token, new CreateContractModule().pauseResumeXrc20Token);
     app.post("/transfer-ownership-xrc20-token", ValidationManger.validateTransferOwnershipXrc20Token, new CreateContractModule().transferOwnershipXrc20Token);
     app.post("/update-social-media-urls", ValidationManger.validateUpdateSocialMediaUrls, new CreateContractModule().updateSocialMediaUrls);
+
+    //api for uploading files to S3
+
+    app.post("/upload-xrc20-file-to-s3", upload.single('files'), ValidationManger.validateUploadXrc20File, new CreateContractModule().updateSocialMediaUrls);
 
 };

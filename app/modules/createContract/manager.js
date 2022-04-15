@@ -692,6 +692,10 @@ export default class Manager {
         }
     }
 
+    uploadFileToS3 = async () => {
+
+    }
+
     // verifyXrc20 = async (settings, provider) => {
     //     let web3 =  await WebSocketService.webSocketConnection(provider);
     //     let solc_version = settings['solc_version'];
