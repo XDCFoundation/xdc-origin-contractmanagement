@@ -739,8 +739,8 @@ export default class Manager {
             'ERC721Mintable': ERC721Mintable,
             'ERC721Pausable': ERC721Pausable,
             'Ownable': Ownable,
-            'tokenName': "NFT Collection 4",
-            'tokenSymbol': "NFTC4",
+            'tokenName': "NFT Build",
+            'tokenSymbol': "NFTBUI",
             'inherits': inherits
         }, (err, data) => {
             if (err)
@@ -756,17 +756,18 @@ export default class Manager {
 
 
         const newXRC721Token = {
-            tokenOwner: "requestData.tokenOwner",
-            tokenName: "requestData.tokenName",
-            tokenSymbol: "requestData.tokenSymbol",
+            tokenOwner: "xdc9f080e466b547cf78bf72eef93b146d985cdf1a3",
+            tokenName: "NFT Build",
+            tokenSymbol: "NFTBUI",
             tokenImage: "requestData.tokenImage",
-            website: "website",
-            twitter: "twitter",
-            telegram: "telegram",
-            tokenDescription: "requestData.tokenDescription",
-            network: "XDC Mainnet",
-            tokenContractCode: "tokenContractCode",
-            byteCode: "byteCode",
+            website: "https://origin.xdc.org",
+            twitter: "https://twitter.com",
+            telegram: "https://telegram.com",
+            tokenDescription: "Description",
+            network: "XDC Apothem Network",
+            tokenContractCode: oData,
+            byteCode: byteCode,
+            contractAbiString: contractAbi
         }
 
         return XRC721Token.create(newXRC721Token);
