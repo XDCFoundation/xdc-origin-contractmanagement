@@ -5,9 +5,8 @@ import * as ValidationManger from "../middleware/validation";
 import TestModule from "../app/modules/testModule";
 import CreateContractModule from "../app/modules/createContract";
 import {stringConstants} from "../app/common/constants";
-import multer from "multer";
+import * as UploadFileManager from "../middleware/uploadFiles"
 
-const upload = multer();
 
 module.exports = (app) => {
     app.get('/', (req, res) => res.send(stringConstants.SERVICE_STATUS_HTML));
@@ -30,6 +29,6 @@ module.exports = (app) => {
 
     //api for uploading files to S3
 
-    app.post("/upload-xrc20-file-to-s3", upload.single('files'), ValidationManger.validateUploadXrc20File, new CreateContractModule().updateSocialMediaUrls);
+    app.post("/upload-xrc20-file-to-s3", UploadFileManager.uploadImage, new CreateContractModule().uploadFileToS3);
 
 };

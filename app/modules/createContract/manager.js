@@ -10,6 +10,7 @@ import Utils from "../../utils";
 import HttpService from "../../service/http-service";
 // import WebSocketService from '../../service/WebsocketService';
 import Config from "../../../config"
+import AWS from 'aws-sdk'
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
         // API business logic
@@ -692,7 +693,39 @@ export default class Manager {
         }
     }
 
-    uploadFileToS3 = async () => {
+    uploadFileToS3 = async (request) => {
+
+        //need to retrieve the image file details from the request body and the new 'uploads' folder inside which the file will be stored.
+        //Also, make sure to delete that file from the uploads folder once the file is successfully uploaded to S3
+
+        const config = {
+            accessKeyId: Config.S3_ACCESS_KEY,
+            secretAccessKey: Config.S3_SECRET_KEY
+        }
+
+        AWS.config.update(config);
+
+        let s3 = new AWS.S3();
+
+        let params = { //need to pass the image file's key and body appropriately to the Key and Body keys
+            Bucket: Config.S3_BUCKET_NAME,
+            Key: "",
+            Body: "",
+        }
+
+        return new Promise(function (resolve, reject) {
+            s3.upload(params, (err, res) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    let responseObj = {
+                        sourceFileName: res.Key,
+                    };
+                    resolve(responseObj);
+                }
+            });
+        });
+
 
     }
 
