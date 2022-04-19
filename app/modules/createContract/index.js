@@ -82,7 +82,7 @@ export default class Index {
 
     async uploadFileToS3(request, response) {
         console.log('Inside uploadFileToS3', request.body, 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().uploadFileToS3(request.body))
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().uploadFileToS3(request.file))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }

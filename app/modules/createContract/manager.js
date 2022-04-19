@@ -8,9 +8,13 @@ import ejs from "ejs";
 import {apiFailureMessage, contractConstants, httpConstants} from '../../common/constants'
 import Utils from "../../utils";
 import HttpService from "../../service/http-service";
+import * as UploadFileManager from "../../../middleware/uploadFiles"
 // import WebSocketService from '../../service/WebsocketService';
 import Config from "../../../config"
 import AWS from 'aws-sdk'
+import fs from 'fs';
+const path = require('path')
+
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
         // API business logic
@@ -697,6 +701,7 @@ export default class Manager {
 
         //need to retrieve the image file details from the request body and the new 'uploads' folder inside which the file will be stored.
         //Also, make sure to delete that file from the uploads folder once the file is successfully uploaded to S3
+        
 
         const config = {
             accessKeyId: Config.S3_ACCESS_KEY,
@@ -704,16 +709,24 @@ export default class Manager {
         }
 
         AWS.config.update(config);
-
+        
         let s3 = new AWS.S3();
 
+        let newpath=path.dirname(__dirname)
+        let newpath1=path.dirname(newpath)
+        let newpath2=path.dirname(newpath1)
+        
+
+        const filename = (request.filename).replace(/\s/g, '')
+
+        let fileContent=fs.readFileSync(newpath2+`/uploads/`+`${request.filename}`)
         let params = { //need to pass the image file's key and body appropriately to the Key and Body keys
             Bucket: Config.S3_BUCKET_NAME,
-            Key: "",
-            Body: "",
+            Key: filename,
+            Body: fileContent
         }
 
-        return new Promise(function (resolve, reject) {
+         let response1=new Promise(function (resolve, reject) {
             s3.upload(params, (err, res) => {
                 if (err) {
                     reject(err);
@@ -721,10 +734,12 @@ export default class Manager {
                     let responseObj = {
                         sourceFileName: res.Key,
                     };
-                    resolve(responseObj);
+                    resolve(res);
                 }
             });
         });
+        fs.unlinkSync(newpath2+`/uploads/`+`${request.filename}`)
+        return response1
 
 
     }
