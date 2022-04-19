@@ -700,8 +700,7 @@ export default class Manager {
 
     uploadFileToS3 = async (request) => {
 
-        //need to retrieve the image file details from the request body and the new 'uploads' folder inside which the file will be stored.
-        //Also, make sure to delete that file from the uploads folder once the file is successfully uploaded to S3
+
         
 
         const config = {
@@ -719,7 +718,7 @@ export default class Manager {
         const filename = (request.filename).replace(/\s/g, '')
 
         let fileContent=fs.readFileSync(dirPath2+`/uploads/`+`${request.filename}`)
-        let params = { //need to pass the image file's key and body appropriately to the Key and Body keys
+        let params = { 
             Bucket: Config.S3_BUCKET_NAME,
             Key: filename,
             Body: fileContent
@@ -733,12 +732,13 @@ export default class Manager {
                     let responseObj = {
                         sourceFileName: res.Key,
                     };
-                    resolve(res);
+                    resolve(res.Location);
                 }
             });
         });
         fs.unlinkSync(dirPath2+`/uploads/`+`${request.filename}`)
-        return response1
+            
+        return  response1
 
 
     }

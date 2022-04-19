@@ -71,7 +71,8 @@ export const apiSuccessMessage = {
   TOKEN_DETAILS_UPDATED: 'Token details updated successfully',
   TOKEN_DETAILS_FETCHED: 'Token details fetched successfully',
   TOKEN_DELETED: 'Token deleted successfully',
-  DETAILS_SAVED_SUCCESSFULLY: 'Details saved successfully'
+  DETAILS_SAVED_SUCCESSFULLY: 'Details saved successfully',
+  IMAGE_UPLOADED_TO_S3:'Image uploaded to S3'
 }
 
 export const apiEndpoints = {
