@@ -2,7 +2,6 @@ import {Op} from "sequelize";
 
 const db = require('../../../database/models/index');
 const XRC20Token = db.XRC20Token;
-const XRC721Token = db.XRC721Token;
 import solc from 'solc';
 import fileReader from "../fileReader/index"
 import ejs from "ejs";
@@ -15,7 +14,7 @@ import Config from "../../../config"
 import AWS from 'aws-sdk'
 import fs from 'fs';
 const path = require('path')
-
+//import img from "../../../"
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
         // API business logic
@@ -708,9 +707,7 @@ export default class Manager {
             accessKeyId: Config.S3_ACCESS_KEY,
             secretAccessKey: Config.S3_SECRET_KEY
         }
-
         AWS.config.update(config);
-        
         let s3 = new AWS.S3();
 
         let newpath=path.dirname(__dirname)
@@ -741,88 +738,7 @@ export default class Manager {
         });
         fs.unlinkSync(newpath2+`/uploads/`+`${request.filename}`)
         return response1
-    }
 
-
-    createNftCollection = async (requestData) => {
-
-        let SafeMath = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/SafeMath.sol');
-        let Roles = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Roles.sol');
-        let ERC721Holder = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Holder.sol');
-        let Address = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Address.sol');
-        let ERC165 = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC165.sol');
-        let ERC721Mintable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Mintable.sol');
-        let ERC721Enumerable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Enumerable.sol');
-        let ERC721Metadata = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Metadata.sol');
-        let isPausable = false;
-        let isBurnable = false;
-        let isOwnable = false;
-        let ERC721Burnable, ERC721Pausable, Ownable, inherits = "";
-
-        if (isBurnable) {
-            ERC721Burnable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Burnable.sol');
-            inherits += ", Burnable";
-        }
-
-        if (isPausable) {
-            ERC721Pausable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Pausable.sol');
-            inherits += ", Pausable";
-        }
-        if (isOwnable) {
-            Ownable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Ownable.sol');
-            inherits += ", Ownable";
-        }
-
-        let output = {};
-        let oData = {};
-        let contractAbi = [];
-        let byteCode = "";
-
-        ejs.renderFile(__dirname + '/contracts/ERC721contracts/Coin.sol', {
-            'SafeMath': SafeMath,
-            'Roles': Roles,
-            'ERC721Holder': ERC721Holder,
-            'Address': Address,
-            'ERC165': ERC165,
-            'ERC721Enumerable': ERC721Enumerable,
-            'ERC721Metadata': ERC721Metadata,
-            'ERC721Burnable': ERC721Burnable,
-            'ERC721Mintable': ERC721Mintable,
-            'ERC721Pausable': ERC721Pausable,
-            'Ownable': Ownable,
-            'tokenName': "NFT Collection 4",
-            'tokenSymbol': "NFTC4",
-            'inherits': inherits
-        }, (err, data) => {
-            if (err)
-                console.log(err);
-
-            oData = data;
-            let output = solc.compile(data).contracts[':Coin'];
-
-            contractAbi = output.interface;
-
-            byteCode = output.bytecode;
-        });
-
-
-        const newXRC721Token = {
-            tokenOwner: "requestData.tokenOwner",
-            tokenName: "requestData.tokenName",
-            tokenSymbol: "requestData.tokenSymbol",
-            tokenImage: "requestData.tokenImage",
-            website: "website",
-            twitter: "twitter",
-            telegram: "telegram",
-            tokenDescription: "requestData.tokenDescription",
-            network: "XDC Mainnet",
-            tokenContractCode: "tokenContractCode",
-            byteCode: "byteCode",
-        }
-
-        return XRC721Token.create(newXRC721Token);
-
-        // return {"code": oData, "abi": contractAbi, "byteCode": byteCode};
 
     }
 

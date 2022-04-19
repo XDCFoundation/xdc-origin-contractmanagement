@@ -6,8 +6,6 @@ import TestModule from "../app/modules/testModule";
 import CreateContractModule from "../app/modules/createContract";
 import {stringConstants} from "../app/common/constants";
 import * as UploadFileManager from "../middleware/uploadFiles"
-
-import CreateERC721 from "../app/modules/createERC721";
 import multer from "multer";
 
 const upload = multer();
@@ -37,26 +35,5 @@ module.exports = (app) => {
     //api for uploading files to S3
 
     app.post("/upload-xrc20-file-to-s3", UploadFileManager.uploadImage, new CreateContractModule().uploadFileToS3);
-
-    
-
-    // XRC721 apis
-
-    app.get("/create-nft-collection", new CreateContractModule().createNftCollection);
-    app.post("/create-nft-collection",ValidationManger.validateCreateNftCollection,new CreateERC721().createNftCollection)
-    app.post("/update-token-721",ValidationManger.validateUpdateToken721,new CreateERC721().updateToken721)
-    app.post("/create-nft",ValidationManger.validateCreaterNFT,new CreateERC721().createrNFT)
-    app.post("/update-nft",ValidationManger.validateUpdateNft,new CreateERC721().updateNft)
-    app.post("/find-721-token",ValidationManger.validateFind721TokenAndNft,new CreateERC721().find721TokenAndNft)
-    app.post("/find-nft",ValidationManger.validateFindNft,new CreateERC721().findNft)
-    app.post("/delete-nft",ValidationManger.validateDeletingNft,new CreateERC721().deletingNft)
-    app.post("/tranfer-nft",ValidationManger.validateNftTransfer,new CreateERC721().nftTransfer)
-    app.post("/xrc-721-token-by-owner",ValidationManger.validateXrcTokenByOwner,new CreateERC721().xrcTokenByOwner);
-    app.post("/get-drafted-and-failed-tokens",ValidationManger.validateGetDraftedAndFailedTokens, new CreateERC721().getDraftedAndFailedTokens);
-    app.post("/get-xrc721-and-xrc20-tokens-by-network",ValidationManger.validateNetworkBasedSearch, new CreateERC721().getXRC721AndXRC20TokensByNetwork);
-    app.post("/get-deployed-tokens",ValidationManger.validateGetDeployedTokens, new CreateERC721().getDeployedTokens);
-
-    app.post("/get-ipfs-url", upload.single('files'), ValidationManger.validateGetIpfsUrl,  new CreateERC721().getIpfsUrl);
-
 
 };
