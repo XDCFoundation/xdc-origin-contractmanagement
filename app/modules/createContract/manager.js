@@ -711,14 +711,14 @@ export default class Manager {
         AWS.config.update(config);
         let s3 = new AWS.S3();
 
-        let newpath=path.dirname(__dirname)
-        let newpath1=path.dirname(newpath)
-        let newpath2=path.dirname(newpath1)
+        let dirPath=path.dirname(__dirname)
+        let dirPath1=path.dirname(dirPath)
+        let dirPath2=path.dirname(dirPath1)
         
 
         const filename = (request.filename).replace(/\s/g, '')
 
-        let fileContent=fs.readFileSync(newpath2+`/uploads/`+`${request.filename}`)
+        let fileContent=fs.readFileSync(dirPath2+`/uploads/`+`${request.filename}`)
         let params = { //need to pass the image file's key and body appropriately to the Key and Body keys
             Bucket: Config.S3_BUCKET_NAME,
             Key: filename,
@@ -737,7 +737,7 @@ export default class Manager {
                 }
             });
         });
-        fs.unlinkSync(newpath2+`/uploads/`+`${request.filename}`)
+        fs.unlinkSync(dirPath2+`/uploads/`+`${request.filename}`)
         return response1
 
 
