@@ -401,6 +401,4 @@ contract ERC721Full is ERC721, ERC721Enumerable, ERC721Metadata {
 contract Coin is ERC721Full<%=inherits %> {
   constructor() ERC721Full("<%= tokenName %>", "<%= tokenSymbol %>") public {
   }
-
-
 }
