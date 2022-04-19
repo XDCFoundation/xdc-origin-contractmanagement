@@ -14,7 +14,8 @@ import Config from "../../../config"
 import AWS from 'aws-sdk'
 import fs from 'fs';
 const path = require('path')
-//import img from "../../../"
+
+
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
         // API business logic
