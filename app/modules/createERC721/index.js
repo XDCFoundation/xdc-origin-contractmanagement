@@ -72,6 +72,13 @@ export default class Index {
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
+    async getDraftedAndFailedTokensByType (request, response) {
+        console.log('Inside getDraftedAndFailedTokensbytype', request.body, 'createToken', 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().getDraftedAndFailedTokensByType(request.body))
+        if (!getMetersRes) { return Utils.handleError(error, request, response) }
+        return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+    }
+
 
     async getXRC721AndXRC20TokensByNetwork (request, response) {
         console.log('Inside getXRC721AndXRC20TokensByNetwork', request.body, 'createToken', 0, '')

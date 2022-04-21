@@ -520,6 +520,34 @@ export default class Manager {
 
     getDraftedAndFailedTokens = async (requestData) => {
         let newArray = [];
+        const draftedTokens721 = await XRC721Token.findAll({
+          where: {
+            [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+            tokenOwner: requestData.tokenOwner,
+            network: requestData.network
+          }
+        });
+    
+        const draftedTokens20 = await XRC20Token.findAll({
+          where: {
+            [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+            tokenOwner: requestData.tokenOwner,
+            network: requestData.network
+          }
+        });
+        newArray=draftedTokens721.concat(draftedTokens20)
+
+        if(newArray.length!==0)
+            return {draftedTokens721,draftedTokens20,newArray}
+        else
+            return "no data found"
+        
+      };
+
+
+
+      getDraftedAndFailedTokensByType = async (requestData) => {
+        let newArray = [];
         let type=requestData.type
         const draftedTokens721 = await XRC721Token.findAll({
           where: {
@@ -557,10 +585,10 @@ export default class Manager {
             return "no data found"
         }
 
-         
-        
-      };
-    
+
+
+    };
+
       getXRC721AndXRC20TokensByNetwork = async (requestData) => {
         let newArray = [];
         let type=requestData.type
