@@ -229,6 +229,14 @@ module.exports = {
       description: yup.string().required(),
     })
     await validate(schema, req.body, res, next)
+  },
+
+
+  validateDeleteCollection: async (req, res, next) => {
+    const schema = yup.object().shape({
+      id:yup.number().required()
+    })
+    await validate(schema, req.body, res, next)
   }
 
 
