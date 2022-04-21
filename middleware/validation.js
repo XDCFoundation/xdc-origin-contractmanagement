@@ -221,6 +221,15 @@ module.exports = {
     await validate(schema, req.body, res, next)
   },
 
+  validateGetDraftedAndFailedTokensByType: async (req, res, next) => {
+    const schema = yup.object().shape({
+      tokenOwner: yup.string().required(),
+      network: yup.string().required(),
+      type:yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
+
   validateGetIpfsUrl: async (req, res, next) => {
     const schema = yup.object().shape({
       name: yup.string().required(),
