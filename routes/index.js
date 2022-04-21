@@ -52,7 +52,7 @@ module.exports = (app) => {
     app.post("/get-deployed-tokens",ValidationManger.validateGetDeployedTokens, new CreateERC721().getDeployedTokens);
 
     app.post("/get-ipfs-url", upload.single('files'), ValidationManger.validateGetIpfsUrl,  new CreateERC721().getIpfsUrl);
-    app.post("/delete-collection",new CreateERC721().deleteCollection)
+    app.post("/delete-collection",ValidationManger.validateDeleteCollection,new CreateERC721().deleteCollection)
 
 
 };
