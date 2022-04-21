@@ -85,7 +85,7 @@ export default class Manager {
         });
 
         if(requestData.id){ //logic for updating the existing token as draft again with new details
-            const existingTokens = await XRC20Token.findAll({
+            const existingTokens = await XRC721Token.findAll({
                 where: {
                     "id": requestData.id,
                     "isDeleted": false
@@ -151,7 +151,7 @@ export default class Manager {
 
     checkExistingTokens = async (requestData) => {
         if(requestData.id){
-            const tokens = await XRC20Token.findAll({
+            const tokens = await XRC721Token.findAll({
                 where: {
                     "id": requestData.id,
                     "isDeleted": false
