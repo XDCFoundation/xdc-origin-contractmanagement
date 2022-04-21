@@ -37,7 +37,7 @@ module.exports = (app) => {
 
     // XRC721 apis
 
-    app.get("/create-nft-collection", new CreateContractModule().createNftCollection);
+    //app.get("/create-nft-collection", new CreateContractModule().createNftCollection);
     app.post("/create-nft-collection",ValidationManger.validateCreateNftCollection,new CreateERC721().createNftCollection)
     app.post("/update-token-721",ValidationManger.validateUpdateToken721,new CreateERC721().updateToken721)
     app.post("/create-nft",ValidationManger.validateCreaterNFT,new CreateERC721().createrNFT)
@@ -52,6 +52,7 @@ module.exports = (app) => {
     app.post("/get-deployed-tokens",ValidationManger.validateGetDeployedTokens, new CreateERC721().getDeployedTokens);
 
     app.post("/get-ipfs-url", upload.single('files'), ValidationManger.validateGetIpfsUrl,  new CreateERC721().getIpfsUrl);
+    app.post("/delete-collection",new CreateERC721().deleteCollection)
 
 
 };

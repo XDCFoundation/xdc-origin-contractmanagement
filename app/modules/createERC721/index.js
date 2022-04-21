@@ -5,7 +5,7 @@ import BLManager from './manager'
 export default class Index {
     async createNftCollection (request, response) {
         console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().createNftCollection(request.body))
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().checkExistingTokens(request.body))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
         return Utils.response(response, getMetersRes, apiSuccessMessage.SAVED_AS_DRAFT, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
@@ -100,6 +100,19 @@ export default class Index {
         }
       }
 
+
+      async deleteCollection(request, response) {
+          console.log('Inside deleteCollection', request.body, 'deleteCollection', 0, '')
+          const [error, deleteCollectionRes] = await Utils.parseResponse(new BLManager().deleteCollection(request.body))
+          if (!deleteCollectionRes) {
+            return Utils.handleError(error, request, response)
+          }
+          return Utils.response(response, deleteCollectionRes, apiSuccessMessage.TOKEN_DELETED, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+        
+      }
+
+
+    
     
 
     

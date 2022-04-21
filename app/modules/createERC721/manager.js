@@ -83,24 +83,95 @@ export default class Manager {
 
 
         });
+
+        if(requestData.id){ //logic for updating the existing token as draft again with new details
+            const existingTokens = await XRC20Token.findAll({
+                where: {
+                    "id": requestData.id,
+                    "isDeleted": false
+                }
+            });
+
+            let existingToken = existingTokens[0];
+
+
+            const newXRC721Token = {
+                tokenOwner: requestData.tokenOwner ? requestData.tokenOwner : existingToken.tokenOwner ,
+                 tokenName: requestData.tokenName ? requestData.tokenName : existingToken.tokenName ,
+                 tokenSymbol: requestData.tokenSymbol? requestData.tokenSymbol : existingToken.tokenSymbol  ,
+                 tokenImage: requestData.tokenImage ? requestData.tokenImage : existingToken.tokenImage ,
+                 website: requestData.website ? requestData.website : existingToken.website ,
+                 twitter: requestData.twitter ? requestData.twitter : existingToken.twitter ,
+                 telegram: requestData.telegram ? requestData.telegram : existingToken.telegram ,
+                 tokenDescription: requestData.tokenDescription ? requestData.tokenDescription : existingToken.tokenDescription ,
+                 network: requestData.network ? requestData.network : existingToken.network ,
+                 contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
+                 tokenContractCode: tokenContractCode  ,
+                 byteCode: byteCode  ,
+            }
+
+
+            await XRC721Token.update(
+                newXRC721Token,
+                { where: { tokenOwner: requestData.tokenOwner,  id: requestData.id, isDeleted: false} },
+            )
+
+            return XRC721Token.findAll({
+                where: {
+                    "id": requestData.id
+                }
+            });
+
+        }
+        else{
+
+            const newXRC721Token = {
+                tokenOwner: requestData.tokenOwner ,
+                 tokenName: requestData.tokenName ,
+                 tokenSymbol: requestData.tokenSymbol ,
+                 tokenImage: requestData.tokenImage,
+                 website: requestData.website ? requestData.website : "",
+                 twitter: requestData.twitter ? requestData.twitter : "",
+                 telegram: requestData.telegram ? requestData.telegram : "",
+                 tokenDescription: requestData.tokenDescription,
+                 network: requestData.network,
+                 contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
+                 tokenContractCode: tokenContractCode,
+                 byteCode: byteCode,
+            }
     
-        const newXRC721Token = {
-            tokenOwner: requestData.tokenOwner ,
-             tokenName: requestData.tokenName ,
-             tokenSymbol: requestData.tokenSymbol ,
-             tokenImage: requestData.tokenImage,
-             website: requestData.website ? requestData.website : "",
-             twitter: requestData.twitter ? requestData.twitter : "",
-             telegram: requestData.telegram ? requestData.telegram : "",
-             tokenDescription: requestData.tokenDescription,
-             network: requestData.network,
-             contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
-             tokenContractCode: tokenContractCode,
-             byteCode: byteCode,
+            return XRC721Token.create(newXRC721Token);
+
         }
 
-        return XRC721Token.create(newXRC721Token);
     
+        
+    
+    }
+
+    checkExistingTokens = async (requestData) => {
+        if(requestData.id){
+            const tokens = await XRC20Token.findAll({
+                where: {
+                    "id": requestData.id,
+                    "isDeleted": false
+                }
+            });
+
+            if(tokens.length > 0){
+                return await this.createNftCollection(requestData);
+            }
+            else{
+                throw Utils.error(
+                    {},
+                    apiFailureMessage.NO_SUCH_TOKEN,
+                    httpConstants.RESPONSE_CODES.NOT_FOUND
+                );
+            }
+        }
+        else{
+            return await this.createNftCollection(requestData);
+        }
     }
 
     findToken = async (requestData) => {
@@ -449,6 +520,7 @@ export default class Manager {
 
     getDraftedAndFailedTokens = async (requestData) => {
         let newArray = [];
+        let type=requestData.type
         const draftedTokens721 = await XRC721Token.findAll({
           where: {
             [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
@@ -466,10 +538,26 @@ export default class Manager {
         });
         newArray=draftedTokens721.concat(draftedTokens20)
 
-        if(newArray.length!==0)
-            return {draftedTokens721,draftedTokens20,newArray}
+        if(type==="XRC721"){
+            if(draftedTokens721.length!==0)
+            return {draftedTokens721}
         else
             return "no data found"
+        }
+        else if(type==="XRC20"){
+            if(draftedTokens20.length!==0)
+            return {draftedTokens20}
+            else
+            return "no data found"
+        }
+        else if(type==="ALL"){
+            if(newArray.length!==0)
+            return {newArray}
+            else
+            return "no data found"
+        }
+
+         
         
       };
     
@@ -599,7 +687,7 @@ export default class Manager {
             }
         
         
-            parseRequestAndUploadFile = async (file, requestData) => {
+             parseRequestAndUploadFile = async (file, requestData) => {
                 try {
                     let fileName = (file.originalname).replace(/\s/g, '')
                     let key = `${requestData.tokenOwner}/${Config.FOLDER_NAME}/${fileName}`;
@@ -632,6 +720,33 @@ export default class Manager {
                     throw new Error(err);
                 }
             }
+
+        deleteCollection = async(requestData) =>{
+
+            const tokenDetails = await XRC721Token.findAll({
+                where: {
+                    "id": requestData.id,
+                    "status": {
+                        [Op.or]: ["DRAFT", "FAILED"]
+                    },
+                }
+            });
+    
+            if(tokenDetails.length !== 0){
+                await XRC721Token.update(
+                    {isDeleted:true},
+                    {where:{
+                        [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+                        id:requestData.id
+                    }}
+                )
+        
+                return "collection deleted successfully"
+            }
+            else{
+                return "Couldn't delete the token";
+            }
+        }
         
 
     
