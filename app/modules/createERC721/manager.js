@@ -862,11 +862,11 @@ export default class Manager {
                         xrc721TokenUpdateObj.facebook = requestData.facebook;
                     }
     
-                    await XRC20Token.update(
+                    await XRC721Token.update(
                         xrc721TokenUpdateObj,
                         { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
                     )
-                    return XRC20Token.findAll({
+                    return XRC721Token.findAll({
                         where: {
                             "id": requestData.tokenId
                         }
