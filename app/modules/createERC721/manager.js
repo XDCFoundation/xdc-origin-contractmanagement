@@ -12,6 +12,8 @@ import Config from "../../../config";
 import { Op } from "sequelize";
 import fs from 'fs';
 import ipfsClient from "ipfs-http-client";
+import Utility from "../../utils";
+
 
 
 
@@ -206,7 +208,8 @@ export default class Manager {
         const tokenDetails = await XRC721Token.findAll({
             where:{
                 "tokenOwner": requestData.tokenOwner,
-                "id": requestData.id
+                "id": requestData.id,
+                isDeleted: false
             }
         })
 
@@ -247,15 +250,6 @@ export default class Manager {
                     isVerified: true
                 }
             }
-
-
-            // updateObj = {
-            //             smartContractAddress: requestData.smartContractAddress,
-            //             status: requestData.status,
-            //             isVerified: true
-            //         }
-
-
 
             await XRC721Token.update(
                 updateObj,
@@ -373,7 +367,8 @@ export default class Manager {
             where:{
                 "nftOwner": requestData.nftOwner,
                 "collectionId": requestData.collectionId,
-                "id":requestData.id
+                "id":requestData.id,
+                "isDeleted": false
             }
         })
 
@@ -408,7 +403,8 @@ export default class Manager {
     find721TokenAndNft = async (requestData) => {
         const tokensFromDB = await XRC721Token.findAll({
             where:{
-                id:requestData.id
+                id:requestData.id,
+                isDeleted: false
 
             }  
         });
@@ -461,6 +457,7 @@ export default class Manager {
           where: {
             nftTokenId: requestData.nftTokenId,
             id: requestData.id,
+            isDeleted: false
           },
         });
     
@@ -506,6 +503,7 @@ export default class Manager {
                   attributes:["id","tokenName","status","network"],   
                 where: {
                     tokenOwner: requestData.tokenOwner,
+                    isDeleted: false
                 }
               });
               return token721
@@ -522,17 +520,19 @@ export default class Manager {
         let newArray = [];
         const draftedTokens721 = await XRC721Token.findAll({
           where: {
-            [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+            [Op.or]: [{status: httpConstants.STATUS.FAILED}, {status: httpConstants.STATUS.DRAFTED}],
             tokenOwner: requestData.tokenOwner,
-            network: requestData.network
+            network: requestData.network,
+            isDeleted: false
           }
         });
     
         const draftedTokens20 = await XRC20Token.findAll({
           where: {
-            [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+            [Op.or]: [{status: httpConstants.STATUS.FAILED}, {status: httpConstants.STATUS.DRAFTED}],
             tokenOwner: requestData.tokenOwner,
-            network: requestData.network
+            network: requestData.network,
+            isDeleted: false
           }
         });
         newArray=draftedTokens721.concat(draftedTokens20)
@@ -551,17 +551,19 @@ export default class Manager {
         let type=requestData.type
         const draftedTokens721 = await XRC721Token.findAll({
           where: {
-            [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+            [Op.or]: [{status: httpConstants.STATUS.FAILED}, {status: httpConstants.STATUS.DRAFTED}],
             tokenOwner: requestData.tokenOwner,
-            network: requestData.network
+            network: requestData.network,
+            isDeleted: false
           }
         });
     
         const draftedTokens20 = await XRC20Token.findAll({
           where: {
-            [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
+            [Op.or]: [{status: httpConstants.STATUS.FAILED}, {status: httpConstants.STATUS.DRAFTED}],
             tokenOwner: requestData.tokenOwner,
-            network: requestData.network
+            network: requestData.network,
+            isDeleted: false
           }
         });
         newArray=draftedTokens721.concat(draftedTokens20)
@@ -596,7 +598,8 @@ export default class Manager {
           where: {
             tokenOwner: requestData.tokenOwner,
             network: requestData.network,
-            status:"DEPLOYED"
+            status: httpConstants.STATUS.DEPLOYED,
+            isDeleted: false
           }
         });
     
@@ -604,7 +607,8 @@ export default class Manager {
           where: {
             tokenOwner: requestData.tokenOwner,
             network: requestData.network,
-            status:"DEPLOYED"
+            status:httpConstants.STATUS.DEPLOYED,
+            isDeleted: false
           },
         });
 
@@ -639,18 +643,20 @@ export default class Manager {
             let newArray = [];
             const tokens721 = await XRC721Token.findAll({
               where: {
-                status:"DEPLOYED",
+                status:httpConstants.STATUS.DEPLOYED,
                 tokenOwner: requestData.tokenOwner,
-                network: requestData.network
+                network: requestData.network,
+                isDeleted: false
                 
               }
             });
         
             const tokens20 = await XRC20Token.findAll({
               where: {
-                status:"DEPLOYED",
+                status:httpConstants.STATUS.DEPLOYED,
                 tokenOwner: requestData.tokenOwner,
-                network: requestData.network
+                network: requestData.network,
+                isDeleted: false
 
               }
             });
@@ -751,34 +757,36 @@ export default class Manager {
 
         deleteCollection = async(requestData) =>{
 
-            const tokenDetails = await XRC721Token.findAll({
-                where: {
-                    "id": requestData.id,
-                    "status": {
-                        [Op.or]: ["DRAFT", "FAILED"]
-                    },
-                }
-            });
-    
-            if(tokenDetails.length !== 0){
-                await XRC721Token.update(
-                    {isDeleted:true},
-                    {where:{
-                        [Op.or]: [{status: "FAILED"}, {status: "DRAFT"}],
-                        id:requestData.id
-                    }}
-                )
-        
-                return "collection deleted successfully"
-            }
-            else{
-                return "Couldn't delete the token";
-            }
-        }
-        
-
-    
+                    const tokenDetails = await XRC721Token.findAll({
+                        where: {
+                            "id": requestData.id,
+                            "status": {
+                                [Op.or]: [httpConstants.STATUS.FAILED, httpConstants.STATUS.DRAFTED]
+                            },
+                        }
+                    });
+                    
+                    if(tokenDetails.length !== 0){
+                        await XRC721Token.update(
+                            {isDeleted:true},
+                            {where:{
+                                [Op.or]: [{status: httpConstants.STATUS.FAILED}, {status: httpConstants.STATUS.DRAFTED}],
+                                id:requestData.id
+                            }}
+                        )
+                
+                        return "collection deleted successfully"
+                    }
+                    else{
+                        return "Couldn't delete the token";
+                    }   
+                   
+        }   
 }
+
+
+
+
 
 
 
