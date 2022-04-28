@@ -118,17 +118,6 @@ export default class Index {
         
       }
 
-      async updateSocialMediaUrlsXRC721(request, response) {
-       console.log('Inside updateSocialMediaUrlsXRC721', request.body, 'updateSocialMediaUrlsXRC721', 0, '')
-        const [error, updateSocialMediaUrlsXRC721Res] = await Utils.parseResponse(new BLManager().updateSocialMediaUrlsXRC721(request.body))
-        if (!updateSocialMediaUrlsXRC721Res) {
-          return Utils.handleError(error, request, response)
-        }
-        return Utils.response(response, updateSocialMediaUrlsXRC721Res, apiSuccessMessage.TOKEN_DETAILS_UPDATED, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
-      
-    }
-
-
     
     
 

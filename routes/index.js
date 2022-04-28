@@ -54,7 +54,6 @@ module.exports = (app) => {
 
     app.post("/get-ipfs-url", upload.single('files'), ValidationManger.validateGetIpfsUrl,  new CreateERC721().getIpfsUrl);
     app.post("/delete-collection",ValidationManger.validateDeleteCollection,new CreateERC721().deleteCollection)
-    app.post("/update-social-media-urls-721",ValidationManger.validateDeleteCollection,new CreateERC721().updateSocialMediaUrlsXRC721)
 
 
 };

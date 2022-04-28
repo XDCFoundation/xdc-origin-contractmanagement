@@ -360,103 +360,212 @@ export default class Manager {
     }
 
     updateSocialMediaUrls = async (requestData) => {
-        const tokens = await XRC20Token.findAll({
-            where: {
-                "tokenOwner": requestData.tokenOwner,
-                "id": requestData.tokenId,
-                "network": requestData.network,
-                "smartContractAddress": requestData.smartContractAddress,
-                "isDeleted": false
-            }
-        });
+        const tokenType= requestData.type;
 
-        if(tokens.length > 0){
+        if(tokenType==='XRC20'){
 
-
-            let updateObj = {
-                contractAddress: requestData.smartContractAddress
-            };
-
-            if(requestData.hasOwnProperty('website')){
-                updateObj.website = requestData.website;
-            }
-            if(requestData.hasOwnProperty('twitter')){
-                updateObj.twitter = requestData.twitter;
-            }
-            if(requestData.hasOwnProperty('telegram')){
-                updateObj.telegram = requestData.telegram;
-            }
-            if(requestData.hasOwnProperty('email')){
-                updateObj.email = requestData.email;
-            }
-            if(requestData.hasOwnProperty('linkedIn')){
-                updateObj.linkedIn = requestData.linkedIn;
-            }
-            if(requestData.hasOwnProperty('reddit')){
-                updateObj.reddit = requestData.reddit;
-            }
-            if(requestData.hasOwnProperty('coinGecko')){
-                updateObj.coinGecko = requestData.coinGecko;
-            }
-            if(requestData.hasOwnProperty('symbolUrl')){
-                updateObj.symbolUrl = requestData.symbolUrl;
-            }
-            if(requestData.hasOwnProperty('facebook')){
-                updateObj.facebook = requestData.facebook;
-            }
-
-
-
-            if(requestData.network === "XDC Mainnet"){
-                await this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokens[0], updateObj)
-                console.log("========= SUCCESS IN UPDATING URLS FOR MAINNET IN OBSERVER =========")
-            }
-
-
-                let xrc20TokenUpdateObj = {};
-
+            const tokens = await XRC20Token.findAll({
+                where: {
+                    "tokenOwner": requestData.tokenOwner,
+                    "id": requestData.tokenId,
+                    "network": requestData.network,
+                    "smartContractAddress": requestData.smartContractAddress,
+                    "isDeleted": false
+                }
+            });
+    
+            if(tokens.length > 0){
+    
+    
+                let updateObj = {
+                    contractAddress: requestData.smartContractAddress
+                };
+    
                 if(requestData.hasOwnProperty('website')){
-                    xrc20TokenUpdateObj.website = requestData.website;
+                    updateObj.website = requestData.website;
                 }
                 if(requestData.hasOwnProperty('twitter')){
-                    xrc20TokenUpdateObj.twitter = requestData.twitter;
+                    updateObj.twitter = requestData.twitter;
                 }
                 if(requestData.hasOwnProperty('telegram')){
-                    xrc20TokenUpdateObj.telegram = requestData.telegram;
+                    updateObj.telegram = requestData.telegram;
                 }
                 if(requestData.hasOwnProperty('email')){
-                    xrc20TokenUpdateObj.email = requestData.email;
+                    updateObj.email = requestData.email;
                 }
                 if(requestData.hasOwnProperty('linkedIn')){
-                    xrc20TokenUpdateObj.linkedIn = requestData.linkedIn;
+                    updateObj.linkedIn = requestData.linkedIn;
                 }
                 if(requestData.hasOwnProperty('reddit')){
-                    xrc20TokenUpdateObj.reddit = requestData.reddit;
+                    updateObj.reddit = requestData.reddit;
                 }
                 if(requestData.hasOwnProperty('coinGecko')){
-                    xrc20TokenUpdateObj.coinGecko = requestData.coinGecko;
+                    updateObj.coinGecko = requestData.coinGecko;
                 }
                 if(requestData.hasOwnProperty('symbolUrl')){
-                    xrc20TokenUpdateObj.tokenImage = requestData.symbolUrl;
+                    updateObj.symbolUrl = requestData.symbolUrl;
                 }
                 if(requestData.hasOwnProperty('facebook')){
-                    xrc20TokenUpdateObj.facebook = requestData.facebook;
+                    updateObj.facebook = requestData.facebook;
                 }
-
-                await XRC20Token.update(
-                    xrc20TokenUpdateObj,
-                    { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
-                )
-                return XRC20Token.findAll({
-                    where: {
-                        "id": requestData.tokenId
+    
+    
+    
+                if(requestData.network === "XDC Mainnet"){
+                    await this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokens[0], updateObj)
+                    console.log("========= SUCCESS IN UPDATING URLS FOR MAINNET IN OBSERVER =========")
+                }
+    
+    
+                    let xrc20TokenUpdateObj = {};
+    
+                    if(requestData.hasOwnProperty('website')){
+                        xrc20TokenUpdateObj.website = requestData.website;
                     }
-                });
+                    if(requestData.hasOwnProperty('twitter')){
+                        xrc20TokenUpdateObj.twitter = requestData.twitter;
+                    }
+                    if(requestData.hasOwnProperty('telegram')){
+                        xrc20TokenUpdateObj.telegram = requestData.telegram;
+                    }
+                    if(requestData.hasOwnProperty('email')){
+                        xrc20TokenUpdateObj.email = requestData.email;
+                    }
+                    if(requestData.hasOwnProperty('linkedIn')){
+                        xrc20TokenUpdateObj.linkedIn = requestData.linkedIn;
+                    }
+                    if(requestData.hasOwnProperty('reddit')){
+                        xrc20TokenUpdateObj.reddit = requestData.reddit;
+                    }
+                    if(requestData.hasOwnProperty('coinGecko')){
+                        xrc20TokenUpdateObj.coinGecko = requestData.coinGecko;
+                    }
+                    if(requestData.hasOwnProperty('symbolUrl')){
+                        xrc20TokenUpdateObj.tokenImage = requestData.symbolUrl;
+                    }
+                    if(requestData.hasOwnProperty('facebook')){
+                        xrc20TokenUpdateObj.facebook = requestData.facebook;
+                    }
+    
+                    await XRC20Token.update(
+                        xrc20TokenUpdateObj,
+                        { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
+                    )
+                    return XRC20Token.findAll({
+                        where: {
+                            "id": requestData.tokenId
+                        }
+                    });
+    
+            }
+            else{
+                throw Utils.error({}, apiFailureMessage.NO_SUCH_TOKEN, httpConstants.RESPONSE_CODES.NOT_FOUND);
+            }
+
+        }else if(tokenType==='XRC721'){
+
+            const tokens = await XRC721Token.findAll({
+                where: {
+                    "tokenOwner": requestData.tokenOwner,
+                    "id": requestData.tokenId,
+                    "network": requestData.network,
+                    "smartContractAddress": requestData.smartContractAddress,
+                    "isDeleted": false
+                }
+            });
+    
+            if(tokens.length > 0){
+    
+    
+                let updateObj = {
+                    contractAddress: requestData.smartContractAddress
+                };
+    
+                if(requestData.hasOwnProperty('website')){
+                    updateObj.website = requestData.website;
+                }
+                if(requestData.hasOwnProperty('twitter')){
+                    updateObj.twitter = requestData.twitter;
+                }
+                if(requestData.hasOwnProperty('telegram')){
+                    updateObj.telegram = requestData.telegram;
+                }
+                if(requestData.hasOwnProperty('email')){
+                    updateObj.email = requestData.email;
+                }
+                if(requestData.hasOwnProperty('linkedIn')){
+                    updateObj.linkedIn = requestData.linkedIn;
+                }
+                if(requestData.hasOwnProperty('reddit')){
+                    updateObj.reddit = requestData.reddit;
+                }
+                if(requestData.hasOwnProperty('coinGecko')){
+                    updateObj.coinGecko = requestData.coinGecko;
+                }
+                if(requestData.hasOwnProperty('symbolUrl')){
+                    updateObj.symbolUrl = requestData.symbolUrl;
+                }
+                if(requestData.hasOwnProperty('facebook')){
+                    updateObj.facebook = requestData.facebook;
+                }
+    
+    
+    
+                if(requestData.network === "XDC Mainnet"){
+                    await this.saveSocialMediaUrlsInObservatory(requestData.smartContractAddress, tokens[0], updateObj)
+                    console.log("========= SUCCESS IN UPDATING URLS FOR MAINNET IN OBSERVER =========")
+                }
+    
+    
+                    let XRC721TokenUpdateObj = {};
+    
+                    if(requestData.hasOwnProperty('website')){
+                        XRC721TokenUpdateObj.website = requestData.website;
+                    }
+                    if(requestData.hasOwnProperty('twitter')){
+                        XRC721TokenUpdateObj.twitter = requestData.twitter;
+                    }
+                    if(requestData.hasOwnProperty('telegram')){
+                        XRC721TokenUpdateObj.telegram = requestData.telegram;
+                    }
+                    if(requestData.hasOwnProperty('email')){
+                        XRC721TokenUpdateObj.email = requestData.email;
+                    }
+                    if(requestData.hasOwnProperty('linkedIn')){
+                        XRC721TokenUpdateObj.linkedIn = requestData.linkedIn;
+                    }
+                    if(requestData.hasOwnProperty('reddit')){
+                        XRC721TokenUpdateObj.reddit = requestData.reddit;
+                    }
+                    if(requestData.hasOwnProperty('coinGecko')){
+                        XRC721TokenUpdateObj.coinGecko = requestData.coinGecko;
+                    }
+                    if(requestData.hasOwnProperty('symbolUrl')){
+                        XRC721TokenUpdateObj.tokenImage = requestData.symbolUrl;
+                    }
+                    if(requestData.hasOwnProperty('facebook')){
+                        XRC721TokenUpdateObj.facebook = requestData.facebook;
+                    }
+    
+                    await XRC721Token.update(
+                        XRC721TokenUpdateObj,
+                        { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
+                    )
+                    return XRC721Token.findAll({
+                        where: {
+                            "id": requestData.tokenId
+                        }
+                    });
+    
+            }
+            else{
+                throw Utils.error({}, apiFailureMessage.NO_SUCH_TOKEN, httpConstants.RESPONSE_CODES.NOT_FOUND);
+            }
 
         }
-        else{
-            throw Utils.error({}, apiFailureMessage.NO_SUCH_TOKEN, httpConstants.RESPONSE_CODES.NOT_FOUND);
-        }
+
+
+        
     }
 
     getDraftXRC20Token = async (requestData) => {
