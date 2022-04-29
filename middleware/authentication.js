@@ -1,13 +1,14 @@
 import {apiFailureMessage, contractConstants, httpConstants} from '../app/common/constants'
 import HttpService from "../app/service/http-service"
 import Utils from "../app/utils";
+import Config from "../config"
 
 
 const validatingUser=async function (requestData, res, next)  {
-    console.log(requestData.body,"hello")
-
+   
+    let token=requestData.header('Authorization').replace('Bearer ', '');
     let [error, contractServiceResponse] = await Utils.parseResponse(
-        HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, "http://localhost:3000/authentication-verification", '', requestData.body)
+        HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, Config.USER_SERVICE_URL, '', {token:token,walletAddress:requestData.body.walletAddress})
       );
 
     if(!error){

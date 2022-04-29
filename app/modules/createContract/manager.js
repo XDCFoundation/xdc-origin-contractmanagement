@@ -27,7 +27,7 @@ export default class Manager {
             let isPausable = requestData.isPausable;
             let isBurnable = requestData.isBurnable;
             let isMintable = requestData.isMintable;
-            let isUpgradeable = false;
+            let isUpgradeable = requestData.isUpgradeable;
             let ERC20CappedSign = "";
 
             let ERC20Burnable;
