@@ -51,6 +51,22 @@ export const httpConstants = {
     SILLY: 'silly',
     FUNCTIONAL: 'functional',
     HTTP_REQUEST: 'http request'
+  },
+  STATUS:{
+    DEPLOYED:"DEPLOYED",
+    FAILED:"FAILED",
+    DRAFTED:"DRAFT"
+  },
+  JWT_RESPONSE:{
+    INVALID_TOKEN:"Invalid Token",
+    TOKEN_EXPIRED:"Token Expired",
+    INVALID_USER:"Invalid User",
+    WELCOME:"Welcome",
+    NO_USER_FOUND:"No user Found"
+
+
+
+
   }
 }
 
