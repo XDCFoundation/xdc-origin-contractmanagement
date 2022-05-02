@@ -7,8 +7,9 @@ import Config from "../config"
 const validatingUser=async function (requestData, res, next)  {
    
     let token=requestData.header('Authorization').replace('Bearer ', '');
+    let walletAddress= requestData.header('Wallet-Address')
     let [error, contractServiceResponse] = await Utils.parseResponse(
-        HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, Config.USER_SERVICE_URL, '', {token:token,walletAddress:requestData.body.walletAddress})
+        HttpService.executeHTTPRequest(httpConstants.METHOD_TYPE.POST, Config.USER_SERVICE_URL, '', {token:token,walletAddress:walletAddress})
       );
 
     if(!error){
@@ -17,7 +18,7 @@ const validatingUser=async function (requestData, res, next)  {
             }else if(contractServiceResponse.responseData=== httpConstants.JWT_RESPONSE.TOKEN_EXPIRED){
                 res.send(401,"Token Expired")
             }else if(contractServiceResponse.responseData=== httpConstants.JWT_RESPONSE.NO_USER_FOUND){
-                res.send(401, "Invalid User");
+                res.send(401, "No User Found");
             }else if(contractServiceResponse.responseData==="User Verified"){
                 next()
             }      
