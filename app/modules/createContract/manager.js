@@ -360,15 +360,33 @@ export default class Manager {
     }
 
     updateSocialMediaUrls = async (requestData) => {
-        const tokens = await XRC20Token.findAll({
-            where: {
-                "tokenOwner": requestData.tokenOwner,
-                "id": requestData.tokenId,
-                "network": requestData.network,
-                "smartContractAddress": requestData.smartContractAddress,
-                "isDeleted": false
-            }
-        });
+        const tokenType= requestData.type;
+        let tokens={};
+
+        if(tokenType==='XRC20'){
+             tokens = await XRC20Token.findAll({
+                where: {
+                    "tokenOwner": requestData.tokenOwner,
+                    "id": requestData.tokenId,
+                    "network": requestData.network,
+                    "smartContractAddress": requestData.smartContractAddress,
+                    "isDeleted": false
+                }
+            });    
+
+        }else if(tokenType==='XRC721'){
+
+             tokens = await XRC721Token.findAll({
+                where: {
+                    "tokenOwner": requestData.tokenOwner,
+                    "id": requestData.tokenId,
+                    "network": requestData.network,
+                    "smartContractAddress": requestData.smartContractAddress,
+                    "isDeleted": false
+                }
+            });
+        }
+        console.log(tokens.length,"length====")
 
         if(tokens.length > 0){
 
@@ -413,45 +431,60 @@ export default class Manager {
             }
 
 
-                let xrc20TokenUpdateObj = {};
+                let tokenUpdateObj = {};
 
                 if(requestData.hasOwnProperty('website')){
-                    xrc20TokenUpdateObj.website = requestData.website;
+                    tokenUpdateObj.website = requestData.website;
                 }
                 if(requestData.hasOwnProperty('twitter')){
-                    xrc20TokenUpdateObj.twitter = requestData.twitter;
+                    tokenUpdateObj.twitter = requestData.twitter;
                 }
                 if(requestData.hasOwnProperty('telegram')){
-                    xrc20TokenUpdateObj.telegram = requestData.telegram;
+                    tokenUpdateObj.telegram = requestData.telegram;
                 }
                 if(requestData.hasOwnProperty('email')){
-                    xrc20TokenUpdateObj.email = requestData.email;
+                    tokenUpdateObj.email = requestData.email;
                 }
                 if(requestData.hasOwnProperty('linkedIn')){
-                    xrc20TokenUpdateObj.linkedIn = requestData.linkedIn;
+                    tokenUpdateObj.linkedIn = requestData.linkedIn;
                 }
                 if(requestData.hasOwnProperty('reddit')){
-                    xrc20TokenUpdateObj.reddit = requestData.reddit;
+                    tokenUpdateObj.reddit = requestData.reddit;
                 }
                 if(requestData.hasOwnProperty('coinGecko')){
-                    xrc20TokenUpdateObj.coinGecko = requestData.coinGecko;
+                    tokenUpdateObj.coinGecko = requestData.coinGecko;
                 }
                 if(requestData.hasOwnProperty('symbolUrl')){
-                    xrc20TokenUpdateObj.tokenImage = requestData.symbolUrl;
+                    tokenUpdateObj.tokenImage = requestData.symbolUrl;
                 }
                 if(requestData.hasOwnProperty('facebook')){
-                    xrc20TokenUpdateObj.facebook = requestData.facebook;
+                    tokenUpdateObj.facebook = requestData.facebook;
                 }
 
+            if(tokenType==='XRC20'){
                 await XRC20Token.update(
-                    xrc20TokenUpdateObj,
+                    tokenUpdateObj,
                     { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
                 )
                 return XRC20Token.findAll({
                     where: {
                         "id": requestData.tokenId
                     }
-                });
+                });   
+            }else if(tokenType==='XRC721'){
+                await XRC721Token.update(
+                    tokenUpdateObj,
+                    { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
+                )
+                return XRC721Token.findAll({
+                    where: {
+                        "id": requestData.tokenId
+                    }
+                }); 
+
+            }
+
+                
 
         }
         else{
