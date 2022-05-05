@@ -84,9 +84,9 @@ module.exports = (app) => {
     app.post("/get-drafted-and-failed-tokens-by-type",auth.validatingUser,ValidationManger.validateGetDraftedAndFailedTokensByType, new CreateERC721().getDraftedAndFailedTokensByType);
     app.post("/get-xrc721-and-xrc20-tokens-by-network",auth.validatingUser,ValidationManger.validateNetworkBasedSearch, new CreateERC721().getXRC721AndXRC20TokensByNetwork);
     app.post("/get-deployed-tokens",auth.validatingUser,ValidationManger.validateGetDeployedTokens, new CreateERC721().getDeployedTokens);
-    
+
     app.post("/get-ipfs-url",auth.validatingUser, upload.single('files'), ValidationManger.validateGetIpfsUrl,  new CreateERC721().getIpfsUrl);
     app.post("/delete-collection",auth.validatingUser,ValidationManger.validateDeleteCollection,new CreateERC721().deleteCollection)
 
-
+ //NFT and XRC721 tables migrations into Production DB
 };
