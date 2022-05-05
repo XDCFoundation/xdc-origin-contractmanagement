@@ -34,12 +34,12 @@ export default class Manager {
         let isOwnable = false;
         let ERC721Burnable, ERC721Pausable, Ownable, inherits = "";
 
-        
+
         if (isBurnable) {
             ERC721Burnable = await fileReader.readEjsFile(__dirname + '/../createContract/contracts/ERC721contracts/ERC721Burnable.sol');
             inherits += ", Burnable";
         }
-    
+
         if (isPausable) {
             ERC721Pausable = await fileReader.readEjsFile(__dirname + '/../createContract/contracts/ERC721contracts/ERC721Pausable.sol');
             inherits += ", Pausable";
@@ -74,14 +74,14 @@ export default class Manager {
 
             if (err)
                 console.log(err,"error");
-            
+
             tokenContractCode = data;
               output = solc.compile(data).contracts[':Coin'];
-            
+
               contractAbi = output.interface;
-            
+
               byteCode = output.bytecode;
-            
+
 
 
         });
@@ -98,7 +98,7 @@ export default class Manager {
 
 
             const newXRC721Token = {
-                tokenOwner: requestData.tokenOwner ? requestData.tokenOwner : existingToken.tokenOwner ,
+                 tokenOwner: requestData.tokenOwner ? requestData.tokenOwner : existingToken.tokenOwner ,
                  tokenName: requestData.tokenName ? requestData.tokenName : existingToken.tokenName ,
                  tokenSymbol: requestData.tokenSymbol? requestData.tokenSymbol : existingToken.tokenSymbol  ,
                  tokenImage: requestData.tokenImage ? requestData.tokenImage : existingToken.tokenImage ,
@@ -108,8 +108,9 @@ export default class Manager {
                  tokenDescription: requestData.tokenDescription ? requestData.tokenDescription : existingToken.tokenDescription ,
                  network: requestData.network ? requestData.network : existingToken.network ,
                  contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
-                 tokenContractCode: tokenContractCode  ,
-                 byteCode: byteCode  ,
+                 tokenContractCode: tokenContractCode ,
+                 byteCode: byteCode ,
+
             }
 
 
@@ -127,6 +128,8 @@ export default class Manager {
         }
         else{
 
+            let collectionNftOwners = [requestData.tokenOwner];
+
             const newXRC721Token = {
                 tokenOwner: requestData.tokenOwner ,
                  tokenName: requestData.tokenName ,
@@ -140,15 +143,16 @@ export default class Manager {
                  contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
                  tokenContractCode: tokenContractCode,
                  byteCode: byteCode,
+                 collectionNftOwners: collectionNftOwners
             }
-    
+
             return XRC721Token.create(newXRC721Token);
 
         }
 
-    
-        
-    
+
+
+
     }
 
     checkExistingTokens = async (requestData) => {
@@ -183,7 +187,7 @@ export default class Manager {
 
             },
             limit:10
-            
+
         });
         return tokensFromDB;
 
@@ -196,7 +200,6 @@ export default class Manager {
             nftDescription:requestData.nftDescription,
             ipfsUrl:requestData.ipfsUrl,
             network:requestData.network,
-
         }
 
         return NFT.create(newNFT);
@@ -376,12 +379,12 @@ export default class Manager {
 
             let updateObj = {};
 
-            
+
                 updateObj = {
                     nftTokenId: requestData.nftTokenId,
                     status: requestData.status,
                 }
-           
+
             await NFT.update(
                 updateObj,
                 { where: { nftOwner: requestData.nftOwner,  collectionId: requestData.collectionId, isDeleted: false, id:requestData.id} },
@@ -398,7 +401,7 @@ export default class Manager {
         }
     }
 
-    
+
 
     find721TokenAndNft = async (requestData) => {
         const tokensFromDB = await XRC721Token.findAll({
@@ -406,14 +409,14 @@ export default class Manager {
                 id:requestData.id,
                 isDeleted: false
 
-            }  
+            }
         });
         const NftFromDB = await NFT.findAll({
             where:{
                 collectionId:requestData.id,
                 isDeleted:false
 
-            }  
+            }
         });
         return {tokensFromDB,"NftFromDB":NftFromDB};
 
@@ -428,17 +431,17 @@ export default class Manager {
                 id:requestData.id,
                 isDeleted:false
             }
-            
+
         });
         if(tokensFromDB.length!==0)
             return tokensFromDB;
         else
             return "No data found"
-            
+
     }
 
     deletingNft = async(requestData) =>{
-        
+
 
         await NFT.update(
             {isDeleted:true},
@@ -460,17 +463,39 @@ export default class Manager {
             isDeleted: false
           },
         });
-    
+
+        const nftCollection = await XRC721Token.findAll({
+            where: {
+                id: transferDB[0].collectionId,
+                isDeleted: false
+            },
+        });
+
+        let collectionNftOwners = nftCollection[0].collectionNftOwners;
+
+        if(!collectionNftOwners.includes(requestData.to)){
+            collectionNftOwners.push(requestData.to)
+            await XRC721Token.update(
+                { collectionNftOwners: collectionNftOwners },
+                {
+                    where: {
+                        id: transferDB[0].collectionId,
+                        isDeleted: false
+                    },
+                }
+            );
+        }
+
         let transfersArray = {};
         transfersArray.to = requestData.to;
         transfersArray.from = requestData.from;
         transfersArray.date = requestData.when;
-    
+
         let data = transferDB[0].transfers;
-        
+
         data.push(transfersArray);
-    
-    
+
+
         await NFT.update(
           { transfers: data ,
             nftOwner: requestData.to
@@ -482,37 +507,34 @@ export default class Manager {
             },
           }
         );
-    
-        
-        const tokensFromDB = await NFT.findAll({
-          where: {
-            nftTokenId: requestData.nftTokenId,
-            id: requestData.id,
-          },
+
+
+        return NFT.findAll({
+            where: {
+                nftTokenId: requestData.nftTokenId,
+                id: requestData.id,
+            },
         });
-        
-        return tokensFromDB;
       };
-    
-      
+
+
     xrcTokenByOwner = async(requestData)=>{
             try{
-    
-                const token721= await XRC721Token.findAll(
-                {
-                  attributes:["id","tokenName","status","network"],   
-                where: {
-                    tokenOwner: requestData.tokenOwner,
-                    isDeleted: false
-                }
-              });
-              return token721
-    
+
+              return await XRC721Token.findAll(
+                  {
+                      attributes: ["id", "tokenName", "status", "network"],
+                      where: {
+                          tokenOwner: requestData.tokenOwner,
+                          isDeleted: false
+                      }
+                  })
+
             }
             catch(e){
                 console.log("error",e)
             }
-            
+
     }
 
 
@@ -526,7 +548,7 @@ export default class Manager {
             isDeleted: false
           }
         });
-    
+
         const draftedTokens20 = await XRC20Token.findAll({
           where: {
             [Op.or]: [{status: httpConstants.STATUS.FAILED}, {status: httpConstants.STATUS.DRAFTED}],
@@ -541,7 +563,7 @@ export default class Manager {
             return {draftedTokens721,draftedTokens20,newArray}
         else
             return "no data found"
-        
+
       };
 
 
@@ -557,7 +579,7 @@ export default class Manager {
             isDeleted: false
           }
         });
-    
+
         const draftedTokens20 = await XRC20Token.findAll({
           where: {
             [Op.or]: [{status: httpConstants.STATUS.FAILED}, {status: httpConstants.STATUS.DRAFTED}],
@@ -602,7 +624,7 @@ export default class Manager {
             isDeleted: false
           }
         });
-    
+
         const tokens20 = await XRC20Token.findAll({
           where: {
             tokenOwner: requestData.tokenOwner,
@@ -633,7 +655,7 @@ export default class Manager {
             return "no data found"
         }
 
-        
+
 
 
         };
@@ -644,13 +666,12 @@ export default class Manager {
             const tokens721 = await XRC721Token.findAll({
               where: {
                 status:httpConstants.STATUS.DEPLOYED,
-                tokenOwner: requestData.tokenOwner,
                 network: requestData.network,
-                isDeleted: false
-                
+                isDeleted: false,
+                collectionNftOwners: { [Op.contains]: [requestData.tokenOwner] }
               }
             });
-        
+
             const tokens20 = await XRC20Token.findAll({
               where: {
                 status:httpConstants.STATUS.DEPLOYED,
@@ -660,14 +681,15 @@ export default class Manager {
 
               }
             });
+
             newArray=tokens721.concat(tokens20)
-    
+
             if(newArray.length!==0)
                 return {tokens721,tokens20,newArray}
             else
                 return "no data found"
-    
-    
+
+
             };
 
 
@@ -690,7 +712,7 @@ export default class Manager {
                         port: Config.IPFS_PORT,
                         protocol: Config.IPFS_PROTOCOL,
                     });
-        
+
                     const fileAdded = await ipfs.add({path, content: file}, {onlyHash: true});
                     if (!fileAdded || !fileAdded.cid) {
                         throw "failed to generate file hash"
@@ -702,14 +724,14 @@ export default class Manager {
             }
 
             addFileToIPFS =  async (file, path) => {
-                
+
                 try {
                     const ipfs = await ipfsClient.create({
                         host: Config.IPFS_IP,
                         port: Config.IPFS_PORT,
                         protocol: Config.IPFS_PROTOCOL,
                     });
-                    
+
                     const fileAdded = await ipfs.add({path, content: file});
                     if (!fileAdded || !fileAdded.cid) {
                         throw "failed to upload file to IPFS"
@@ -719,8 +741,8 @@ export default class Manager {
                     throw (error)
                 }
             }
-        
-        
+
+
              parseRequestAndUploadFile = async (file, requestData) => {
                 try {
                     let fileName = (file.originalname).replace(/\s/g, '')
@@ -743,13 +765,13 @@ export default class Manager {
                     let uploadMetaDataResponse = await this.addFileToIPFS(metadata, key)
 
                     let metadataUrl = Config.IPFS_HOST_URL + uploadMetaDataResponse.toString() + `/${Config.FOLDER_NAME}/` + fileName
-        
+
                     return {
                         ...requestData,
                         ipfsUrl,
                         metadataUrl,
                     }
-        
+
                 } catch (err) {
                     throw new Error(err);
                 }
@@ -765,7 +787,7 @@ export default class Manager {
                             },
                         }
                     });
-                    
+
                     if(tokenDetails.length !== 0){
                         await XRC721Token.update(
                             {isDeleted:true},
@@ -774,14 +796,14 @@ export default class Manager {
                                 id:requestData.id
                             }}
                         )
-                
+
                         return "collection deleted successfully"
                     }
                     else{
                         return "Couldn't delete the token";
-                    }   
-                   
-        }   
+                    }
+
+        }
 }
 
 

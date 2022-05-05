@@ -103,6 +103,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.TEXT,
             defaultValue: ""
         },
+        collectionNftOwners: {
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            defaultValue: []
+        },
         isVerified: {
             type: DataTypes.BOOLEAN,
             defaultValue: false

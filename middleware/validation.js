@@ -118,7 +118,7 @@ module.exports = {
       network: yup.string().required()
     })
     await validate(schema, req.body, res, next)
-  }, 
+  },
 
   validateUpdateToken721: async (req, res, next) => {
     const schema = yup.object().shape({
@@ -155,23 +155,23 @@ module.exports = {
 
   validateFind721TokenAndNft: async (req, res, next) => {
     const schema = yup.object().shape({
-      id: yup.number().required() 
+      id: yup.number().required()
     })
     await validate(schema, req.body, res, next)
   },
 
   validateFindNft: async (req, res, next) => {
     const schema = yup.object().shape({
-      nftTokenId: yup.string().required(), 
+      nftTokenId: yup.string().required(),
       collectionId:yup.number().required() ,
-      id:yup.number().required() 
+      id:yup.number().required()
     })
     await validate(schema, req.body, res, next)
   },
 
   validateDeletingNft: async (req, res, next) => {
     const schema = yup.object().shape({
-      nftTokenId: yup.string().required(), 
+      nftTokenId: yup.string().required(),
     })
     await validate(schema, req.body, res, next)
   },
@@ -183,7 +183,6 @@ module.exports = {
       to:yup.string().required(),
       from:yup.string().required(),
       when:yup.string().required(),
-      nftTokenId:yup.number().required(),
     })
     await validate(schema, req.body, res, next)
   },
@@ -251,7 +250,7 @@ module.exports = {
 
 
 
- 
+
 }
 
 const validate = async (schema, reqData, res, next) => {
