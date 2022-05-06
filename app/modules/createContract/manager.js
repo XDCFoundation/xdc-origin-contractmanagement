@@ -2,6 +2,7 @@ import {Op} from "sequelize";
 
 const db = require('../../../database/models/index');
 const XRC20Token = db.XRC20Token;
+const XRC721Token = db.XRC721Token;
 import solc from 'solc';
 import fileReader from "../fileReader/index"
 import ejs from "ejs";
@@ -379,7 +380,7 @@ export default class Manager {
                     "smartContractAddress": requestData.smartContractAddress,
                     "isDeleted": false
                 }
-            });    
+            });
 
         }else if(tokenType==='XRC721'){
 
@@ -477,7 +478,7 @@ export default class Manager {
                     where: {
                         "id": requestData.tokenId
                     }
-                });   
+                });
             }else if(tokenType==='XRC721'){
                 await XRC721Token.update(
                     tokenUpdateObj,
@@ -487,11 +488,11 @@ export default class Manager {
                     where: {
                         "id": requestData.tokenId
                     }
-                }); 
+                });
 
             }
 
-                
+
 
         }
         else{
@@ -736,7 +737,7 @@ export default class Manager {
     uploadFileToS3 = async (request) => {
 
 
-        
+
 
         const config = {
             accessKeyId: Config.S3_ACCESS_KEY,
@@ -748,12 +749,12 @@ export default class Manager {
         let dirPath=path.dirname(__dirname)
         let dirPath1=path.dirname(dirPath)
         let dirPath2=path.dirname(dirPath1)
-        
+
 
         const filename = (request.filename).replace(/\s/g, '')
 
         let fileContent=fs.readFileSync(dirPath2+`/uploads/`+`${request.filename}`)
-        let params = { 
+        let params = {
             Bucket: Config.S3_BUCKET_NAME,
             Key: filename,
             Body: fileContent
@@ -772,7 +773,7 @@ export default class Manager {
             });
         });
         fs.unlinkSync(dirPath2+`/uploads/`+`${request.filename}`)
-            
+
         return  response1
 
 

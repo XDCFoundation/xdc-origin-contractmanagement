@@ -8,6 +8,7 @@ import {stringConstants} from "../app/common/constants";
 import * as UploadFileManager from "../middleware/uploadFiles"
 import multer from "multer";
 import * as auth from "../middleware/authentication"
+import CreateERC721 from "../app/modules/createERC721";
 
 const upload = multer();
 
