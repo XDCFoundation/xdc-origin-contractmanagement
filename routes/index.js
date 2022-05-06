@@ -5,7 +5,7 @@ import * as ValidationManger from "../middleware/validation";
 import TestModule from "../app/modules/testModule";
 import CreateContractModule from "../app/modules/createContract";
 import {stringConstants} from "../app/common/constants";
-import CreateERC721 from "../app/modules/createERC721";
+import * as UploadFileManager from "../middleware/uploadFiles"
 import multer from "multer";
 import * as auth from "../middleware/authentication"
 
@@ -46,7 +46,9 @@ module.exports = (app) => {
     app.post("/transfer-ownership-xrc20-token",auth.validatingUser, ValidationManger.validateTransferOwnershipXrc20Token, new CreateContractModule().transferOwnershipXrc20Token);
     app.post("/update-social-media-urls",auth.validatingUser, ValidationManger.validateUpdateSocialMediaUrls, new CreateContractModule().updateSocialMediaUrls);
 
+    //api for uploading files to S3
 
+    app.post("/upload-xrc20-file-to-s3", UploadFileManager.uploadImage, new CreateContractModule().uploadFileToS3);
 
 
     // XRC721 apis

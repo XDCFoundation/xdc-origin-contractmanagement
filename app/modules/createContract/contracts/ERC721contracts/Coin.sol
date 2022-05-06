@@ -401,13 +401,4 @@ contract ERC721Full is ERC721, ERC721Enumerable, ERC721Metadata {
 contract Coin is ERC721Full<%=inherits %> {
   constructor() ERC721Full("<%= tokenName %>", "<%= tokenSymbol %>") public {
   }
-
-  function mintNFT(address to, uint256 tokenId, string uri) public {
-      _mint(to, tokenId);
-      _setTokenURI(tokenId, uri);
-  }
-
-  function burnNFT(address owner, uint256 tokenId) public {
-      _burn(owner, tokenId);
-  }
 }

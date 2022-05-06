@@ -80,10 +80,10 @@ export default class Index {
         return Utils.response(response, getMetersRes, apiSuccessMessage.DETAILS_SAVED_SUCCESSFULLY, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 
-    async createNftCollection (request, response) {
-        console.log('Inside createNftCollection', request.body, 'createToken', 0, '')
-        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().createNftCollection(request.body))
+    async uploadFileToS3(request, response) {
+        console.log('Inside uploadFileToS3', request.body, 0, '')
+        const [error, getMetersRes] = await Utils.parseResponse(new BLManager().uploadFileToS3(request.file))
         if (!getMetersRes) { return Utils.handleError(error, request, response) }
-        return Utils.response(response, getMetersRes, apiSuccessMessage.SAVED_AS_DRAFT, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
+        return Utils.response(response, getMetersRes, apiSuccessMessage.IMAGE_UPLOADED_TO_S3, httpConstants.RESPONSE_STATUS.SUCCESS, httpConstants.RESPONSE_CODES.OK)
     }
 }
