@@ -665,10 +665,10 @@ export default class Manager {
             let newArray = [];
             const tokens721 = await XRC721Token.findAll({
               where: {
-                status:httpConstants.STATUS.DEPLOYED,
+                status: httpConstants.STATUS.DEPLOYED,
                 network: requestData.network,
                 isDeleted: false,
-                collectionNftOwners: { [Op.contains]: [requestData.tokenOwner] }
+                [Op.or]: [{tokenOwner: requestData.tokenOwner}, {collectionNftOwners: { [Op.contains]: [requestData.tokenOwner] }}],
               }
             });
 
