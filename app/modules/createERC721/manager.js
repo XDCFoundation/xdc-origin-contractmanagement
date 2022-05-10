@@ -474,7 +474,7 @@ export default class Manager {
 
         let collectionNftOwners = nftCollection[0].collectionNftOwners;
 
-        if(!collectionNftOwners.includes(requestData.to)){
+        if(collectionNftOwners && !collectionNftOwners.includes(requestData.to)){
             collectionNftOwners.push(requestData.to)
             await XRC721Token.update(
                 { collectionNftOwners: collectionNftOwners },
