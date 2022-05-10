@@ -383,6 +383,7 @@ export default class Manager {
                 updateObj = {
                     nftTokenId: requestData.nftTokenId,
                     status: requestData.status,
+                    txHash: requestData.txHash
                 }
 
             await NFT.update(
@@ -473,7 +474,7 @@ export default class Manager {
 
         let collectionNftOwners = nftCollection[0].collectionNftOwners;
 
-        if(!collectionNftOwners.includes(requestData.to)){
+        if(collectionNftOwners && !collectionNftOwners.includes(requestData.to)){
             collectionNftOwners.push(requestData.to)
             await XRC721Token.update(
                 { collectionNftOwners: collectionNftOwners },
@@ -490,6 +491,8 @@ export default class Manager {
         transfersArray.to = requestData.to;
         transfersArray.from = requestData.from;
         transfersArray.date = requestData.when;
+        transfersArray.txHAsh = requestData.txHash;
+        
 
         let data = transferDB[0].transfers;
 
@@ -515,7 +518,7 @@ export default class Manager {
                 id: requestData.id,
             },
         });
-      };
+    };
 
 
     xrcTokenByOwner = async(requestData)=>{
