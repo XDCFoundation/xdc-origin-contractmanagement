@@ -383,6 +383,7 @@ export default class Manager {
                 updateObj = {
                     nftTokenId: requestData.nftTokenId,
                     status: requestData.status,
+                    txHash: requestData.txHash
                 }
 
             await NFT.update(
@@ -490,6 +491,8 @@ export default class Manager {
         transfersArray.to = requestData.to;
         transfersArray.from = requestData.from;
         transfersArray.date = requestData.when;
+        transfersArray.txHAsh = requestData.txHash;
+        
 
         let data = transferDB[0].transfers;
 
@@ -515,7 +518,7 @@ export default class Manager {
                 id: requestData.id,
             },
         });
-      };
+    };
 
 
     xrcTokenByOwner = async(requestData)=>{

@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             defaultValue: ""
         },
+        txHash: {
+            type: DataTypes.STRING,
+            defaultValue: ""
+        },
         nftTokenId: {
             type: DataTypes.INTEGER,
             defaultValue: 0
