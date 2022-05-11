@@ -526,7 +526,7 @@ export default class Manager {
 
               return await XRC721Token.findAll(
                   {
-                      attributes: ["id", "tokenName", "status", "network"],
+                      attributes: ["id", "tokenName", "status", "network","tokenImage"],
                       where: {
                           tokenOwner: requestData.tokenOwner,
                           isDeleted: false
