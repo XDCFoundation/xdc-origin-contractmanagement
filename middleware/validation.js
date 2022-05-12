@@ -118,7 +118,7 @@ module.exports = {
       network: yup.string().required()
     })
     await validate(schema, req.body, res, next)
-  }, 
+  },
 
   validateUpdateToken721: async (req, res, next) => {
     const schema = yup.object().shape({
@@ -155,23 +155,23 @@ module.exports = {
 
   validateFind721TokenAndNft: async (req, res, next) => {
     const schema = yup.object().shape({
-      id: yup.number().required() 
+      id: yup.number().required()
     })
     await validate(schema, req.body, res, next)
   },
 
   validateFindNft: async (req, res, next) => {
     const schema = yup.object().shape({
-      nftTokenId: yup.string().required(), 
+      nftTokenId: yup.string().required(),
       collectionId:yup.number().required() ,
-      id:yup.number().required() 
+      id:yup.number().required()
     })
     await validate(schema, req.body, res, next)
   },
 
   validateDeletingNft: async (req, res, next) => {
     const schema = yup.object().shape({
-      nftTokenId: yup.string().required(), 
+      nftTokenId: yup.string().required(),
     })
     await validate(schema, req.body, res, next)
   },
@@ -183,7 +183,6 @@ module.exports = {
       to:yup.string().required(),
       from:yup.string().required(),
       when:yup.string().required(),
-      nftTokenId:yup.number().required(),
     })
     await validate(schema, req.body, res, next)
   },
@@ -193,11 +192,65 @@ module.exports = {
       tokenOwner: yup.string().required(),
     })
     await validate(schema, req.body, res, next)
+  },
+
+
+  validateNetworkBasedSearch: async (req, res, next) => {
+    const schema = yup.object().shape({
+      network: yup.string().required(),
+      tokenOwner: yup.string().required(),
+      type:yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+  validateGetDeployedTokens: async (req, res, next) => {
+    const schema = yup.object().shape({
+      tokenOwner: yup.string().required(),
+      network: yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+  validateGetDraftedAndFailedTokens: async (req, res, next) => {
+    const schema = yup.object().shape({
+      tokenOwner: yup.string().required(),
+      network: yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+  validateGetDraftedAndFailedTokensByType: async (req, res, next) => {
+    const schema = yup.object().shape({
+      tokenOwner: yup.string().required(),
+      network: yup.string().required(),
+      type:yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+  validateGetIpfsUrl: async (req, res, next) => {
+    const schema = yup.object().shape({
+      name: yup.string().required(),
+      tokenOwner:yup.string().required(),
+      fileName:yup.string().required(),
+      description: yup.string().required(),
+    })
+    await validate(schema, req.body, res, next)
+  },
+
+
+  validateDeleteCollection: async (req, res, next) => {
+    const schema = yup.object().shape({
+      id:yup.number().required()
+    })
+    await validate(schema, req.body, res, next)
   }
 
- 
 
-  
+
+
+
 }
 
 const validate = async (schema, reqData, res, next) => {

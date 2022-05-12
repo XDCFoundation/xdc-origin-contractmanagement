@@ -9,8 +9,14 @@ import ejs from "ejs";
 import {apiFailureMessage, contractConstants, httpConstants} from '../../common/constants'
 import Utils from "../../utils";
 import HttpService from "../../service/http-service";
+import * as UploadFileManager from "../../../middleware/uploadFiles"
 // import WebSocketService from '../../service/WebsocketService';
 import Config from "../../../config"
+import AWS from 'aws-sdk'
+import fs from 'fs';
+const path = require('path')
+
+
 export default class Manager {
     saveXrc20TokenAsDraft = async (requestData) => {
         // API business logic
@@ -27,7 +33,7 @@ export default class Manager {
             let isPausable = requestData.isPausable;
             let isBurnable = requestData.isBurnable;
             let isMintable = requestData.isMintable;
-            let isUpgradeable = false;
+            let isUpgradeable = requestData.isUpgradeable;
             let ERC20CappedSign = "";
 
             let ERC20Burnable;
@@ -145,6 +151,7 @@ export default class Manager {
                     burnable: requestData.isBurnable,
                     mintable: requestData.isMintable,
                     pausable: requestData.isPausable,
+                    upgradeable:requestData.isUpgradeable,
                     contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
                     network: requestData.network ? requestData.network : existingToken.network,
                     tokenContractCode: tokenContractCode,
@@ -180,6 +187,7 @@ export default class Manager {
                     burnable: requestData.isBurnable,
                     mintable: requestData.isMintable,
                     pausable: requestData.isPausable,
+                    upgradeable:requestData.isUpgradeable,
                     contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
                     network: requestData.network,
                     tokenContractCode: tokenContractCode,
@@ -360,15 +368,33 @@ export default class Manager {
     }
 
     updateSocialMediaUrls = async (requestData) => {
-        const tokens = await XRC20Token.findAll({
-            where: {
-                "tokenOwner": requestData.tokenOwner,
-                "id": requestData.tokenId,
-                "network": requestData.network,
-                "smartContractAddress": requestData.smartContractAddress,
-                "isDeleted": false
-            }
-        });
+        const tokenType= requestData.type;
+        let tokens={};
+
+        if(tokenType==='XRC20'){
+             tokens = await XRC20Token.findAll({
+                where: {
+                    "tokenOwner": requestData.tokenOwner,
+                    "id": requestData.tokenId,
+                    "network": requestData.network,
+                    "smartContractAddress": requestData.smartContractAddress,
+                    "isDeleted": false
+                }
+            });
+
+        }else if(tokenType==='XRC721'){
+
+             tokens = await XRC721Token.findAll({
+                where: {
+                    "tokenOwner": requestData.tokenOwner,
+                    "id": requestData.tokenId,
+                    "network": requestData.network,
+                    "smartContractAddress": requestData.smartContractAddress,
+                    "isDeleted": false
+                }
+            });
+        }
+        console.log(tokens.length,"length====")
 
         if(tokens.length > 0){
 
@@ -413,38 +439,39 @@ export default class Manager {
             }
 
 
-                let xrc20TokenUpdateObj = {};
+                let tokenUpdateObj = {};
 
                 if(requestData.hasOwnProperty('website')){
-                    xrc20TokenUpdateObj.website = requestData.website;
+                    tokenUpdateObj.website = requestData.website;
                 }
                 if(requestData.hasOwnProperty('twitter')){
-                    xrc20TokenUpdateObj.twitter = requestData.twitter;
+                    tokenUpdateObj.twitter = requestData.twitter;
                 }
                 if(requestData.hasOwnProperty('telegram')){
-                    xrc20TokenUpdateObj.telegram = requestData.telegram;
+                    tokenUpdateObj.telegram = requestData.telegram;
                 }
                 if(requestData.hasOwnProperty('email')){
-                    xrc20TokenUpdateObj.email = requestData.email;
+                    tokenUpdateObj.email = requestData.email;
                 }
                 if(requestData.hasOwnProperty('linkedIn')){
-                    xrc20TokenUpdateObj.linkedIn = requestData.linkedIn;
+                    tokenUpdateObj.linkedIn = requestData.linkedIn;
                 }
                 if(requestData.hasOwnProperty('reddit')){
-                    xrc20TokenUpdateObj.reddit = requestData.reddit;
+                    tokenUpdateObj.reddit = requestData.reddit;
                 }
                 if(requestData.hasOwnProperty('coinGecko')){
-                    xrc20TokenUpdateObj.coinGecko = requestData.coinGecko;
+                    tokenUpdateObj.coinGecko = requestData.coinGecko;
                 }
                 if(requestData.hasOwnProperty('symbolUrl')){
-                    xrc20TokenUpdateObj.tokenImage = requestData.symbolUrl;
+                    tokenUpdateObj.tokenImage = requestData.symbolUrl;
                 }
                 if(requestData.hasOwnProperty('facebook')){
-                    xrc20TokenUpdateObj.facebook = requestData.facebook;
+                    tokenUpdateObj.facebook = requestData.facebook;
                 }
 
+            if(tokenType==='XRC20'){
                 await XRC20Token.update(
-                    xrc20TokenUpdateObj,
+                    tokenUpdateObj,
                     { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
                 )
                 return XRC20Token.findAll({
@@ -452,6 +479,20 @@ export default class Manager {
                         "id": requestData.tokenId
                     }
                 });
+            }else if(tokenType==='XRC721'){
+                await XRC721Token.update(
+                    tokenUpdateObj,
+                    { where: { tokenOwner: requestData.tokenOwner, id: requestData.tokenId, smartContractAddress: requestData.smartContractAddress, isDeleted: false} },
+                )
+                return XRC721Token.findAll({
+                    where: {
+                        "id": requestData.tokenId
+                    }
+                });
+
+            }
+
+
 
         }
         else{
@@ -693,86 +734,48 @@ export default class Manager {
         }
     }
 
-    createNftCollection = async (requestData) => {
+    uploadFileToS3 = async (request) => {
 
-        let SafeMath = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/SafeMath.sol');
-        let Roles = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Roles.sol');
-        let ERC721Holder = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Holder.sol');
-        let Address = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Address.sol');
-        let ERC165 = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC165.sol');
-        let ERC721Mintable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Mintable.sol');
-        let ERC721Enumerable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Enumerable.sol');
-        let ERC721Metadata = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Metadata.sol');
-        let isPausable = false;
-        let isBurnable = false;
-        let isOwnable = false;
-        let ERC721Burnable, ERC721Pausable, Ownable, inherits = "";
 
-        if (isBurnable) {
-            ERC721Burnable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Burnable.sol');
-            inherits += ", Burnable";
+
+
+        const config = {
+            accessKeyId: Config.S3_ACCESS_KEY,
+            secretAccessKey: Config.S3_SECRET_KEY
+        }
+        AWS.config.update(config);
+        let s3 = new AWS.S3();
+
+        let dirPath=path.dirname(__dirname)
+        let dirPath1=path.dirname(dirPath)
+        let dirPath2=path.dirname(dirPath1)
+
+
+        const filename = (request.filename).replace(/\s/g, '')
+
+        let fileContent=fs.readFileSync(dirPath2+`/uploads/`+`${request.filename}`)
+        let params = {
+            Bucket: Config.S3_BUCKET_NAME,
+            Key: filename,
+            Body: fileContent
         }
 
-        if (isPausable) {
-            ERC721Pausable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/ERC721Pausable.sol');
-            inherits += ", Pausable";
-        }
-        if (isOwnable) {
-            Ownable = await fileReader.readEjsFile(__dirname + '/contracts/ERC721contracts/Ownable.sol');
-            inherits += ", Ownable";
-        }
-
-        let output = {};
-        let oData = {};
-        let contractAbi = [];
-        let byteCode = "";
-
-        ejs.renderFile(__dirname + '/contracts/ERC721contracts/Coin.sol', {
-            'SafeMath': SafeMath,
-            'Roles': Roles,
-            'ERC721Holder': ERC721Holder,
-            'Address': Address,
-            'ERC165': ERC165,
-            'ERC721Enumerable': ERC721Enumerable,
-            'ERC721Metadata': ERC721Metadata,
-            'ERC721Burnable': ERC721Burnable,
-            'ERC721Mintable': ERC721Mintable,
-            'ERC721Pausable': ERC721Pausable,
-            'Ownable': Ownable,
-            'tokenName': "NFT Build",
-            'tokenSymbol': "NFTBUI",
-            'inherits': inherits
-        }, (err, data) => {
-            if (err)
-                console.log(err);
-
-            oData = data;
-            let output = solc.compile(data).contracts[':Coin'];
-
-            contractAbi = output.interface;
-
-            byteCode = output.bytecode;
+         let response1=new Promise(function (resolve, reject) {
+            s3.upload(params, (err, res) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    let responseObj = {
+                        sourceFileName: res.Key,
+                    };
+                    resolve(res.Location);
+                }
+            });
         });
+        fs.unlinkSync(dirPath2+`/uploads/`+`${request.filename}`)
 
+        return  response1
 
-        const newXRC721Token = {
-            tokenOwner: "xdc9f080e466b547cf78bf72eef93b146d985cdf1a3",
-            tokenName: "NFT Build",
-            tokenSymbol: "NFTBUI",
-            tokenImage: "requestData.tokenImage",
-            website: "https://origin.xdc.org",
-            twitter: "https://twitter.com",
-            telegram: "https://telegram.com",
-            tokenDescription: "Description",
-            network: "XDC Apothem Network",
-            tokenContractCode: oData,
-            byteCode: byteCode,
-            contractAbiString: contractAbi
-        }
-
-        return XRC721Token.create(newXRC721Token);
-
-        // return {"code": oData, "abi": contractAbi, "byteCode": byteCode};
 
     }
 

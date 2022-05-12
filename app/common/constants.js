@@ -51,6 +51,22 @@ export const httpConstants = {
     SILLY: 'silly',
     FUNCTIONAL: 'functional',
     HTTP_REQUEST: 'http request'
+  },
+  STATUS:{
+    DEPLOYED:"DEPLOYED",
+    FAILED:"FAILED",
+    DRAFTED:"DRAFT"
+  },
+  JWT_RESPONSE:{
+    INVALID_TOKEN:"Invalid Token",
+    TOKEN_EXPIRED:"Token Expired",
+    INVALID_USER:"Invalid User",
+    WELCOME:"Welcome",
+    NO_USER_FOUND:"No user Found"
+
+
+
+
   }
 }
 
@@ -71,7 +87,8 @@ export const apiSuccessMessage = {
   TOKEN_DETAILS_UPDATED: 'Token details updated successfully',
   TOKEN_DETAILS_FETCHED: 'Token details fetched successfully',
   TOKEN_DELETED: 'Token deleted successfully',
-  DETAILS_SAVED_SUCCESSFULLY: 'Details saved successfully'
+  DETAILS_SAVED_SUCCESSFULLY: 'Details saved successfully',
+  IMAGE_UPLOADED_TO_S3:'Image uploaded to S3'
 }
 
 export const apiEndpoints = {

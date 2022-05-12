@@ -91,6 +91,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false
     },
+    upgradeable:{
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     tokenDecimals: {
       type: DataTypes.NUMERIC,
       defaultValue: 0
