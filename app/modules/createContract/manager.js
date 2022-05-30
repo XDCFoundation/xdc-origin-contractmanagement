@@ -33,7 +33,7 @@ export default class Manager {
             let isPausable = requestData.isPausable;
             let isBurnable = requestData.isBurnable;
             let isMintable = requestData.isMintable;
-            let isUpgradeable = requestData.isUpgradeable;
+            let isUpgradeable = false;
             let ERC20CappedSign = "";
 
             let ERC20Burnable;
@@ -151,7 +151,7 @@ export default class Manager {
                     burnable: requestData.isBurnable,
                     mintable: requestData.isMintable,
                     pausable: requestData.isPausable,
-                    upgradeable:requestData.isUpgradeable,
+
                     contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
                     network: requestData.network ? requestData.network : existingToken.network,
                     tokenContractCode: tokenContractCode,
@@ -187,7 +187,7 @@ export default class Manager {
                     burnable: requestData.isBurnable,
                     mintable: requestData.isMintable,
                     pausable: requestData.isPausable,
-                    upgradeable:requestData.isUpgradeable,
+
                     contractAbiString: (contractAbi.length !== 0) ? contractAbi : JSON.stringify(contractConstants.DUMMY_CONTRACT_ABI),
                     network: requestData.network,
                     tokenContractCode: tokenContractCode,
